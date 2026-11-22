@@ -18,13 +18,9 @@ in
         name = "setup";
         text = ''
           status=0
-          confirm() {
-            local answer
-            read -r -p "$1? [y/N] " answer || true
-            [[ $answer == [yY]* ]]
-          }
           ${lib.concatMapStrings (name: ''
-            if confirm "${cfg.setups.${name}.description}"; then
+            read -r -p "${cfg.setups.${name}.description}? [y/N] " answer || true
+            if [[ $answer == [yY]* ]]; then
               ${lib.getExe cfg.setups.${name}.command.run} "$@" || status=1
             fi
           '') (lib.attrNames cfg.setups)}

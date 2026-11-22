@@ -22,20 +22,15 @@ in
         name = "check";
         text = ''
           status=0
-          run() {
-            local name=$1 output
-            shift
-            if output=$("$@" 2>&1); then
-              echo "ok    $name"
+          ${lib.concatMapStrings (name: ''
+            if output=$(${lib.getExe checkCommands.${name}.run} 2>&1); then
+              echo "ok    ${name}"
             else
-              echo "FAIL  $name"
+              echo "FAIL  ${name}"
               echo "$output"
               status=1
             fi
-          }
-          ${lib.concatMapStrings (name: "run ${name} ${lib.getExe checkCommands.${name}.run}\n") (
-            lib.attrNames checkCommands
-          )}
+          '') (lib.attrNames checkCommands)}
           exit "$status"
         '';
       };
