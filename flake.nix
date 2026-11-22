@@ -12,7 +12,7 @@
   outputs =
     inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ ./modules/checks ];
+      imports = [ ./modules/setups ];
       # The popular systems whose tools are all in the binary cache of nixpkgs: Linux on x86_64 and
       # aarch64, and macOS on Apple silicon.
       systems = [
@@ -22,6 +22,7 @@
       ];
       flake.flakeModules = {
         checks = ./modules/checks;
+        setups = ./modules/setups;
       };
     };
 }
