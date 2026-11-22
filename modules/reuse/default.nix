@@ -12,7 +12,8 @@
       ...
     }:
     let
-      texts = lib.mapAttrsToList (name: _: ./LICENSES + "/${name}") (builtins.readDir ./LICENSES);
+      reference = ../../LICENSES;
+      texts = lib.mapAttrsToList (name: _: reference + "/${name}") (builtins.readDir reference);
       copyright = "2026 The Sic Contributors";
       license = "Apache-2.0 WITH LLVM-exception";
     in
