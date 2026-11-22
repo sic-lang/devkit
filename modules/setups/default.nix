@@ -3,7 +3,7 @@ let
   inherit (lib) mkOption types;
 in
 {
-  imports = [ ../checks ];
+  imports = [ ../commands ];
 
   options.perSystem = flake-parts-lib.mkPerSystemOption (
     {

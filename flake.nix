@@ -22,6 +22,7 @@
       ];
       flake.flakeModules = {
         checks = ./modules/checks;
+        commands = ./modules/commands;
         reuse = ./modules/reuse;
         setups = ./modules/setups;
       };
