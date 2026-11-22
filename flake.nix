@@ -11,20 +11,20 @@
 
   outputs =
     inputs:
-    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ ./modules/reuse ];
-      # The popular systems whose tools are all in the binary cache of nixpkgs: Linux on x86_64 and
-      # aarch64, and macOS on Apple silicon.
-      systems = [
-        "aarch64-darwin"
-        "aarch64-linux"
-        "x86_64-linux"
-      ];
-      flake.flakeModules = {
-        checks = ./modules/checks;
-        commands = ./modules/commands;
-        reuse = ./modules/reuse;
-        setups = ./modules/setups;
-      };
-    };
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } (
+      { lib, ... }:
+      {
+        imports = [ ./modules/reuse ];
+        # The popular systems whose tools are all in the binary cache of nixpkgs: Linux on x86_64
+        # and aarch64, and macOS on Apple silicon.
+        systems = [
+          "aarch64-darwin"
+          "aarch64-linux"
+          "x86_64-linux"
+        ];
+        flake.flakeModules = lib.mapAttrs (name: _: ./modules + "/${name}") (
+          lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./modules)
+        );
+      }
+    );
 }
