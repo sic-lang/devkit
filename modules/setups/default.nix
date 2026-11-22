@@ -6,24 +6,21 @@ in
   imports = [ ../commands ];
 
   options.perSystem = flake-parts-lib.mkPerSystemOption (
-    {
-      config,
-      options,
-      pkgs,
-      ...
-    }:
+    { config, pkgs, ... }:
     let
       cfg = config.devkit;
       setupAll = cfg.mkCommand {
         name = "setup";
         text = ''
           status=0
-          ${lib.concatMapStrings (name: ''
-            read -r -p "${cfg.setups.${name}.description}? [y/N] " answer || true
-            if [[ $answer == [yY]* ]]; then
-              ${lib.getExe cfg.setups.${name}.command.run} "$@" || status=1
-            fi
-          '') (lib.attrNames cfg.setups)}
+          ${lib.concatStrings (
+            lib.mapAttrsToList (name: setup: ''
+              read -r -p ${lib.escapeShellArg "${setup.description}? [y/N] "} answer || true
+              if [[ $answer == [yY]* ]]; then
+                ${lib.getExe setup.command.run} "$@" || status=1
+              fi
+            '') cfg.setups
+          )}
           exit "$status"
         '';
       };
@@ -36,7 +33,7 @@ in
             confirms it, since each one configures a tool they may not use.
           '';
           default = { };
-          type = types.attrsOf options.devkit.commands.type.nestedTypes.elemType;
+          type = types.attrsOf (import ../commands/command.nix lib);
         };
         mkSetup = mkOption {
           description = ''

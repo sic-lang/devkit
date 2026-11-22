@@ -26,9 +26,9 @@ in
           status=0
           ${lib.concatMapStrings (name: ''
             if output=$(${lib.getExe checkCommands.${name}.run} 2>&1); then
-              echo "ok    ${name}"
+              echo ${lib.escapeShellArg "ok    ${name}"}
             else
-              echo "FAIL  ${name}"
+              echo ${lib.escapeShellArg "FAIL  ${name}"}
               echo "$output"
               status=1
             fi
@@ -50,7 +50,10 @@ in
                 default = [ ];
               };
               command = mkOption {
-                description = "The Bash command of the check, which fails if the check fails.";
+                description = ''
+                  The Bash command of the check, which fails if the check fails, and receives the
+                  arguments of check-<name> as "$@".
+                '';
                 type = types.str;
               };
             };

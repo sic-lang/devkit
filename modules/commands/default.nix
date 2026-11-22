@@ -13,25 +13,7 @@ in
         commands = mkOption {
           description = "The commands, each run by its app and checked by its flake check <name>.";
           default = { };
-          type = types.attrsOf (
-            types.submodule {
-              options = {
-                command = mkOption {
-                  description = "The command, as made by mkCommand.";
-                  type = types.submodule {
-                    options = {
-                      run = mkOption { type = types.package; };
-                      checked = mkOption { type = types.package; };
-                    };
-                  };
-                };
-                description = mkOption {
-                  description = "The description of the app.";
-                  type = types.str;
-                };
-              };
-            }
-          );
+          type = types.attrsOf (import ./command.nix lib);
         };
         commandArgs = mkOption {
           description = ''
