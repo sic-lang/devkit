@@ -3,7 +3,7 @@ name: devkit-files
 description: Generate a repository-specific file, such as a tool's configuration, from the repository's flake with devkit's `files` module. Use this when a repository needs a generated file that no devkit module provides.
 ---
 
-# Generated files
+# Files
 
 The `files` module writes generated files into the repository.
 The repository commits them, so that editors, GitHub and fresh clones all see the same files as the checks.
