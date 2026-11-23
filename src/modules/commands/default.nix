@@ -15,12 +15,20 @@ in
           default = { };
           type = types.attrsOf (import ./command.nix lib);
         };
+        commandEnv = mkOption {
+          description = ''
+            The environment variables that a command exports, as a function of the arguments of
+            mkCommand that make it.
+          '';
+          type = types.functionTo (types.attrsOf types.str);
+          default = _: { };
+        };
         mkCommand = mkOption {
           description = ''
-            Makes the command name from the Bash template template, whose header is that of
-            header.sh.in and whose placeholders @name@ are replaced by the values of replacements,
-            with the packages tools on its PATH, in two variants: run, for nix run, and checked,
-            which ShellCheck checks, for nix flake check.
+            Makes the command name from the Bash template template, after the header of
+            header.sh.in, which exports the variables of commandEnv and puts the packages tools on
+            PATH, and whose placeholders @name@ are replaced by the values of replacements, in two
+            variants: run, for nix run, and checked, which ShellCheck checks, for nix flake check.
           '';
           type = types.functionTo types.raw;
           readOnly = true;
@@ -51,8 +59,9 @@ in
             template,
             replacements ? { },
             tools ? [ ],
-          }:
+          }@args:
           let
+            export = name: value: "export ${name}=${lib.escapeShellArg value}";
             run = pkgs.replaceVarsWith {
               inherit name;
               src = pkgs.concatText "${name}.sh.in" [
@@ -65,6 +74,7 @@ in
               replacements = {
                 bash = pkgs.runtimeShell;
                 path = lib.makeBinPath ([ pkgs.coreutils ] ++ tools);
+                env = lib.concatLines (lib.mapAttrsToList export (cfg.commandEnv args));
               }
               // replacements;
               meta.mainProgram = name;

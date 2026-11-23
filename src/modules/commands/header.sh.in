@@ -1,3 +1,4 @@
 #!@bash@
 set -o errexit -o nounset -o pipefail
 export PATH="@path@:$PATH"
+@env@
