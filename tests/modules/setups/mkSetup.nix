@@ -69,7 +69,7 @@ lib.mapAttrs case {
     output = [ "usage: setup-example [--force]" ];
     after = "[ ! -e example ]";
   };
-  # Unlike a file of the Nix store, a file of the flake must be copied into it.
+  # Unlike a file from the Nix store, a file from the flake must be copied into it.
   local = {
     command = setup ./mkSetup.nix;
     output = [ "created" ];

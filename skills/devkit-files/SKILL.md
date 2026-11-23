@@ -16,7 +16,7 @@ The repository commits them, so that editors, GitHub and fresh clones all see th
 
 ## Generate a file
 
-`devkit.files.<path>` generates `<path>` from a `template`, a file of the flake or the Nix store.
+`devkit.files.<path>` generates `<path>` from a `template`, a file from the flake or the Nix store.
 Each `@name@` placeholder in the template is replaced with its value from `replacements`:
 
 ```nix
