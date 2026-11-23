@@ -22,8 +22,16 @@ Each `@name@` placeholder in the template is replaced with its value from `repla
 ```nix
 devkit.files."example.toml" = {
   template = ./example.toml.in;
-  replacements.name = "example";
+  replacements.lineLength = toString config.devkit.lineLength;
 };
 ```
 
 The build fails if a replacement matches no placeholder, or if a placeholder is left unreplaced.
+
+## Share a value
+
+A value that several generated files share is a devkit option, fixed in devkit, which each template receives as a replacement.
+The value then has one source, and a repository cannot change it.
+
+`devkit.lineLength` is the maximum line length, 100.
+Every generated file that has a maximum line length uses it, even when 100 is already its tool's default.

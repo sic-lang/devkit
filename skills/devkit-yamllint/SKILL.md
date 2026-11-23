@@ -18,4 +18,4 @@ It generates yamllint's configuration, `.yamllint.yaml`, with the `files` module
 
 The configuration is yamllint's default, with these changes.
 Every YAML file may omit the leading `---` and use `on` as a key, as GitHub workflows do.
-Lines may be up to 100 characters long.
+Lines may be as long as devkit's shared line length, `devkit.lineLength`.

@@ -16,6 +16,15 @@ in
       generated = lib.mapAttrs (_: generate) cfg.files;
     in
     {
+      options.devkit.lineLength = mkOption {
+        description = ''
+          The maximum line length that every generated file with a line length uses. It is fixed:
+          a repository cannot change it.
+        '';
+        type = types.ints.positive;
+        readOnly = true;
+      };
+
       options.devkit.files = mkOption {
         description = ''
           The files that devkit generates, each keyed by its path in the repository. The
@@ -40,6 +49,7 @@ in
       };
 
       config.devkit = {
+        lineLength = 100;
         setups.files = {
           description = "Write the files that devkit generates";
           command = cfg.mkSetup {
