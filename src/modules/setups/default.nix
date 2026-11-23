@@ -31,7 +31,7 @@ in
         };
         mkSetup = mkOption {
           description = ''
-            Builds the setup `name`, which writes each file in `files`, of the flake or of the Nix
+            Builds the setup `name`, which writes each file in `files`, from the flake or the Nix
             store, to its path in the repository, with mode `mode`. It never overwrites a file that
             differs, unless --force is given.
           '';

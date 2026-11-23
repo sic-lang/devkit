@@ -16,7 +16,7 @@ The repository commits them, so that editors, GitHub and fresh clones all see th
 
 ## Generate a file
 
-`devkit.files.<path>` generates the file at `<path>` from a file of the flake or one that Nix builds:
+`devkit.files.<path>` takes a file from the flake or the Nix store, and generates `<path>` from it:
 
 ```nix
 devkit.files."example.toml" = ./example.toml;
