@@ -1,6 +1,6 @@
 ---
 name: devkit-commands
-description: Write a command of a repository that uses devkit, as a Bash template, or give the commands an environment. Use when adding an app, a check or a setup whose script is more than one command, or when commands need environment variables.
+description: Write a command of a repository of its own as a Bash template, or give the commands an environment, through the module commands of devkit. Use when a check or a setup of the repository is more than one command, or when commands need environment variables.
 ---
 
 # Commands

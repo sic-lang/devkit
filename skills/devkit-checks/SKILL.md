@@ -1,11 +1,11 @@
 ---
 name: devkit-checks
-description: Add a check to a repository that uses devkit, or run its checks. Use when a repository needs a new check, or before pushing a change to it.
+description: Write a check of a repository of its own, through the module checks of devkit. Use when a repository needs a check that no module of devkit gives.
 ---
 
 # Checks
 
-The module `checks` runs the checks of the repository: `nix run .#check-<name>` runs one of them from the root of the repository, and `nix run .#check` runs all of them, printing `ok` or `FAIL` and the output of each failure.
+The module `checks` lets the repository write checks of its own: `nix run .#check-<name>` runs one of them from the root of the repository, and `nix run .#check` all the checks, printing `ok` or `FAIL` and the output of each failure.
 The development shell provides the tools of every check.
 
 ## Add a check
