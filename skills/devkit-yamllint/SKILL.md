@@ -16,5 +16,6 @@ It generates yamllint's configuration, `.yamllint.yaml`, with the `files` module
 
 ## The configuration
 
-The configuration is yamllint's default, with three exceptions.
-GitHub workflows may omit the leading `---` and use the `on` key, and lines may be up to 100 characters long.
+The configuration is yamllint's default, except for two rules.
+Every YAML file may omit the leading `---` and use `on` as a key, as GitHub workflows do.
+Lines may be up to 100 characters long.
