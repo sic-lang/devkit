@@ -13,20 +13,9 @@ in
     let
       cfg = config.devkit;
       generate = file: pkgs.replaceVars file.template file.replacements;
-      # Read whatever the repository generates, so that a repository that sets the read-only line
-      # length gets an error even if no file uses it.
-      generated = builtins.seq cfg.lineLength (lib.mapAttrs (_: generate) cfg.files);
+      generated = lib.mapAttrs (_: generate) cfg.files;
     in
     {
-      options.devkit.lineLength = mkOption {
-        description = ''
-          The maximum line length that every generated file with a line length uses. It is fixed:
-          a repository cannot change it.
-        '';
-        type = types.ints.positive;
-        readOnly = true;
-      };
-
       options.devkit.files = mkOption {
         description = ''
           The files that devkit generates, each keyed by its path in the repository. The
@@ -51,7 +40,6 @@ in
       };
 
       config.devkit = {
-        lineLength = 100;
         setups.files = {
           description = "Write the files that devkit generates";
           command = cfg.mkSetup {

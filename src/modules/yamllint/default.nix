@@ -2,12 +2,12 @@
   imports = [ ../files ];
 
   perSystem =
-    { config, pkgs, ... }:
+    { pkgs, ... }:
     {
       devkit = {
         files.".yamllint.yaml" = {
           template = ./yamllint.yaml.in;
-          replacements.lineLength = toString config.devkit.lineLength;
+          replacements.lineLength = toString (import ../../lib.nix).lineLength;
         };
         checks.yamllint = {
           packages = [ pkgs.yamllint ];

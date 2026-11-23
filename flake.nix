@@ -24,6 +24,7 @@
           "aarch64-linux"
           "x86_64-linux"
         ];
+        flake.lib = import ./src/lib.nix;
         flake.flakeModules = lib.mapAttrs (name: _: ./src/modules + "/${name}") (
           lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./src/modules)
         );
