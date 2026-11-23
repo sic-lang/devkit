@@ -13,13 +13,21 @@
     }:
     let
       spdx = "${pkgs.spdx-license-list-data.text}/text";
+      spdxOnly = "a license or exception of the SPDX list, to which a repository is limited";
+      lint = ''
+        report=$(reuse lint --json || true)
+        if [ -z "$report" ]; then
+          echo "reuse lint gave no report" >&2
+          exit 1
+        fi
+      '';
       eachText = body: ''
         shopt -s nullglob
         for file in LICENSES/*; do
           name=''${file#LICENSES/}
           text=${spdx}/''${name%.txt}.txt
           if [ ! -e "$text" ]; then
-            echo "$file is not the text of an SPDX license or exception" >&2
+            echo "$file is not the text of ${spdxOnly}" >&2
             status=1
           else
             ${body}
@@ -37,6 +45,7 @@
           tools = [
             pkgs.diffutils
             pkgs.jq
+            pkgs.reuse
             pkgs.taplo
           ];
           command = ''
@@ -69,6 +78,18 @@
                 '"<year> The Sic Contributors"' >&2
               status=1
             fi
+            ${lint}
+            custom='
+              [
+                .files[].spdx_expressions[].value
+                | scan("(?:LicenseRef|AdditionRef)-[A-Za-z0-9.-]+")
+              ]
+              | unique[]
+            '
+            for id in $(jq -r "$custom" <<<"$report"); do
+              echo "$id is not ${spdxOnly}" >&2
+              status=1
+            done
             exit "$status"
           '';
         };
@@ -105,17 +126,13 @@
                 echo "rewritten $file"
               fi
             ''}
-            report=$(reuse lint --json || true)
-            if [ -z "$report" ]; then
-              echo "reuse lint gave no report of the missing licenses" >&2
-              exit 1
-            fi
+            ${lint}
             for id in $(jq -r '.non_compliant.missing_licenses[]' <<<"$report"); do
               if [ -e "${spdx}/$id.txt" ]; then
                 install -D -m 644 "${spdx}/$id.txt" "LICENSES/$id.txt"
                 echo "created LICENSES/$id.txt"
               else
-                echo "no SPDX text of $id: write LICENSES/$id.txt by hand" >&2
+                echo "$id is not ${spdxOnly}" >&2
                 status=1
               fi
             done

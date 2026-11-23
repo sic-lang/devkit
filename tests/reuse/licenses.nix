@@ -85,10 +85,36 @@ lib.mapAttrs case {
   check-unknown-name = {
     licenses = {
       "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "Sic.txt" = other;
+    };
+    status = 1;
+    output = [ "LICENSES/Sic.txt is not the text of a license or exception of the SPDX list" ];
+  };
+  check-custom-text = {
+    licenses = {
+      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
       "LicenseRef-Sic.txt" = other;
     };
     status = 1;
-    output = [ "LICENSES/LicenseRef-Sic.txt is not the text of an SPDX license or exception" ];
+    output = [ "LICENSES/LicenseRef-Sic.txt is not the text of a license or exception" ];
+  };
+  check-custom-license = {
+    licenses = {
+      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "LicenseRef-Sic.txt" = other;
+    };
+    reuse = reuseToml [ { license = "Apache-2.0 OR LicenseRef-Sic"; } ];
+    status = 1;
+    output = [ "LicenseRef-Sic is not a license or exception of the SPDX list" ];
+  };
+  check-custom-exception = {
+    licenses = {
+      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "AdditionRef-Sic.txt" = other;
+    };
+    reuse = reuseToml [ { license = "Apache-2.0 WITH AdditionRef-Sic"; } ];
+    status = 1;
+    output = [ "AdditionRef-Sic is not a license or exception of the SPDX list" ];
   };
   check-no-reuse-toml = {
     reuse = null;
@@ -146,8 +172,8 @@ lib.mapAttrs case {
     reuse = reuseToml [ { license = "Apache-2.0 OR LicenseRef-Other"; } ];
     status = 1;
     output = [
-      "LICENSES/LicenseRef-Sic.txt is not the text of an SPDX license or exception"
-      "no SPDX text of LicenseRef-Other"
+      "LICENSES/LicenseRef-Sic.txt is not the text of a license or exception of the SPDX list"
+      "LicenseRef-Other is not a license or exception of the SPDX list"
     ];
     after = "cmp LICENSES/LicenseRef-Sic.txt ${other}";
   };
