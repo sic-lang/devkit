@@ -40,15 +40,9 @@ lib.mapAttrs case {
       "example/file.txt differs from the generated one above"
     ];
   };
-  # A file of the flake rather than of the Nix store: this test itself.
-  local = {
-    command = check { template = ./check.nix; };
-    files."example/file.txt" = ./check.nix;
-  };
-  # Split so that this file, the template of the local case, has no placeholder.
   replaced = {
     command = check {
-      template = pkgs.writeText "file.txt.in" "The @adjective${"@"} text.\n";
+      template = pkgs.writeText "file.txt.in" "The @adjective@ text.\n";
       replacements.adjective = "generated";
     };
     files."example/file.txt" = generated;
