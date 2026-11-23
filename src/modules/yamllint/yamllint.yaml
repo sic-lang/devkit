@@ -5,7 +5,7 @@ rules:
   document-start: disable
   # Leaves room for actions pinned by commit hash, followed by their version in a comment.
   line-length:
-    max: @lineLength@
+    max: 100
   # Workflows use the "on" key for their triggers.
   truthy:
     check-keys: false

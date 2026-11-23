@@ -19,20 +19,13 @@ in
       };
     in
     {
-      options.devkit = {
-        files = mkOption {
-          description = ''
-            The files that devkit generates, each a Nix store file keyed by its path in the
-            repository. The repository commits them, so that editors read them too.
-          '';
-          default = { };
-          type = types.attrsOf types.path;
-        };
-        lineLength = mkOption {
-          description = "The maximum line length, which the generated files use by default.";
-          type = types.ints.positive;
-          default = 100;
-        };
+      options.devkit.files = mkOption {
+        description = ''
+          The files that devkit generates, each a Nix store file keyed by its path in the
+          repository. The repository commits them, so that editors read them too.
+        '';
+        default = { };
+        type = types.attrsOf types.path;
       };
 
       config.devkit = lib.mkIf (cfg.files != { }) {
