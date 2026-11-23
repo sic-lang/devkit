@@ -5,22 +5,21 @@ description: Implement a custom repository-specific check using devkit's checks 
 
 # Checks
 
-The module `checks` lets the repository write checks of its own: `nix run .#check-<name>` runs one of them from the root of the repository, and `nix run .#check` all the checks, printing `ok` or `FAIL` and the output of each failure.
-The development shell provides the tools of every check.
+The module `checks` lets a repository write checks of its own.
 
 ## Add a check
 
-A check is a command, which fails when the check fails and receives the arguments of `check-<name>`.
-It is either a command line, which Bash runs, with the packages it runs:
+`devkit.checks.<name>` adds the check `<name>`, whose command receives the arguments of the check and fails when the check fails.
+The command is either a command line, which Bash runs whole, with its arguments, its pipes and its lists of commands, and the packages it runs:
 
 ```nix
 devkit.checks.actionlint = {
-  command = "actionlint";
+  command = "actionlint -color";
   tools = [ pkgs.actionlint ];
 };
 ```
 
-or a command of the module `commands`, for a check that is more than one command, as the skill `devkit-commands` describes:
+or a command of the module `commands`, as the skill `devkit-commands` describes:
 
 ```nix
 devkit.checks.example.command = config.devkit.mkCommand {
@@ -29,3 +28,11 @@ devkit.checks.example.command = config.devkit.mkCommand {
   tools = [ pkgs.jq ];
 };
 ```
+
+## Run a check
+
+`nix run .#check-<name>` runs the check `<name>` from the root of the repository, and passes it the arguments given after `--`.
+
+## Run all the checks
+
+`nix run .#check` runs every check of the repository, those of the modules of devkit included, and prints `ok` or `FAIL` for each, with the output of each failure.
