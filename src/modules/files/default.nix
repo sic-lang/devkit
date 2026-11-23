@@ -28,7 +28,7 @@ in
         type = types.attrsOf types.path;
       };
 
-      config.devkit = lib.mkIf (cfg.files != { }) {
+      config.devkit = {
         setups.files = {
           description = "Write the files that devkit generates";
           command = cfg.mkSetup {
