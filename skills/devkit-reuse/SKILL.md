@@ -27,7 +27,7 @@ It also writes the license texts from the SPDX license list.
 
 ## What the checks require
 
-- `nix run .#check-reuse` runs `reuse lint`.
+- `nix run .#check-reuse` expects `reuse lint` to pass.
 - `nix run .#check-licenses` requires that:
   - every file in `LICENSES/` is named `<id>.txt`, where `<id>` is a license or exception on the SPDX list, and contains exactly that license's or exception's text;
   - every license and exception is on the SPDX list: no `LicenseRef-` or `AdditionRef-` identifiers;
