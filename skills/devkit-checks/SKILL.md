@@ -10,10 +10,10 @@ The `checks` module lets a repository define its own checks, beyond those that d
 ## Add a check
 
 `devkit.checks.<name>` defines a check named `<name>`.
-Its command receives the check's arguments and returns a failure status when the check fails.
+Its `command` receives the check's arguments and returns a failure status when the check fails.
 
-The command can be a command line, which Bash runs as a whole, including arguments, pipes and `&&`.
-`tools` lists the packages it needs:
+The `command` can be a command line, which Bash runs.
+`tools` lists the packages whose programs it runs:
 
 ```nix
 devkit.checks.actionlint = {
@@ -22,7 +22,9 @@ devkit.checks.actionlint = {
 };
 ```
 
-The command can also be built with the `commands` module, as described in the `devkit-commands` skill:
+The development shell includes the `tools` of every check.
+
+The `command` can also be built with the `commands` module, as described in the `devkit-commands` skill:
 
 ```nix
 devkit.checks.example.command = config.devkit.mkCommand {

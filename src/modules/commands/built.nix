@@ -13,7 +13,7 @@ types.submodule {
       type = types.package;
     };
     tools = mkOption {
-      description = "The packages that the script runs.";
+      description = "The packages whose programs the script runs.";
       type = types.listOf types.package;
     };
   };

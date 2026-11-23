@@ -47,7 +47,7 @@ in
                 type = types.either types.str (import ../commands/built.nix lib);
               };
               tools = mkOption {
-                description = "The packages that a command line needs.";
+                description = "The packages whose programs a command line runs.";
                 type = types.listOf types.package;
                 default = [ ];
               };
