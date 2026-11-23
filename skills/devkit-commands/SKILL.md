@@ -1,6 +1,6 @@
 ---
 name: devkit-commands
-description: Implement a custom repository-specific command as a Bash template using devkit's commands module, and set environment variables for all of a repository's commands. Use this when a repository requires a command of its own, or when its commands need environment variables.
+description: Implement a custom repository-specific command as a Bash template using devkit's `commands` module, and set environment variables for all of a repository's commands. Use this when a repository requires a command of its own, or when its commands need environment variables.
 ---
 
 # Commands
@@ -28,7 +28,7 @@ config.devkit.mkCommand {
 ```
 
 - The template has no shebang.
-  `mkCommand` prepends a header that sets the interpreter, the Bash options `errexit`, `nounset` and `pipefail`, the variables from `devkit.commandEnv`, and a `PATH` that includes the tools.
+  `mkCommand` prepends a header that sets the interpreter, the Bash options `errexit`, `nounset` and `pipefail`, the variables from `devkit.commandEnv`, and a `PATH` that includes the programs of `tools`.
   The header then changes to the repository's root.
 - Each `@name@` placeholder is replaced with its value from `replacements`, as plain text.
   Either quote the placeholder in the template, or quote the value with `lib.escapeShellArg` (`lib.escapeShellArgs` for a list).
@@ -37,15 +37,29 @@ config.devkit.mkCommand {
   The flake check fails if ShellCheck finds a problem in the built script.
   The template itself is not checked, because it is not valid Bash until its placeholders are replaced.
 
-`devkit.commands.<name>` exposes the command as the `<name>` app, with a `description`.
+`devkit.commands.<name>` exposes its `command` as the `<name>` app, with a `description`.
 The app passes its arguments to the script as `"$@"`.
 
 ## Give the commands an environment
 
-`devkit.commandEnv` sets environment variables for every command in the repository, including those from devkit's modules.
-It is a function that takes the arguments given to `mkCommand` and returns the variables.
-This lets it, for example, set a variable only for commands whose `tools` include a given package.
+`devkit.commandEnv` sets environment variables for every command in the repository, including those that devkit's modules build, such as the checks given as command lines.
+Set it to a function that receives the arguments given to `mkCommand`, with their defaults, and returns the variables to export.
+For example, Lake rebuilds when the Lean it runs changes only if `LEAN_GITHASH` identifies that Lean, so the commands that run Lean need the variable:
+
+```nix
+devkit.commandEnv =
+  { tools, ... }:
+  lib.optionalAttrs (lib.elem pkgs.lean4 tools) { LEAN_GITHASH = "${pkgs.lean4}"; };
+```
 
 ## Configure the development shell
 
-`devkit.shell` sets the development shell's packages, environment variables and hook.
+The `commands` module also defines the repository's development shell, which `nix develop` starts.
+`devkit.shell.packages` adds packages to it, `devkit.shell.env` sets its environment variables, and `devkit.shell.shellHook` runs commands when it starts:
+
+```nix
+devkit.shell = {
+  packages = [ pkgs.nixd ];
+  env.LEAN_GITHASH = "${pkgs.lean4}";
+};
+```
