@@ -8,6 +8,7 @@
 }:
 let
   spdx = "${pkgs.spdx-license-list-data.text}/text";
+  apache = "${spdx}/Apache-2.0.txt";
   inherit (consumer [ flakeModules.reuse ]) checks;
   annotation =
     {
@@ -28,6 +29,10 @@ let
     );
   text = pkgs.writeText "text";
   other = text "Another text.\n";
+  checked = lib.concatMapStrings (check: "${lib.getExe checks.${check}}\n") [
+    "check-licenses"
+    "check-reuse"
+  ];
   # Split, so that REUSE does not take these lines of this file for its own.
   tags = ''
     SPDX-${""}FileCopyrightText: 2020 Someone else
@@ -38,7 +43,7 @@ let
     {
       command ? "check-licenses",
       licenses ? {
-        "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+        "Apache-2.0.txt" = apache;
       },
       reuse ? reuseToml [ { } ],
       files ? { },
@@ -69,7 +74,7 @@ lib.mapAttrs case {
   };
   check-with-exception = {
     licenses = {
-      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "Apache-2.0.txt" = apache;
       "LLVM-exception.txt" = "${spdx}/LLVM-exception.txt";
     };
     reuse = reuseToml [ { license = "Apache-2.0 WITH LLVM-exception"; } ];
@@ -100,23 +105,23 @@ lib.mapAttrs case {
   };
   check-unknown-name = {
     licenses = {
-      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "Apache-2.0.txt" = apache;
       "Sic.txt" = other;
     };
     status = 1;
-    output = [ "LICENSES/Sic.txt is not the text of a license or exception of the SPDX list" ];
+    output = [ "LICENSES/Sic.txt is not named <id>.txt, with <id> a license" ];
   };
   check-custom-text = {
     licenses = {
-      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "Apache-2.0.txt" = apache;
       "LicenseRef-Sic.txt" = other;
     };
     status = 1;
-    output = [ "LICENSES/LicenseRef-Sic.txt is not the text of a license or exception" ];
+    output = [ "LICENSES/LicenseRef-Sic.txt is not named <id>.txt, with <id> a license" ];
   };
   check-custom-license = {
     licenses = {
-      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "Apache-2.0.txt" = apache;
       "LicenseRef-Sic.txt" = other;
     };
     reuse = reuseToml [ { license = "Apache-2.0 OR LicenseRef-Sic"; } ];
@@ -125,7 +130,7 @@ lib.mapAttrs case {
   };
   check-custom-exception = {
     licenses = {
-      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "Apache-2.0.txt" = apache;
       "AdditionRef-Sic.txt" = other;
     };
     reuse = reuseToml [ { license = "Apache-2.0 WITH AdditionRef-Sic"; } ];
@@ -184,10 +189,19 @@ lib.mapAttrs case {
       "data.bin takes its license from data.bin.license (dot-license)"
     ];
   };
+  check-misnamed-text = {
+    licenses = {
+      "Apache-2.0.txt" = apache;
+      "MIT.md" = "${spdx}/MIT.txt";
+    };
+    reuse = reuseToml [ { license = "Apache-2.0 OR MIT"; } ];
+    status = 1;
+    output = [ "LICENSES/MIT.md is not named <id>.txt, with <id> a license" ];
+  };
   check-unused-text = {
     command = "check-reuse";
     licenses = {
-      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "Apache-2.0.txt" = apache;
       "MIT.txt" = "${spdx}/MIT.txt";
     };
     status = 1;
@@ -196,13 +210,13 @@ lib.mapAttrs case {
   setup-removes-unused = {
     command = "setup-licenses";
     licenses = {
-      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "Apache-2.0.txt" = apache;
       "MIT.txt" = "${spdx}/MIT.txt";
     };
     output = [ "removed LICENSES/MIT.txt, which no file uses" ];
     after = ''
       [ ! -e LICENSES/MIT.txt ]
-      ${lib.getExe checks.check-reuse}
+      ${checked}
     '';
   };
   setup-writes = {
@@ -214,22 +228,25 @@ lib.mapAttrs case {
       "created LICENSES/MIT.txt"
     ];
     after = ''
-      cmp LICENSES/Apache-2.0.txt ${spdx}/Apache-2.0.txt
+      cmp LICENSES/Apache-2.0.txt ${apache}
       cmp LICENSES/MIT.txt ${spdx}/MIT.txt
-      ${lib.getExe checks.check-licenses}
+      ${checked}
     '';
   };
   setup-with-exception = {
     command = "setup-licenses";
     reuse = reuseToml [ { license = "Apache-2.0 WITH LLVM-exception"; } ];
     output = [ "created LICENSES/LLVM-exception.txt" ];
-    after = "cmp LICENSES/LLVM-exception.txt ${spdx}/LLVM-exception.txt";
+    after = ''
+      cmp LICENSES/LLVM-exception.txt ${spdx}/LLVM-exception.txt
+      ${checked}
+    '';
   };
   setup-no-licenses-directory = {
     command = "setup-licenses";
     licenses = { };
     output = [ "created LICENSES/Apache-2.0.txt" ];
-    after = lib.getExe checks.check-reuse;
+    after = checked;
   };
   setup-twice = {
     command = "setup-licenses";
@@ -253,19 +270,47 @@ lib.mapAttrs case {
       fi
     '';
   };
-  setup-keeps-custom = {
+  setup-keeps-custom-text = {
     command = "setup-licenses";
     licenses = {
-      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "Apache-2.0.txt" = apache;
       "LicenseRef-Sic.txt" = other;
     };
-    reuse = reuseToml [ { license = "Apache-2.0 OR LicenseRef-Other"; } ];
+    reuse = reuseToml [ { license = "Apache-2.0 OR LicenseRef-Sic"; } ];
+    status = 1;
+    output = [ "LICENSES/LicenseRef-Sic.txt is not named <id>.txt, with <id> a license" ];
+    after = "cmp LICENSES/LicenseRef-Sic.txt ${other}";
+  };
+  setup-keeps-unused-custom-text = {
+    command = "setup-licenses";
+    licenses = {
+      "Apache-2.0.txt" = apache;
+      "LicenseRef-Sic.txt" = other;
+    };
     status = 1;
     output = [
-      "LICENSES/LicenseRef-Sic.txt is not the text of a license or exception of the SPDX list"
-      "LicenseRef-Other is not a license or exception of the SPDX list"
-      "kept the unused text of LicenseRef-Sic"
+      "LICENSES/LicenseRef-Sic.txt is not named <id>.txt, with <id> a license"
+      "kept the unused text of LicenseRef-Sic, which is not LICENSES/LicenseRef-Sic.txt"
     ];
     after = "cmp LICENSES/LicenseRef-Sic.txt ${other}";
+  };
+  setup-keeps-unused-misnamed-text = {
+    command = "setup-licenses";
+    licenses = {
+      "Apache-2.0.txt" = apache;
+      "MIT.md" = "${spdx}/MIT.txt";
+    };
+    status = 1;
+    output = [
+      "LICENSES/MIT.md is not named <id>.txt, with <id> a license"
+      "kept the unused text of MIT, which is not LICENSES/MIT.txt of the SPDX list"
+    ];
+    after = "cmp LICENSES/MIT.md ${spdx}/MIT.txt";
+  };
+  setup-reports-custom-license = {
+    command = "setup-licenses";
+    reuse = reuseToml [ { license = "Apache-2.0 OR LicenseRef-Other"; } ];
+    status = 1;
+    output = [ "LicenseRef-Other is not a license or exception of the SPDX list" ];
   };
 }

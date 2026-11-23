@@ -14,6 +14,7 @@
     let
       spdx = "${pkgs.spdx-license-list-data.text}/text";
       spdxOnly = "a license or exception of the SPDX list, to which a repository is limited";
+      named = "named <id>.txt, with <id> ${spdxOnly}";
       lint = ''
         report=$(reuse lint --json || true)
         if [ -z "$report" ]; then
@@ -27,7 +28,7 @@
           name=''${file#LICENSES/}
           text=${spdx}/''${name%.txt}.txt
           if [ ! -e "$text" ]; then
-            echo "$file is not the text of ${spdxOnly}" >&2
+            echo "$file is not ${named}" >&2
             status=1
           else
             ${body}
@@ -158,8 +159,8 @@
                 rm "LICENSES/$id.txt"
                 echo "removed LICENSES/$id.txt, which no file uses"
               else
-                echo "kept the unused text of $id, which is not a text of the SPDX list" >&2
-                status=1
+                echo "kept the unused text of $id, which is not LICENSES/$id.txt of the SPDX list" \
+                  >&2
               fi
             done
             exit "$status"
