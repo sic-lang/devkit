@@ -25,27 +25,37 @@
         flake.flakeModules = lib.mapAttrs (name: _: ./modules + "/${name}") (
           lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./modules)
         );
-        # Each module, imported alone by a consumer, builds all its outputs: the use of reuse by
-        # devkit does not test the modules that reuse imports without it.
+        # The tests of tests/, each file a set of flake checks named after its path.
         perSystem =
           { pkgs, system, ... }:
-          {
-            checks = lib.mapAttrs' (
-              name: module:
-              let
-                consumer = inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-                  imports = [ module ];
-                  systems = [ system ];
+          let
+            args = {
+              inherit (config.flake) flakeModules;
+              inherit lib pkgs;
+              consumer =
+                modules:
+                let
+                  flake = inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+                    imports = modules;
+                    systems = [ system ];
+                  };
+                in
+                lib.mapAttrs (_: output: output.${system}) {
+                  inherit (flake) apps checks devShells;
                 };
-                outputs =
-                  lib.attrValues consumer.checks.${system}
-                  ++ lib.attrValues consumer.devShells.${system}
-                  ++ map (app: app.program) (lib.attrValues consumer.apps.${system});
+            };
+            tests =
+              prefix: path: type:
+              let
+                entry = name: tests "${prefix}-${lib.removeSuffix ".nix" name}" (path + "/${name}");
               in
-              lib.nameValuePair "module-${name}" (
-                pkgs.writeText "module-${name}" (lib.concatLines (map toString outputs))
-              )
-            ) config.flake.flakeModules;
+              if type == "directory" then
+                lib.concatMapAttrs entry (builtins.readDir path)
+              else
+                lib.mapAttrs' (test: lib.nameValuePair "${prefix}-${test}") (import path args);
+          in
+          {
+            checks = tests "test" ./tests "directory";
           };
       }
     );

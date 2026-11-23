@@ -1,0 +1,24 @@
+# Each module, imported alone by a consumer, builds all its outputs: the use of reuse by devkit does
+# not test the modules that reuse imports without it.
+{
+  consumer,
+  flakeModules,
+  lib,
+  pkgs,
+  ...
+}:
+lib.mapAttrs (
+  name: module:
+  let
+    outputs = consumer [ module ];
+  in
+  pkgs.writeText "module-${name}" (
+    lib.concatLines (
+      map toString (
+        lib.attrValues outputs.checks
+        ++ lib.attrValues outputs.devShells
+        ++ map (app: app.program) (lib.attrValues outputs.apps)
+      )
+    )
+  )
+) flakeModules
