@@ -30,8 +30,8 @@ It also writes the license texts from the SPDX license list.
 - `nix run .#check-reuse` expects `reuse lint` to pass.
 - `nix run .#check-licenses` requires that:
   - every file in `LICENSES/` is named `<id>.txt`, where `<id>` is a license or exception on the SPDX list, and contains exactly that license's or exception's text;
-  - every license and exception is on the SPDX list: no `LicenseRef-` or `AdditionRef-` identifiers;
   - every copyright and license comes from `REUSE.toml`, never from a file header or a `.license` file;
+  - every license and exception is on the SPDX list: no `LicenseRef-` or `AdditionRef-` identifiers;
   - `REUSE.toml` has exactly one annotation whose path is the string `"**"` and whose copyright is `<year> The Sic Contributors`.
 
 A third-party file gets its own annotation in `REUSE.toml`, after the `"**"` one, since REUSE applies the last annotation that matches a file.
