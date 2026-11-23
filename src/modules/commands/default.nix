@@ -71,7 +71,7 @@ in
               ];
               dir = "bin";
               isExecutable = true;
-              # coreutils avoids an empty first entry in PATH, which would mean the current directory.
+              # coreutils avoids an empty first PATH entry, which means the current directory.
               replacements = {
                 bash = pkgs.runtimeShell;
                 path = lib.makeBinPath (
