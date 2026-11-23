@@ -44,7 +44,7 @@ The app passes its arguments to the script as `"$@"`.
 
 `devkit.commandEnv` sets environment variables for every command in the repository, including those that devkit's modules build, such as the checks given as command lines.
 Set it to a function that receives the arguments given to `mkCommand`, with their defaults, and returns the variables to export.
-For example, Lake rebuilds when the Lean it runs changes only if `LEAN_GITHASH` identifies that Lean, so the commands that run Lean need the variable:
+For example, Lake notices a new Lean only if `LEAN_GITHASH` identifies it, so every command that runs Lean needs this variable:
 
 ```nix
 devkit.commandEnv =
