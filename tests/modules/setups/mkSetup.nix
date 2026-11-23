@@ -9,7 +9,9 @@
 let
   recommended = pkgs.writeText "file.txt" "The recommended text.\n";
   other = pkgs.writeText "other" "Another text.\n";
-  inherit
+  # The setup that writes source to example/file.txt.
+  setup =
+    source:
     (consumer [
       flakeModules.setups
       {
@@ -21,20 +23,18 @@ let
               command = config.devkit.mkSetup {
                 name = "setup-example";
                 mode = "644";
-                files."example/file.txt" = recommended;
+                files."example/file.txt" = source;
               };
             };
           };
       }
-    ])
-    apps
-    ;
+    ]).apps.setup-example.program;
   case =
     name: arguments:
     repository (
       {
         inherit name;
-        command = apps.setup-example.program;
+        command = setup recommended;
       }
       // arguments
     );
@@ -69,5 +69,11 @@ lib.mapAttrs case {
     status = 2;
     output = [ "usage: setup-example [--force]" ];
     after = "[ ! -e example ]";
+  };
+  # A file of the flake rather than of the Nix store: this test itself.
+  local = {
+    command = setup ./mkSetup.nix;
+    output = [ "created" ];
+    after = "cmp example/file.txt ${./mkSetup.nix}";
   };
 }

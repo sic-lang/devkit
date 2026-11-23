@@ -9,19 +9,19 @@
 let
   generated = pkgs.writeText "file.txt" "The generated text.\n";
   other = pkgs.writeText "other" "Another text.\n";
-  inherit
+  # The check of example/file.txt generated from source.
+  check =
+    source:
     (consumer [
       flakeModules.files
-      { perSystem.devkit.files."example/file.txt" = generated; }
-    ])
-    apps
-    ;
+      { perSystem.devkit.files."example/file.txt" = source; }
+    ]).apps.check-files.program;
   case =
     name: arguments:
     repository (
       {
         inherit name;
-        command = apps.check-files.program;
+        command = check generated;
       }
       // arguments
     );
@@ -39,5 +39,10 @@ lib.mapAttrs case {
       "+The generated text."
       "example/file.txt differs from the generated one above"
     ];
+  };
+  # A file of the flake rather than of the Nix store: this test itself.
+  local = {
+    command = check ./check.nix;
+    files."example/file.txt" = ./check.nix;
   };
 }
