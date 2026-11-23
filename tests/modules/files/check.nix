@@ -9,19 +9,19 @@
 let
   generated = pkgs.writeText "file.txt" "The generated text.\n";
   other = pkgs.writeText "other" "Another text.\n";
-  # The check of example/file.txt generated from source.
+  # The check of example/file.txt generated as file says.
   check =
-    source:
+    file:
     (consumer [
       flakeModules.files
-      { perSystem.devkit.files."example/file.txt" = source; }
+      { perSystem.devkit.files."example/file.txt" = file; }
     ]).apps.check-files.program;
   case =
     name: arguments:
     repository (
       {
         inherit name;
-        command = check generated;
+        command = check { template = generated; };
       }
       // arguments
     );
@@ -42,7 +42,15 @@ lib.mapAttrs case {
   };
   # A file of the flake rather than of the Nix store: this test itself.
   local = {
-    command = check ./check.nix;
+    command = check { template = ./check.nix; };
     files."example/file.txt" = ./check.nix;
+  };
+  # Split so that this file, the template of the local case, has no placeholder.
+  replaced = {
+    command = check {
+      template = pkgs.writeText "file.txt.in" "The @adjective${"@"} text.\n";
+      replacements.adjective = "generated";
+    };
+    files."example/file.txt" = generated;
   };
 }

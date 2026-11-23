@@ -16,8 +16,14 @@ The repository commits them, so that editors, GitHub and fresh clones all see th
 
 ## Generate a file
 
-`devkit.files.<path>` takes a file from the flake or the Nix store, and generates `<path>` from it:
+`devkit.files.<path>` generates `<path>` from a `template` from the flake or the Nix store.
+Each `@name@` placeholder in the template is replaced with its value from `replacements`:
 
 ```nix
-devkit.files."example.toml" = ./example.toml;
+devkit.files."example.toml" = {
+  template = ./example.toml.in;
+  replacements.name = "example";
+};
 ```
+
+The build fails if a replacement matches no placeholder, or if a placeholder is left unreplaced.

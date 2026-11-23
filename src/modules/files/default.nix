@@ -12,15 +12,31 @@ in
     { config, pkgs, ... }:
     let
       cfg = config.devkit;
+      generate = file: pkgs.replaceVars file.template file.replacements;
+      generated = lib.mapAttrs (_: generate) cfg.files;
     in
     {
       options.devkit.files = mkOption {
         description = ''
-          The files that devkit generates, from the flake or the Nix store, each keyed by its
-          path in the repository. The repository commits them, so that editors read them too.
+          The files that devkit generates, each keyed by its path in the repository. The
+          repository commits them, so that editors read them too.
         '';
         default = { };
-        type = types.attrsOf types.path;
+        type = types.attrsOf (
+          types.submodule {
+            options = {
+              template = mkOption {
+                description = "The file's template, from the flake or the Nix store.";
+                type = types.path;
+              };
+              replacements = mkOption {
+                description = "The value of each @name@ placeholder of the template.";
+                type = types.attrsOf types.str;
+                default = { };
+              };
+            };
+          }
+        );
       };
 
       config.devkit = {
@@ -29,14 +45,14 @@ in
           command = cfg.mkSetup {
             name = "setup-files";
             mode = "644";
-            inherit (cfg) files;
+            files = generated;
           };
         };
         checks.files.command = cfg.mkCommand {
           name = "check-files";
           template = ./check.sh.in;
           tools = [ pkgs.diffutils ];
-          replacements = import ../setups/targets.nix lib cfg.files;
+          replacements = import ../setups/targets.nix lib generated;
         };
       };
     }
