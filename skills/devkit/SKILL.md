@@ -9,7 +9,7 @@ devkit is a flake whose [flake-parts](https://flake.parts) modules give a reposi
 
 ## Take devkit as an input
 
-Add devkit to the inputs of the repository's flake, together with the `nixpkgs` that devkit takes its tools from.
+Add devkit to the repository's flake inputs, together with the `nixpkgs` that devkit takes its tools from.
 Then import the modules you need from `flakeModules`.
 This example imports the `reuse` module:
 

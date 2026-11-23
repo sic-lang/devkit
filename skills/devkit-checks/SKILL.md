@@ -22,7 +22,7 @@ devkit.checks.actionlint = {
 };
 ```
 
-The development shell includes the `tools` of every check.
+The development shell includes every check's `tools`.
 
 The `command` can also be built with the `commands` module, as described in the `devkit-commands` skill:
 
