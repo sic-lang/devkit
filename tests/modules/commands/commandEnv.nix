@@ -8,6 +8,7 @@
 }:
 let
   example.EXAMPLE = "it's set";
+  print = ''echo "EXAMPLE=''${EXAMPLE-unset}"'';
   inherit
     (consumer [
       flakeModules.checks
@@ -17,9 +18,9 @@ let
           checks = {
             with-hello = {
               tools = [ pkgs.hello ];
-              command = "printenv EXAMPLE";
+              command = print;
             };
-            without-hello.command = "printenv EXAMPLE";
+            without-hello.command = print;
           };
         };
       }
@@ -31,11 +32,11 @@ in
   with-tool = repository {
     name = "with-tool";
     command = apps.check-with-hello.program;
-    output = [ "it's set" ];
+    output = [ "EXAMPLE=it's set" ];
   };
   without-tool = repository {
     name = "without-tool";
     command = apps.check-without-hello.program;
-    status = 1;
+    output = [ "EXAMPLE=unset" ];
   };
 }
