@@ -20,12 +20,12 @@ config.devkit.mkCommand {
 }
 ```
 
-- The template has no shebang: mkCommand puts before it a header with the interpreter, the options `errexit`, `nounset` and `pipefail`, the variables of `devkit.commandEnv`, and `tools` on `PATH`.
+- The template has no shebang: mkCommand puts before it a header with the interpreter, the options `errexit`, `nounset` and `pipefail`, the variables of `devkit.commandEnv`, and `tools` on `PATH`, and the command runs from the root of the repository.
 - Each placeholder `@name@` of the template takes its value in `replacements`, as text: quote it in the template, or give it quoted with `lib.escapeShellArg`, and a list with `lib.escapeShellArgs`.
 - `bash`, `path` and `env` are the placeholders of the header: a template does not use these names.
 - The build fails when a value has no placeholder or a placeholder remains, and the flake check when ShellCheck finds a fault in the script built; the template itself is not checked, since it is not Bash until its placeholders are replaced.
 
-mkCommand returns the script, `run`, and its check, `checked`: give both to `devkit.commands.<name>` with a `description`, or to a setup.
+mkCommand returns the command: give it to a check or a setup, or to `devkit.commands.<name>` with a `description` for an app of its own.
 
 ## Give the commands an environment
 

@@ -26,9 +26,10 @@ in
         mkCommand = mkOption {
           description = ''
             Makes the command name from the Bash template template, after the header of
-            header.sh.in, which exports the variables of commandEnv and puts the packages tools on
-            PATH, and whose placeholders @name@ are replaced by the values of replacements, in two
-            variants: run, for nix run, and checked, which ShellCheck checks, for nix flake check.
+            header.sh.in, which exports the variables of commandEnv, puts the packages tools on
+            PATH and goes to the root of the repository, and whose placeholders @name@ are replaced
+            by the values of replacements: the script run, for nix run, its check by ShellCheck
+            checked, for nix flake check, and tools.
           '';
           type = types.functionTo types.raw;
           readOnly = true;
@@ -73,7 +74,13 @@ in
               # coreutils keeps PATH from starting with an empty entry, the current directory.
               replacements = {
                 bash = pkgs.runtimeShell;
-                path = lib.makeBinPath ([ pkgs.coreutils ] ++ tools);
+                path = lib.makeBinPath (
+                  [
+                    pkgs.coreutils
+                    pkgs.git
+                  ]
+                  ++ tools
+                );
                 env = lib.concatLines (lib.mapAttrsToList export (cfg.commandEnv args));
               }
               // replacements;
@@ -81,7 +88,7 @@ in
             };
           in
           {
-            inherit run;
+            inherit run tools;
             checked = pkgs.runCommand "${name}-checked" {
               nativeBuildInputs = [ pkgs.shellcheck ];
               script = lib.getExe run;

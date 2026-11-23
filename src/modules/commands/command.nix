@@ -6,18 +6,7 @@ types.submodule {
   options = {
     command = mkOption {
       description = "The command, as made by mkCommand.";
-      type = types.submodule {
-        options = {
-          run = mkOption {
-            description = "The script, which the app runs.";
-            type = types.package;
-          };
-          checked = mkOption {
-            description = "The check of the script by ShellCheck, which the flake check builds.";
-            type = types.package;
-          };
-        };
-      };
+      type = import ./built.nix lib;
     };
     description = mkOption {
       description = "The description of the app.";

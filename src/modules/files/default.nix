@@ -43,9 +43,10 @@ in
             inherit (cfg) files;
           };
         };
-        checks.files = {
-          tools = [ pkgs.diffutils ];
+        checks.files.command = cfg.mkCommand {
+          name = "check-files";
           template = ./check.sh.in;
+          tools = [ pkgs.diffutils ];
           inherit replacements;
         };
       };

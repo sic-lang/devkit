@@ -11,18 +11,14 @@ in
       cfg = config.devkit;
       checkCommands = lib.mapAttrs (
         name: check:
-        cfg.mkCommand {
-          name = "check-${name}";
-          tools = [ pkgs.git ] ++ check.tools;
-          inherit (check) replacements;
-          template =
-            if (check.command == null) == (check.template == null) then
-              throw "The check ${name} needs either a command or a template."
-            else if check.template != null then
-              check.template
-            else
-              pkgs.replaceVars ./check.sh.in { inherit (check) command; };
-        }
+        if lib.isString check.command then
+          cfg.mkCommand {
+            name = "check-${name}";
+            template = pkgs.replaceVars ./check.sh.in { inherit (check) command; };
+            inherit (check) tools;
+          }
+        else
+          check.command
       ) cfg.checks;
       checkAll = cfg.mkCommand {
         name = "check";
@@ -42,31 +38,18 @@ in
         type = types.attrsOf (
           types.submodule {
             options = {
-              tools = mkOption {
-                description = "The packages that the check runs, also in the shell.";
-                type = types.listOf types.package;
-                default = [ ];
-              };
               command = mkOption {
                 description = ''
-                  The Bash command of the check, which fails if the check fails, and receives the
-                  arguments of check-<name> as "$@", unless the check has a template.
+                  The command of the check, which fails if the check fails, and receives the
+                  arguments of check-<name>: either a command line, which Bash runs and which
+                  receives them as "$@", or a command made by mkCommand.
                 '';
-                type = types.nullOr types.str;
-                default = null;
+                type = types.either types.str (import ../commands/built.nix lib);
               };
-              template = mkOption {
-                description = ''
-                  The Bash template of the check, as mkCommand takes it, which goes to the root of
-                  the repository first, for a check that is more than one command.
-                '';
-                type = types.nullOr types.path;
-                default = null;
-              };
-              replacements = mkOption {
-                description = "The values of the placeholders of the template.";
-                type = types.attrsOf types.str;
-                default = { };
+              tools = mkOption {
+                description = "The packages that a command line runs.";
+                type = types.listOf types.package;
+                default = [ ];
               };
             };
           }
@@ -89,7 +72,7 @@ in
                 description = "Run every check";
               };
             };
-          shell.packages = lib.concatMap (check: check.tools) (lib.attrValues cfg.checks);
+          shell.packages = lib.concatMap (command: command.tools) (lib.attrValues checkCommands);
         };
       };
     }

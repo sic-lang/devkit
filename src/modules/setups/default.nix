@@ -50,10 +50,7 @@ in
           cfg.mkCommand {
             inherit name;
             template = ./write.sh.in;
-            tools = [
-              pkgs.diffutils
-              pkgs.git
-            ];
+            tools = [ pkgs.diffutils ];
             replacements = {
               inherit name mode;
               targets = lib.escapeShellArgs (lib.attrNames files);

@@ -32,14 +32,15 @@
           tools = [ pkgs.reuse ];
           command = "reuse lint";
         };
-        licenses = {
+        licenses.command = config.devkit.mkCommand {
+          name = "check-licenses";
+          template = template "check";
           tools = [
             pkgs.diffutils
             pkgs.jq
             pkgs.reuse
             pkgs.taplo
           ];
-          template = template "check";
           replacements = { inherit jq spdx; };
         };
       };
@@ -51,7 +52,6 @@
           template = template "setup";
           tools = [
             pkgs.diffutils
-            pkgs.git
             pkgs.jq
             pkgs.reuse
           ];

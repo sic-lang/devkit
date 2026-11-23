@@ -10,14 +10,22 @@ The development shell provides the tools of every check.
 
 ## Add a check
 
-A check of one command gives the command and its tools:
+A check is a command, which fails when the check fails and receives the arguments of `check-<name>`.
+It is either a command line, which Bash runs, with the packages it runs:
 
 ```nix
 devkit.checks.actionlint = {
-  tools = [ pkgs.actionlint ];
   command = "actionlint";
+  tools = [ pkgs.actionlint ];
 };
 ```
 
-The command receives the arguments of `check-<name>` as `"$@"`.
-A check of more than one command gives instead a template, with its `replacements`, as the skill `devkit-commands` describes; its template starts with `cd "$(git rev-parse --show-toplevel)"`.
+or a command of the module `commands`, for a check that is more than one command, as the skill `devkit-commands` describes:
+
+```nix
+devkit.checks.example.command = config.devkit.mkCommand {
+  name = "check-example";
+  template = ./check-example.sh.in;
+  tools = [ pkgs.jq ];
+};
+```
