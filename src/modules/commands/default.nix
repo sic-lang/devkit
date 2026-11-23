@@ -11,7 +11,9 @@ in
     {
       options.devkit = {
         commands = mkOption {
-          description = "The commands, each run by its app <name> and checked by its flake check.";
+          description = ''
+            The commands, each run by its `<name>` app and checked by its flake check.
+          '';
           default = { };
           type = types.attrsOf (import ./command.nix lib);
         };
@@ -25,7 +27,7 @@ in
         };
         mkCommand = mkOption {
           description = ''
-            Builds the command `name` from the Bash template `template`, prefixed with the header
+            Builds the `name` command from the Bash template `template`, prefixed with the header
             from header.sh.in. The header sets the Bash options, exports the variables from
             commandEnv, puts the programs of `packages` on PATH and changes to the repository's
             root. Each @name@ placeholder is replaced with its value from `replacements`. Returns

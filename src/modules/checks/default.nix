@@ -33,7 +33,7 @@ in
     in
     {
       options.devkit.checks = mkOption {
-        description = "The checks, each run from the repository's root by the check-<name> app.";
+        description = "The checks, each run from the repository's root by its `check-<name>` app.";
         default = { };
         type = types.attrsOf (
           types.submodule {

@@ -23,15 +23,16 @@ in
       options.devkit = {
         setups = mkOption {
           description = ''
-            The setups, each run by its setup-<name> app, and by the setup app if the contributor
-            confirms it, because each setup configures a tool that the contributor may not use.
+            The setups, each run by its `setup-<name>` app, and by the `setup` app if the
+            contributor confirms it, because each setup configures a tool that the contributor may
+            not use.
           '';
           default = { };
           type = types.attrsOf (import ../commands/command.nix lib);
         };
         mkSetup = mkOption {
           description = ''
-            Builds the setup `name`, which writes each file in `files`, from the flake or the Nix
+            Builds the `name` setup, which writes each file in `files`, from the flake or the Nix
             store, to its path in the repository, with mode `mode`. It never overwrites a file that
             differs, unless --force is given.
           '';
