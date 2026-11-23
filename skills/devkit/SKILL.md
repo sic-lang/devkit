@@ -37,9 +37,7 @@ This example imports the `reuse` module:
 }
 ```
 
-All module options live under `perSystem.devkit`.
-`nix run .#check` runs every check that the modules provide.
-`nix run .#setup` runs every setup, asking before each one.
+Set the modules' options in `perSystem`, under `devkit`, where `pkgs` gives the packages that their values need, such as the tools of a check.
 
 ## Choose the modules
 
