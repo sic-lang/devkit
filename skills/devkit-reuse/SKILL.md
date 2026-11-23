@@ -11,7 +11,7 @@ It also writes the license texts from the SPDX license list.
 ## Set it up
 
 1. Import `inputs.devkit.flakeModules.reuse`, as the `devkit` skill shows.
-2. Write a `REUSE.toml` with one annotation that covers every file:
+2. Write at least this `REUSE.toml`, whose annotation covers every file:
 
    ```toml
    version = 1
