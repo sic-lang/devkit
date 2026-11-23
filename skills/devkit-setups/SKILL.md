@@ -26,7 +26,7 @@ devkit.setups.vscode = {
 };
 ```
 
-The command can also be built with the `commands` module, as described in the `devkit-commands` skill.
+The `command` can also be built with the `commands` module, as described in the `devkit-commands` skill.
 
 ## Run a setup
 
