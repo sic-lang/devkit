@@ -28,6 +28,11 @@ let
     );
   text = pkgs.writeText "text";
   other = text "Another text.\n";
+  # Split, so that REUSE does not take these lines of this file for its own.
+  tags = ''
+    SPDX-${""}FileCopyrightText: 2020 Someone else
+    SPDX-${""}License-Identifier: Apache-2.0
+  '';
   case =
     name:
     {
@@ -148,6 +153,25 @@ lib.mapAttrs case {
     reuse = reuseToml [ { copyright = "26 The Sic Contributors"; } ];
     status = 1;
     output = [ "<year> The Sic Contributors" ];
+  };
+  check-file-header = {
+    files.README = text tags;
+    status = 1;
+    output = [
+      "README takes its copyright from README (file-header)"
+      "README takes its license from README (file-header)"
+    ];
+  };
+  check-dot-license = {
+    files = {
+      "data.bin" = text "Data.\n";
+      "data.bin.license" = text tags;
+    };
+    status = 1;
+    output = [
+      "data.bin takes its copyright from data.bin.license (dot-license)"
+      "data.bin takes its license from data.bin.license (dot-license)"
+    ];
   };
   check-unused-text = {
     command = "check-reuse";

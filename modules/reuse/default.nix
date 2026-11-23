@@ -90,6 +90,23 @@
               echo "$id is not ${spdxOnly}" >&2
               status=1
             done
+            outside='
+              .files[]
+              | [.path]
+                + (
+                  (.copyrights[] | ["copyright", .source, .source_type]),
+                  (.spdx_expressions[] | ["license", .source, .source_type])
+                )
+              | select(.[3] != "reuse-toml")
+              | "\(.[0]) takes its \(.[1]) from \(.[2]) (\(.[3]))"
+            '
+            outside=$(jq -r "$outside" <<<"$report")
+            if [ -n "$outside" ]; then
+              echo "$outside" >&2
+              echo "Every copyright and license comes from REUSE.toml: write those above in an" \
+                "annotation of REUSE.toml instead" >&2
+              status=1
+            fi
             exit "$status"
           '';
         };
