@@ -5,12 +5,12 @@ description: Implement a custom repository-specific setup, which writes recommen
 
 # Setups
 
-The module `setups` lets the repository write setups of its own: `nix run .#setup-<name>` runs one of them, and `nix run .#setup` asks for each one before running it, since each configures a tool that the contributor may not use.
-A setup never overwrites a file that differs from the one it recommends, unless it is given `--force`: `nix run .#setup -- --force` passes it to every setup.
+The module `setups` lets a repository write setups of its own.
 
-## Add a setup that writes files
+## Add a setup
 
-`devkit.mkSetup` makes a setup that writes files of the Nix store to their paths in the repository:
+`devkit.setups.<name>` adds the setup `<name>`, with a description and a command, which receives the arguments of the setup.
+`devkit.mkSetup` makes the command of a setup that writes files of the Nix store to their paths in the repository, and never overwrites a file that differs from the one it recommends, unless it is given `--force`:
 
 ```nix
 devkit.setups.vscode = {
@@ -23,4 +23,12 @@ devkit.setups.vscode = {
 };
 ```
 
-A setup that does more is a command, as the skill `devkit-commands` describes, given with its description to `devkit.setups.<name>`.
+The command can also be a command of the module `commands`, as the skill `devkit-commands` describes.
+
+## Run a setup
+
+`nix run .#setup-<name>` runs the setup `<name>` from the root of the repository, and passes it the arguments given after `--`.
+
+## Run all the setups
+
+`nix run .#setup` asks for each setup of the repository, those of the modules of devkit included, whether to run it, since each configures a tool that the contributor may not use, and passes them the arguments given after `--`, such as `--force`.
