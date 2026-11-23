@@ -1,5 +1,4 @@
-# Each module, imported alone by a consumer, builds all its outputs: the use of reuse by devkit does
-# not test the modules that reuse imports without it.
+# The use of reuse by devkit does not test alone the modules that reuse imports.
 {
   consumer,
   flakeModules,

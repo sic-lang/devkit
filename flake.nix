@@ -15,8 +15,7 @@
       { config, lib, ... }:
       {
         imports = [ ./src/modules/reuse ];
-        # The popular systems whose tools are all in the binary cache of nixpkgs: Linux on x86_64
-        # and aarch64, and macOS on Apple silicon.
+        # The popular systems whose tools are all in the binary cache of nixpkgs.
         systems = [
           "aarch64-darwin"
           "aarch64-linux"

@@ -1,4 +1,3 @@
-# The defaults, except where documented.
 extends: default
 
 rules:
