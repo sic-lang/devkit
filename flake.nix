@@ -28,6 +28,16 @@
         perSystem =
           { pkgs, system, ... }:
           {
+            devkit.checks = {
+              actionlint = {
+                tools = [ pkgs.actionlint ];
+                command = "actionlint";
+              };
+              yamllint = {
+                tools = [ pkgs.yamllint ];
+                command = "yamllint --strict .";
+              };
+            };
             checks = import ./tests {
               inherit (config.flake) flakeModules;
               inherit
