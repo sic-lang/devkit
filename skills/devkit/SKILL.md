@@ -1,6 +1,6 @@
 ---
 name: devkit
-description: Add devkit to a sic-lang repository's flake, and find the module that provides a given check, setup or generated file. Use this when a repository needs something from devkit.
+description: Add devkit to a sic-lang repository's flake. Use this when a repository needs something from devkit.
 ---
 
 # Set up devkit in a repository
@@ -37,19 +37,5 @@ This example imports the `reuse` module:
 }
 ```
 
+Each module has its own skill, `devkit-<module>`, which describes what it provides and how to set it up.
 Set the modules' options in `perSystem`, under `devkit`, where `pkgs` gives the packages that their values need, such as the tools of a check.
-
-## Choose the modules
-
-Each module has its own skill, which describes what it provides and how to set it up.
-These modules are ready to use:
-
-- `reuse` (`devkit-reuse` skill): checks the files' licenses with REUSE and writes the license texts from the SPDX list.
-- `yamllint` (`devkit-yamllint` skill): checks the YAML files.
-
-These modules let a repository define its own:
-
-- `checks` (`devkit-checks` skill): checks.
-- `commands` (`devkit-commands` skill): commands, written as Bash templates.
-- `files` (`devkit-files` skill): generated files, built from shared values such as the maximum line length.
-- `setups` (`devkit-setups` skill): setups, such as those that write recommended files into the repository.
