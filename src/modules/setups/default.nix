@@ -11,18 +11,13 @@ in
       cfg = config.devkit;
       setupAll = cfg.mkCommand {
         name = "setup";
-        text = ''
-          status=0
-          ${lib.concatStrings (
-            lib.mapAttrsToList (name: setup: ''
-              read -r -p ${lib.escapeShellArg "${setup.description}? [y/N] "} answer || true
-              if [[ $answer == [yY]* ]]; then
-                ${lib.getExe setup.command.run} "$@" || status=1
-              fi
-            '') cfg.setups
-          )}
-          exit "$status"
-        '';
+        template = ./all.sh.in;
+        replacements = {
+          descriptions = lib.escapeShellArgs (lib.mapAttrsToList (_: setup: setup.description) cfg.setups);
+          programs = lib.escapeShellArgs (
+            lib.mapAttrsToList (_: setup: lib.getExe setup.command.run) cfg.setups
+          );
+        };
       };
     in
     {
@@ -37,9 +32,9 @@ in
         };
         mkSetup = mkOption {
           description = ''
-            Makes a setup that writes the files sources to the directory dir, each under the name of
-            its source in the Nix store and with the mode mode, without overwriting a file that
-            differs from it, unless --force is given.
+            Makes the setup name that writes each file of the Nix store of files to its path in the
+            repository, with the mode mode, without overwriting a file that differs from it, unless
+            --force is given.
           '';
           type = types.functionTo types.raw;
           readOnly = true;
@@ -50,49 +45,21 @@ in
         devkit.mkSetup =
           {
             name,
-            dir,
+            files,
             mode,
-            sources,
           }:
           cfg.mkCommand {
             inherit name;
-            runtimeInputs = [
-              pkgs.coreutils
+            template = ./write.sh.in;
+            tools = [
               pkgs.diffutils
               pkgs.git
             ];
-            text = ''
-              force=false
-              case "$*" in
-              "") ;;
-              --force) force=true ;;
-              *)
-                echo "usage: ${name} [--force]" >&2
-                exit 2
-                ;;
-              esac
-              dir=${dir}
-              sources=(${lib.concatStringsSep " " sources})
-              status=0
-              for source in "''${sources[@]}"; do
-                target=$dir/''${source#*-}
-                if [ ! -e "$target" ]; then
-                  install -D -m ${mode} "$source" "$target"
-                  echo "created $target"
-                elif cmp -s "$source" "$target"; then
-                  echo "up to date $target"
-                elif $force; then
-                  install -m ${mode} "$source" "$target"
-                  echo "overwritten $target"
-                else
-                  diff -u --color=auto "$target" "$source" || true
-                  echo "kept $target, which differs from the recommended one above:" \
-                    "merge it by hand, or overwrite it with --force" >&2
-                  status=1
-                fi
-              done
-              exit "$status"
-            '';
+            replacements = {
+              inherit name mode;
+              targets = lib.escapeShellArgs (lib.attrNames files);
+              sources = lib.escapeShellArgs (map toString (lib.attrValues files));
+            };
           };
 
         devkit.commands =

@@ -15,18 +15,12 @@ in
           default = { };
           type = types.attrsOf (import ./command.nix lib);
         };
-        commandArgs = mkOption {
-          description = ''
-            The arguments that a command adds to those given to writeShellApplication, as a function
-            of them.
-          '';
-          type = types.functionTo (types.attrsOf types.anything);
-          default = _: { };
-        };
         mkCommand = mkOption {
           description = ''
-            Makes a command from the arguments of writeShellApplication, in two variants: run, which
-            skips ShellCheck, for nix run, and checked, which runs it, for nix flake check.
+            Makes the command name from the Bash template template, whose header is that of
+            header.sh.in and whose placeholders @name@ are replaced by the values of replacements,
+            with the packages tools on its PATH, in two variants: run, for nix run, and checked,
+            which ShellCheck checks, for nix flake check.
           '';
           type = types.functionTo types.raw;
           readOnly = true;
@@ -52,13 +46,37 @@ in
 
       config = {
         devkit.mkCommand =
-          args:
+          {
+            name,
+            template,
+            replacements ? { },
+            tools ? [ ],
+          }:
           let
-            script = extra: pkgs.writeShellApplication (args // cfg.commandArgs args // extra);
+            run = pkgs.replaceVarsWith {
+              inherit name;
+              src = pkgs.concatText "${name}.sh.in" [
+                ./header.sh.in
+                template
+              ];
+              dir = "bin";
+              isExecutable = true;
+              # coreutils keeps PATH from starting with an empty entry, the current directory.
+              replacements = {
+                bash = pkgs.runtimeShell;
+                path = lib.makeBinPath ([ pkgs.coreutils ] ++ tools);
+              }
+              // replacements;
+              meta.mainProgram = name;
+            };
           in
           {
-            run = script { checkPhase = ":"; };
-            checked = script { };
+            inherit run;
+            checked = pkgs.runCommand "${name}-checked" {
+              nativeBuildInputs = [ pkgs.shellcheck ];
+              script = lib.getExe run;
+              dryRun = pkgs.stdenv.shellDryRun;
+            } (builtins.readFile ./checked.sh);
           };
 
         apps = lib.mapAttrs (name: command: {

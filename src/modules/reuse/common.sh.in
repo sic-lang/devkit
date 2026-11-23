@@ -1,0 +1,28 @@
+cd "$(git rev-parse --show-toplevel)"
+spdx="@spdx@"
+spdx_only="a license or exception of the SPDX list, to which a repository is limited"
+status=0
+
+licenses=()
+texts=()
+shopt -s nullglob
+for file in LICENSES/*; do
+  name=${file#LICENSES/}
+  text=$spdx/${name%.txt}.txt
+  if [ -e "$text" ]; then
+    licenses+=("$file")
+    texts+=("$text")
+  else
+    echo "$file is not named <id>.txt, with <id> $spdx_only" >&2
+    status=1
+  fi
+done
+shopt -u nullglob
+
+lint() {
+  report=$(reuse lint --json || true)
+  if [ -z "$report" ]; then
+    echo "reuse lint gave no report" >&2
+    exit 1
+  fi
+}

@@ -1,0 +1,32 @@
+force=false
+case "$*" in
+"") ;;
+--force) force=true ;;
+*)
+  echo "usage: @name@ [--force]" >&2
+  exit 2
+  ;;
+esac
+cd "$(git rev-parse --show-toplevel)"
+targets=(@targets@)
+sources=(@sources@)
+status=0
+for i in "${!targets[@]}"; do
+  target=${targets[$i]}
+  source=${sources[$i]}
+  if [ ! -e "$target" ]; then
+    install -D -m @mode@ "$source" "$target"
+    echo "created $target"
+  elif cmp -s "$source" "$target"; then
+    echo "up to date $target"
+  elif $force; then
+    install -m @mode@ "$source" "$target"
+    echo "overwritten $target"
+  else
+    diff -u --color=auto "$target" "$source" || true
+    echo "kept $target, which differs from the recommended one above:" \
+      "merge it by hand, or overwrite it with --force" >&2
+    status=1
+  fi
+done
+exit "$status"

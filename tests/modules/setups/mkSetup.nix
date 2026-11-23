@@ -20,22 +20,21 @@ let
               description = "Write the example";
               command = config.devkit.mkSetup {
                 name = "setup-example";
-                dir = "$(git rev-parse --show-toplevel)/example";
                 mode = "644";
-                sources = [ recommended ];
+                files."example/file.txt" = recommended;
               };
             };
           };
       }
     ])
-    checks
+    apps
     ;
   case =
     name: arguments:
     repository (
       {
         inherit name;
-        command = lib.getExe checks.setup-example;
+        command = apps.setup-example.program;
       }
       // arguments
     );

@@ -1,0 +1,10 @@
+descriptions=(@descriptions@)
+programs=(@programs@)
+status=0
+for i in "${!programs[@]}"; do
+  read -r -p "${descriptions[$i]}? [y/N] " answer || true
+  if [[ $answer == [yY]* ]]; then
+    "${programs[$i]}" "$@" || status=1
+  fi
+done
+exit "$status"

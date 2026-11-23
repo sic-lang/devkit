@@ -1,0 +1,13 @@
+names=(@names@)
+programs=(@programs@)
+status=0
+for i in "${!names[@]}"; do
+  if output=$("${programs[$i]}" 2>&1); then
+    echo "ok    ${names[$i]}"
+  else
+    echo "FAIL  ${names[$i]}"
+    echo "$output"
+    status=1
+  fi
+done
+exit "$status"

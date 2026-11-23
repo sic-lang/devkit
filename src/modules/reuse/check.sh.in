@@ -1,0 +1,45 @@
+for i in "${!licenses[@]}"; do
+  if ! cmp -s "${licenses[$i]}" "${texts[$i]}"; then
+    diff -u "${licenses[$i]}" "${texts[$i]}" || true
+    echo "${licenses[$i]} differs from the SPDX text above: setup-licenses rewrites it" >&2
+    status=1
+  fi
+done
+
+reuse_jq() {
+  jq -L "@jq@" "$@"
+}
+
+if ! toml=$(taplo get -f REUSE.toml -o json); then
+  echo "REUSE.toml cannot be read" >&2
+  exit 1
+fi
+if ! reuse_jq -e 'include "reuse"; everything | length == 1 and .[0].path == "**"' \
+  <<<"$toml" >/dev/null; then
+  echo 'REUSE.toml must have exactly one annotation whose path is "**", as a string,' \
+    'since REUSE applies the last annotation that matches a file' >&2
+  status=1
+elif ! reuse_jq -e '
+  include "reuse";
+  everything
+  | .[0]."SPDX-FileCopyrightText"
+  | type == "string" and test("^[0-9]{4} The Sic Contributors$")
+' <<<"$toml" >/dev/null; then
+  echo 'The SPDX-FileCopyrightText of the annotation "**" of REUSE.toml must be' \
+    '"<year> The Sic Contributors"' >&2
+  status=1
+fi
+
+lint
+for id in $(reuse_jq -r 'include "reuse"; custom' <<<"$report"); do
+  echo "$id is not $spdx_only" >&2
+  status=1
+done
+outside=$(reuse_jq -r 'include "reuse"; outside' <<<"$report")
+if [ -n "$outside" ]; then
+  echo "$outside" >&2
+  echo "Every copyright and license comes from REUSE.toml: write those above in an" \
+    "annotation of REUSE.toml instead" >&2
+  status=1
+fi
+exit "$status"

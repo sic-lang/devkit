@@ -9,7 +9,7 @@
 let
   spdx = "${pkgs.spdx-license-list-data.text}/text";
   apache = "${spdx}/Apache-2.0.txt";
-  inherit (consumer [ flakeModules.reuse ]) checks;
+  inherit (consumer [ flakeModules.reuse ]) apps;
   annotation =
     {
       path ? "**",
@@ -29,7 +29,7 @@ let
     );
   text = pkgs.writeText "text";
   other = text "Another text.\n";
-  checked = lib.concatMapStrings (check: "${lib.getExe checks.${check}}\n") [
+  checked = lib.concatMapStrings (check: "${apps.${check}.program}\n") [
     "check-licenses"
     "check-reuse"
   ];
@@ -56,7 +56,7 @@ let
       ]
       // {
         inherit name;
-        command = lib.getExe checks.${command};
+        command = apps.${command}.program;
         files = {
           README = text "A file under the licenses of REUSE.toml.\n";
         }
@@ -256,7 +256,7 @@ lib.mapAttrs case {
     };
     reuse = reuseToml [ { license = "Apache-2.0 OR MIT"; } ];
     before = ''
-      ${lib.getExe checks.setup-licenses}
+      ${apps.setup-licenses.program}
       find LICENSES -type f -exec sha256sum {} + | sort >"$TMPDIR/first"
     '';
     output = [

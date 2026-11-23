@@ -9,11 +9,11 @@ types.submodule {
       type = types.submodule {
         options = {
           run = mkOption {
-            description = "The script without ShellCheck, which the app runs.";
+            description = "The script, which the app runs.";
             type = types.package;
           };
           checked = mkOption {
-            description = "The same script checked by ShellCheck, which the flake check builds.";
+            description = "The check of the script by ShellCheck, which the flake check builds.";
             type = types.package;
           };
         };
