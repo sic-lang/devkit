@@ -3,7 +3,7 @@ extends: default
 rules:
   # Workflows do not start with "---" by convention.
   document-start: disable
-  # The maximum line length that devkit shares with every generated file that has one.
+  # So that every generated file has the same maximum line length.
   line-length:
     max: @lineLength@
   # Workflows use the "on" key for their triggers.
