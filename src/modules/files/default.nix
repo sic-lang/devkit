@@ -12,11 +12,6 @@ in
     { config, pkgs, ... }:
     let
       cfg = config.devkit;
-      replacements = {
-        targets = lib.escapeShellArgs (lib.attrNames cfg.files);
-        # Interpolation copies a local file into the Nix store, which toString does not.
-        sources = lib.escapeShellArgs (map (file: "${file}") (lib.attrValues cfg.files));
-      };
     in
     {
       options.devkit.files = mkOption {
@@ -41,7 +36,7 @@ in
           name = "check-files";
           template = ./check.sh.in;
           tools = [ pkgs.diffutils ];
-          inherit replacements;
+          replacements = import ../setups/targets.nix lib cfg.files;
         };
       };
     }
