@@ -31,9 +31,9 @@ in
         };
         mkSetup = mkOption {
           description = ''
-            Builds the setup `name`, which writes each Nix store file in `files` to its path in the
-            repository, with mode `mode`. It never overwrites a file that differs, unless --force is
-            given.
+            Builds the setup `name`, which writes each file in `files`, of the flake or of the Nix
+            store, to its path in the repository, with mode `mode`. It never overwrites a file that
+            differs, unless --force is given.
           '';
           type = types.functionTo types.raw;
           readOnly = true;

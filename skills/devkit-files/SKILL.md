@@ -16,7 +16,7 @@ The repository commits them, so that editors, GitHub and fresh clones all see th
 
 ## Generate a file
 
-A generated file is any file in the Nix store, declared under its path in the repository:
+`devkit.files.<path>` generates the file at `<path>` from a file of the flake or one that Nix builds:
 
 ```nix
 devkit.files."example.toml" = ./example.toml;

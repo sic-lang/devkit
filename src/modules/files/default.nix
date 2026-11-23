@@ -21,8 +21,8 @@ in
     {
       options.devkit.files = mkOption {
         description = ''
-          The files that devkit generates, each a Nix store file keyed by its path in the
-          repository. The repository commits them, so that editors read them too.
+          The files that devkit generates, each a file of the flake or of the Nix store keyed by
+          its path in the repository. The repository commits them, so that editors read them too.
         '';
         default = { };
         type = types.attrsOf types.path;
