@@ -1,6 +1,6 @@
 ---
 name: devkit-setups
-description: Write a setup of a repository of its own, which writes recommended files into it, through the module setups of devkit. Use when a repository should write files such as the settings of an editor.
+description: Implement a custom repository-specific setup, which writes recommended files into the repository, using devkit's setups module. Use this when a repository requires a setup that is not provided by any of devkit's existing modules.
 ---
 
 # Setups

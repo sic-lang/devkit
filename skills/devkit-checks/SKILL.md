@@ -1,6 +1,6 @@
 ---
 name: devkit-checks
-description: Write a check of a repository of its own, through the module checks of devkit. Use when a repository needs a check that no module of devkit gives.
+description: Implement a custom repository-specific check using devkit's checks module. Use this when a repository requires a check that is not provided by any of devkit's existing modules.
 ---
 
 # Checks

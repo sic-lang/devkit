@@ -1,6 +1,6 @@
 ---
 name: devkit-files
-description: Generate a file of a repository, such as the configuration of a tool, from values shared by several files, through the module files of devkit. Use when a repository should generate a file of its own, or change a value shared by the generated files.
+description: Implement a custom repository-specific generated file, such as the configuration of a tool, from values shared by several files, using devkit's files module. Use this when a repository requires a generated file that is not provided by any of devkit's existing modules, or to change a value shared by the generated files.
 ---
 
 # Generated files
