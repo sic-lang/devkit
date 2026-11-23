@@ -39,4 +39,13 @@ in
     command = apps.check-without-hello.program;
     output = [ "EXAMPLE=unset" ];
   };
+  # The check command is built without tools.
+  all = repository {
+    name = "all";
+    command = apps.check.program;
+    output = [
+      "ok    with-hello"
+      "ok    without-hello"
+    ];
+  };
 }

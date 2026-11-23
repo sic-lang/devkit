@@ -18,7 +18,7 @@ in
         commandEnv = mkOption {
           description = ''
             The environment variables that a command exports, as a function of the arguments passed
-            to mkCommand to build it.
+            to mkCommand to build it, with their defaults.
           '';
           type = types.functionTo (types.attrsOf types.str);
           default = _: { };
@@ -60,7 +60,7 @@ in
             template,
             replacements ? { },
             tools ? [ ],
-          }@args:
+          }:
           let
             export = name: value: "export ${name}=${lib.escapeShellArg value}";
             run = pkgs.replaceVarsWith {
@@ -81,7 +81,18 @@ in
                   ]
                   ++ tools
                 );
-                env = lib.concatLines (lib.mapAttrsToList export (cfg.commandEnv args));
+                env = lib.concatLines (
+                  lib.mapAttrsToList export (
+                    cfg.commandEnv {
+                      inherit
+                        name
+                        template
+                        replacements
+                        tools
+                        ;
+                    }
+                  )
+                );
               }
               // replacements;
               meta.mainProgram = name;
