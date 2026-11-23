@@ -20,5 +20,3 @@ A generated file is any file in the Nix store, declared under its path in the re
 ```nix
 devkit.files."example.toml" = ./example.toml;
 ```
-
-Keep the file's comments in the template: they explain why each value differs from the tool's default.
