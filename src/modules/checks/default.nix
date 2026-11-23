@@ -40,9 +40,9 @@ in
             options = {
               command = mkOption {
                 description = ''
-                  The check's command. It receives the arguments of check-<name> and returns a
-                  failure status if the check fails. It is either a command line, which Bash runs
-                  with the arguments as "$@", or a command built by mkCommand.
+                  The check's command. It receives the arguments of its `check-<name>` app and
+                  returns a failure status if the check fails. It is either a command line, which
+                  Bash runs with the arguments as `"$@"`, or a command built by `mkCommand`.
                 '';
                 type = types.either types.str (import ../commands/built.nix lib);
               };

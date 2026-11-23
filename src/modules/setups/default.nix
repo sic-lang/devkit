@@ -34,7 +34,7 @@ in
           description = ''
             Builds the `name` setup, which writes each file in `files`, from the flake or the Nix
             store, to its path in the repository, with mode `mode`. It never overwrites a file that
-            differs, unless --force is given.
+            differs, unless `--force` is given.
           '';
           type = types.functionTo types.raw;
           readOnly = true;

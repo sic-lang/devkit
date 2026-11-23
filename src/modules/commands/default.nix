@@ -20,7 +20,7 @@ in
         commandEnv = mkOption {
           description = ''
             The environment variables that a command exports, as a function of the arguments passed
-            to mkCommand to build it, with their defaults.
+            to `mkCommand` to build it, with their defaults.
           '';
           type = types.functionTo (types.attrsOf types.str);
           default = _: { };
@@ -28,11 +28,11 @@ in
         mkCommand = mkOption {
           description = ''
             Builds the `name` command from the Bash template `template`, prefixed with the header
-            from header.sh.in. The header sets the Bash options, exports the variables from
-            commandEnv, puts the programs of `packages` on PATH and changes to the repository's
-            root. Each @name@ placeholder is replaced with its value from `replacements`. Returns
-            `run`, the script for nix run; `checked`, its ShellCheck check for nix flake check; and
-            `packages`.
+            from `header.sh.in`. The header sets the Bash options, exports the variables from
+            `commandEnv`, puts the programs of `packages` on `PATH` and changes to the repository's
+            root. Each `@name@` placeholder is replaced with its value from `replacements`. Returns
+            `run`, the script for `nix run`; `checked`, its ShellCheck check for `nix flake check`;
+            and `packages`.
           '';
           type = types.functionTo types.raw;
           readOnly = true;

@@ -30,7 +30,7 @@ in
                 type = types.path;
               };
               replacements = mkOption {
-                description = "The value of each @name@ placeholder of the template.";
+                description = "The value of each `@name@` placeholder of the template.";
                 type = types.attrsOf types.str;
                 default = { };
               };

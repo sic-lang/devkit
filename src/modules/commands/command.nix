@@ -5,7 +5,7 @@ in
 types.submodule {
   options = {
     command = mkOption {
-      description = "The command, as made by mkCommand.";
+      description = "The command, as made by `mkCommand`.";
       type = import ./built.nix lib;
     };
     description = mkOption {
