@@ -32,8 +32,8 @@ It also writes the license texts from the SPDX license list.
   - every file in `LICENSES/` is named `<id>.txt`, where `<id>` is a license or exception on the SPDX list, and contains exactly that license's or exception's text;
   - every copyright and license comes from `REUSE.toml`, never from a file header or a `.license` file;
   - every license and exception is on the SPDX list: no `LicenseRef-` or `AdditionRef-` identifiers;
-  - exactly one annotation in `REUSE.toml` has the path `"**"`, alone or in a list of paths;
-  - that annotation's path is the string `"**"`, not a list, and its copyright is `<year> The Sic Contributors`.
+  - in `REUSE.toml`, exactly one annotation's path includes `"**"`, and that path is the string `"**"` itself, not a list;
+  - that annotation's copyright is `<year> The Sic Contributors`.
 
 A third-party file gets its own annotation in `REUSE.toml`, after the `"**"` one, since REUSE applies the last annotation that matches a file.
 
