@@ -1,0 +1,68 @@
+name: Checks
+
+on:
+  merge_group:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  # The checks are read from the flake, so that a new check or test needs no change here. Each one
+  # gets its own job, so that the pull request names each failure.
+  list:
+    runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.list.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b  # 31.11.3
+      - id: list
+        name: List the checks
+        run: |
+          apps=$(nix eval --json .#apps.x86_64-linux --apply builtins.attrNames)
+          checks=$(nix eval --json .#checks.x86_64-linux --apply builtins.attrNames)
+          jq -nr --argjson apps "$apps" --argjson checks "$checks" '
+            "matrix=" + ({
+              include: (
+                [$apps[] | select(startswith("check-")) | {kind: "run", name: .}]
+                + [$checks[] | {kind: "build", name: .}]
+              )
+            } | tojson)
+          ' >>"$GITHUB_OUTPUT"
+
+  check:
+    needs: list
+    name: ${{ matrix.kind }} ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.list.outputs.matrix) }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b  # 31.11.3
+      - if: matrix.kind == 'run'
+        name: Run the check
+        run: nix run --quiet ".#$NAME"
+        env:
+          NAME: ${{ matrix.name }}
+      - if: matrix.kind == 'build'
+        name: Build the flake check
+        run: nix build --quiet --no-link ".#checks.x86_64-linux.$NAME"
+        env:
+          NAME: ${{ matrix.name }}
+
+  # The main branch's ruleset requires only this job, so that a new check needs no ruleset change.
+  # It always runs, because a skipped job would count as passed.
+  checks:
+    needs: check
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require every check
+        run: test "$RESULT" = success
+        env:
+          RESULT: ${{ needs.check.result }}
