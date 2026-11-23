@@ -13,6 +13,19 @@
     }:
     let
       spdx = "${pkgs.spdx-license-list-data.text}/text";
+      eachText = body: ''
+        shopt -s nullglob
+        for file in LICENSES/*; do
+          name=''${file#LICENSES/}
+          text=${spdx}/''${name%.txt}.txt
+          if [ ! -e "$text" ]; then
+            echo "$file is not the text of an SPDX license or exception" >&2
+            status=1
+          else
+            ${body}
+          fi
+        done
+      '';
     in
     {
       devkit.checks = {
@@ -28,19 +41,13 @@
           ];
           command = ''
             status=0
-            shopt -s nullglob
-            for file in LICENSES/*; do
-              name=''${file#LICENSES/}
-              text=${spdx}/''${name%.txt}.txt
-              if [ ! -e "$text" ]; then
-                echo "$file is not the text of an SPDX license or exception" >&2
-                status=1
-              elif ! cmp -s "$file" "$text"; then
+            ${eachText ''
+              if ! cmp -s "$file" "$text"; then
                 diff -u "$file" "$text" || true
                 echo "$file differs from the SPDX text above: setup-licenses rewrites it" >&2
                 status=1
               fi
-            done
+            ''}
             if ! reuse=$(taplo get -f REUSE.toml -o json); then
               echo "REUSE.toml cannot be read" >&2
               exit 1
@@ -79,6 +86,8 @@
             pkgs.reuse
           ];
           text = ''
+            # --force has no effect, since a text of SPDX is never merged by hand, but is accepted,
+            # since the app setup passes its arguments to every setup.
             case "$*" in
             "" | --force) ;;
             *)
@@ -88,20 +97,14 @@
             esac
             cd "$(git rev-parse --show-toplevel)"
             status=0
-            shopt -s nullglob
-            for file in LICENSES/*; do
-              name=''${file#LICENSES/}
-              text=${spdx}/''${name%.txt}.txt
-              if [ ! -e "$text" ]; then
-                echo "kept $file, which is not the text of an SPDX license or exception" >&2
-                status=1
-              elif cmp -s "$text" "$file"; then
+            ${eachText ''
+              if cmp -s "$text" "$file"; then
                 echo "up to date $file"
               else
                 install -m 644 "$text" "$file"
                 echo "rewritten $file"
               fi
-            done
+            ''}
             report=$(reuse lint --json || true)
             if [ -z "$report" ]; then
               echo "reuse lint gave no report of the missing licenses" >&2

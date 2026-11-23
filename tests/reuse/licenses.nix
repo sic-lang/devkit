@@ -146,7 +146,7 @@ lib.mapAttrs case {
     reuse = reuseToml [ { license = "Apache-2.0 OR LicenseRef-Other"; } ];
     status = 1;
     output = [
-      "kept LICENSES/LicenseRef-Sic.txt"
+      "LICENSES/LicenseRef-Sic.txt is not the text of an SPDX license or exception"
       "no SPDX text of LicenseRef-Other"
     ];
     after = "cmp LICENSES/LicenseRef-Sic.txt ${other}";
