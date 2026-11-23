@@ -96,7 +96,7 @@
       };
 
       devkit.setups.licenses = {
-        description = "Write to LICENSES/ the SPDX texts of the licenses that REUSE needs";
+        description = "Make LICENSES/ the SPDX texts of the licenses that REUSE needs";
         command = config.devkit.mkCommand {
           name = "setup-licenses";
           runtimeInputs = [
@@ -133,6 +133,15 @@
                 echo "created LICENSES/$id.txt"
               else
                 echo "$id is not ${spdxOnly}" >&2
+                status=1
+              fi
+            done
+            for id in $(jq -r '.non_compliant.unused_licenses[]' <<<"$report"); do
+              if [ -e "${spdx}/$id.txt" ] && [ -e "LICENSES/$id.txt" ]; then
+                rm "LICENSES/$id.txt"
+                echo "removed LICENSES/$id.txt, which no file uses"
+              else
+                echo "kept the unused text of $id, which is not a text of the SPDX list" >&2
                 status=1
               fi
             done

@@ -149,6 +149,27 @@ lib.mapAttrs case {
     status = 1;
     output = [ "<year> The Sic Contributors" ];
   };
+  check-unused-text = {
+    command = "check-reuse";
+    licenses = {
+      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "MIT.txt" = "${spdx}/MIT.txt";
+    };
+    status = 1;
+    output = [ "Unused licenses: MIT" ];
+  };
+  setup-removes-unused = {
+    command = "setup-licenses";
+    licenses = {
+      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "MIT.txt" = "${spdx}/MIT.txt";
+    };
+    output = [ "removed LICENSES/MIT.txt, which no file uses" ];
+    after = ''
+      [ ! -e LICENSES/MIT.txt ]
+      ${lib.getExe checks.check-reuse}
+    '';
+  };
   setup-writes = {
     command = "setup-licenses";
     licenses."Apache-2.0.txt" = other;
@@ -174,6 +195,7 @@ lib.mapAttrs case {
     output = [
       "LICENSES/LicenseRef-Sic.txt is not the text of a license or exception of the SPDX list"
       "LicenseRef-Other is not a license or exception of the SPDX list"
+      "kept the unused text of LicenseRef-Sic"
     ];
     after = "cmp LICENSES/LicenseRef-Sic.txt ${other}";
   };
