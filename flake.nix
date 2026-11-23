@@ -27,38 +27,16 @@
         );
         perSystem =
           { pkgs, system, ... }:
-          let
-            args = {
-              inherit (config.flake) flakeModules;
-              inherit lib pkgs;
-              repository = import ./tests/lib/repository.nix { inherit lib pkgs; };
-              consumer =
-                modules:
-                let
-                  flake = inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-                    imports = modules;
-                    systems = [ system ];
-                  };
-                in
-                lib.mapAttrs (_: output: output.${system}) {
-                  inherit (flake) apps checks devShells;
-                };
-            };
-            entry =
-              prefix: path: name: type:
-              let
-                test = "${prefix}-${lib.removeSuffix ".nix" name}";
-                file = path + "/${name}";
-              in
-              if type == "directory" then
-                lib.concatMapAttrs (entry test file) (builtins.readDir file)
-              else
-                lib.mapAttrs' (case: lib.nameValuePair "${test}-${case}") (import file args);
-          in
           {
-            checks = lib.concatMapAttrs (entry "test" ./tests) (
-              removeAttrs (builtins.readDir ./tests) [ "lib" ]
-            );
+            checks = import ./tests {
+              inherit (config.flake) flakeModules;
+              inherit
+                inputs
+                lib
+                pkgs
+                system
+                ;
+            };
           };
       }
     );
