@@ -13,8 +13,6 @@
     }:
     let
       spdx = "${pkgs.spdx-license-list-data.text}/text";
-      copyright = "2026 The Sic Contributors";
-      license = "Apache-2.0 WITH LLVM-exception";
     in
     {
       devkit.checks = {
@@ -43,16 +41,25 @@
                 status=1
               fi
             done
-            if ! taplo get -f REUSE.toml -o json | jq -e '
-              any(
-                .annotations[]?;
-                .path == "**"
-                and ."SPDX-FileCopyrightText" == "${copyright}"
-                and ."SPDX-License-Identifier" == "${license}"
-              )' >/dev/null; then
-              echo 'REUSE.toml has no annotation path = "**"' \
-                'with SPDX-FileCopyrightText = "${copyright}"' \
-                'and SPDX-License-Identifier = "${license}"' >&2
+            if ! reuse=$(taplo get -f REUSE.toml -o json); then
+              echo "REUSE.toml cannot be read" >&2
+              exit 1
+            fi
+            everything='[
+              .annotations[]?
+              | select(.path == "**" or (.path | type == "array" and any(.[]; . == "**")))
+            ]'
+            if ! jq -e "$everything"' | length == 1 and .[0].path == "**"' <<<"$reuse" \
+              >/dev/null; then
+              echo 'REUSE.toml must have exactly one annotation whose path is "**", as a string,' \
+                'since REUSE applies the last annotation that matches a file' >&2
+              status=1
+            elif ! jq -e "$everything"'
+              | .[0]."SPDX-FileCopyrightText"
+              | type == "string" and test("^[0-9]{4} The Sic Contributors$")
+            ' <<<"$reuse" >/dev/null; then
+              echo 'The SPDX-FileCopyrightText of the annotation "**" of REUSE.toml must be' \
+                '"<year> The Sic Contributors"' >&2
               status=1
             fi
             exit "$status"
