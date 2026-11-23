@@ -14,7 +14,8 @@ in
       cfg = config.devkit;
       replacements = {
         targets = lib.escapeShellArgs (lib.attrNames cfg.files);
-        sources = lib.escapeShellArgs (map toString (lib.attrValues cfg.files));
+        # Interpolation copies a local file into the Nix store, which toString does not.
+        sources = lib.escapeShellArgs (map (file: "${file}") (lib.attrValues cfg.files));
       };
     in
     {
