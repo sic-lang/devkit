@@ -16,7 +16,6 @@ jobs:
   # the apps check-<name> run, and the flake checks build, one job each, so that each failure is
   # named in the pull request.
   list:
-    # ubuntu-26.04 waits until actionlint knows it (sic-lang/rfcs#27).
     runs-on: ubuntu-24.04
     outputs:
       matrix: ${{ steps.list.outputs.matrix }}
@@ -43,7 +42,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.list.outputs.matrix) }}
-    # ubuntu-26.04 waits until actionlint knows it (sic-lang/rfcs#27).
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -65,7 +63,6 @@ jobs:
   checks:
     needs: check
     if: always()
-    # ubuntu-26.04 waits until actionlint knows it (sic-lang/rfcs#27).
     runs-on: ubuntu-24.04
     steps:
       - name: Require every check
