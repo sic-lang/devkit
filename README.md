@@ -5,7 +5,7 @@ It holds what they share to develop, check and review their content: the modules
 
 ## Usage
 
-A repository takes devkit as an input of its flake, next to the `nixpkgs` whose packages the modules use, and imports with [flake-parts](https://flake.parts) the modules it needs, each by its name in `flakeModules`:
+A repository adds devkit and the `nixpkgs` of its tools to the inputs of its flake, and imports the modules it needs from `flakeModules` with [flake-parts](https://flake.parts):
 
 ```nix
 {
@@ -31,7 +31,7 @@ A repository takes devkit as an input of its flake, next to the `nixpkgs` whose 
 }
 ```
 
-The options of the modules are under `devkit.`.
+Each module is configured by its options in `perSystem`, all under `devkit`, such as `devkit.lineLength`.
 `nix run .#check` runs every check, `nix run .#check-<name>` one of them, and `nix run .#setup` every setup that the contributor confirms.
 
 ## License
