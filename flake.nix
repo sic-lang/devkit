@@ -25,13 +25,13 @@
         flake.flakeModules = lib.mapAttrs (name: _: ./modules + "/${name}") (
           lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./modules)
         );
-        # The tests of tests/, each file a set of flake checks named after its path.
         perSystem =
           { pkgs, system, ... }:
           let
             args = {
               inherit (config.flake) flakeModules;
               inherit lib pkgs;
+              repository = import ./tests/lib/repository.nix { inherit lib pkgs; };
               consumer =
                 modules:
                 let
@@ -44,18 +44,21 @@
                   inherit (flake) apps checks devShells;
                 };
             };
-            tests =
-              prefix: path: type:
+            entry =
+              prefix: path: name: type:
               let
-                entry = name: tests "${prefix}-${lib.removeSuffix ".nix" name}" (path + "/${name}");
+                test = "${prefix}-${lib.removeSuffix ".nix" name}";
+                file = path + "/${name}";
               in
               if type == "directory" then
-                lib.concatMapAttrs entry (builtins.readDir path)
+                lib.concatMapAttrs (entry test file) (builtins.readDir file)
               else
-                lib.mapAttrs' (test: lib.nameValuePair "${prefix}-${test}") (import path args);
+                lib.mapAttrs' (case: lib.nameValuePair "${test}-${case}") (import file args);
           in
           {
-            checks = tests "test" ./tests "directory";
+            checks = lib.concatMapAttrs (entry "test" ./tests) (
+              removeAttrs (builtins.readDir ./tests) [ "lib" ]
+            );
           };
       }
     );

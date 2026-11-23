@@ -12,7 +12,7 @@ lib.mapAttrs (
   let
     outputs = consumer [ module ];
   in
-  pkgs.writeText "module-${name}" (
+  pkgs.writeText name (
     lib.concatLines (
       map toString (
         lib.attrValues outputs.checks
