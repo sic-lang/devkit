@@ -1,30 +1,40 @@
 {
   consumer,
   flakeModules,
+  lib,
   pkgs,
   ...
 }:
 let
-  # A repository that sets the line length, even to its own value, and a file that reads it.
-  outputs = consumer [
-    flakeModules.files
-    {
-      perSystem =
-        { config, ... }:
-        {
-          devkit = {
-            lineLength = 100;
-            files."example.txt" = {
-              template = pkgs.writeText "example.txt.in" "@lineLength@\n";
-              replacements.lineLength = toString config.devkit.lineLength;
-            };
-          };
-        };
-    }
-  ];
+  evaluates =
+    settings:
+    (builtins.tryEval
+      (consumer [
+        flakeModules.files
+        { perSystem.devkit = settings; }
+      ]).apps.check-files.program
+    ).success;
 in
-{
-  read-only =
-    assert !(builtins.tryEval outputs.apps.setup-files.program).success;
-    pkgs.writeText "read-only" "";
-}
+lib.mapAttrs
+  (
+    name:
+    { settings, success }:
+    assert evaluates settings == success;
+    pkgs.writeText name ""
+  )
+  {
+    # Without it, an unrelated error would make the other cases pass.
+    unset = {
+      settings = { };
+      success = true;
+    };
+    set-80 = {
+      settings.lineLength = 80;
+      success = false;
+    };
+    # Even its own value, which a mere conflict between definitions would accept.
+    set-100 = {
+      settings.lineLength = 100;
+      success = false;
+    };
+  }

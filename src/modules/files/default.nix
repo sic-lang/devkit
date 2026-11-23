@@ -13,7 +13,9 @@ in
     let
       cfg = config.devkit;
       generate = file: pkgs.replaceVars file.template file.replacements;
-      generated = lib.mapAttrs (_: generate) cfg.files;
+      # Read whatever the repository generates, so that a repository that sets the read-only line
+      # length gets an error even if no file uses it.
+      generated = builtins.seq cfg.lineLength (lib.mapAttrs (_: generate) cfg.files);
     in
     {
       options.devkit.lineLength = mkOption {
