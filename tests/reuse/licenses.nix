@@ -67,6 +67,17 @@ lib.mapAttrs case {
     licenses."MIT.txt" = "${spdx}/MIT.txt";
     reuse = reuseToml [ { license = "MIT"; } ];
   };
+  check-with-exception = {
+    licenses = {
+      "Apache-2.0.txt" = "${spdx}/Apache-2.0.txt";
+      "LLVM-exception.txt" = "${spdx}/LLVM-exception.txt";
+    };
+    reuse = reuseToml [ { license = "Apache-2.0 WITH LLVM-exception"; } ];
+  };
+  check-no-licenses-directory = {
+    licenses = { };
+    before = "[ ! -e LICENSES ]";
+  };
   check-other-annotations = {
     reuse = reuseToml [
       { }
@@ -206,6 +217,40 @@ lib.mapAttrs case {
       cmp LICENSES/Apache-2.0.txt ${spdx}/Apache-2.0.txt
       cmp LICENSES/MIT.txt ${spdx}/MIT.txt
       ${lib.getExe checks.check-licenses}
+    '';
+  };
+  setup-with-exception = {
+    command = "setup-licenses";
+    reuse = reuseToml [ { license = "Apache-2.0 WITH LLVM-exception"; } ];
+    output = [ "created LICENSES/LLVM-exception.txt" ];
+    after = "cmp LICENSES/LLVM-exception.txt ${spdx}/LLVM-exception.txt";
+  };
+  setup-no-licenses-directory = {
+    command = "setup-licenses";
+    licenses = { };
+    output = [ "created LICENSES/Apache-2.0.txt" ];
+    after = lib.getExe checks.check-reuse;
+  };
+  setup-twice = {
+    command = "setup-licenses";
+    licenses = {
+      "Apache-2.0.txt" = other;
+      "ISC.txt" = "${spdx}/ISC.txt";
+    };
+    reuse = reuseToml [ { license = "Apache-2.0 OR MIT"; } ];
+    before = ''
+      ${lib.getExe checks.setup-licenses}
+      find LICENSES -type f -exec sha256sum {} + | sort >"$TMPDIR/first"
+    '';
+    output = [
+      "up to date LICENSES/Apache-2.0.txt"
+      "up to date LICENSES/MIT.txt"
+    ];
+    after = ''
+      find LICENSES -type f -exec sha256sum {} + | sort | cmp - "$TMPDIR/first"
+      if grep -qE "^(rewritten|created|removed)" "$TMPDIR/output"; then
+        exit 1
+      fi
     '';
   };
   setup-keeps-custom = {
