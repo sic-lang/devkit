@@ -52,7 +52,7 @@ lib.mapAttrs case {
     status = 1;
     output = [
       "+The recommended text."
-      "kept"
+      "kept example/file.txt, which differs from the file that setup-example writes"
       "overwrite it with --force"
     ];
     after = "cmp example/file.txt ${other}";
