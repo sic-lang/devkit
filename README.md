@@ -5,7 +5,7 @@ It holds what they share to develop, check and review their content: the modules
 
 ## Usage
 
-A repository takes devkit as an input of its flake, next to the `nixpkgs` whose packages the modules use, and imports with [flake-parts](https://flake.parts) the modules it needs, each a directory of `modules/` exported as `flakeModules.<name>`:
+A repository takes devkit as an input of its flake, next to the `nixpkgs` whose packages the modules use, and imports with [flake-parts](https://flake.parts) the modules it needs, each a directory of `src/modules/` exported as `flakeModules.<name>`:
 
 ```nix
 {

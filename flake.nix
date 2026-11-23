@@ -14,7 +14,7 @@
     inputs.flake-parts.lib.mkFlake { inherit inputs; } (
       { config, lib, ... }:
       {
-        imports = [ ./modules/reuse ];
+        imports = [ ./src/modules/reuse ];
         # The popular systems whose tools are all in the binary cache of nixpkgs: Linux on x86_64
         # and aarch64, and macOS on Apple silicon.
         systems = [
@@ -22,8 +22,8 @@
           "aarch64-linux"
           "x86_64-linux"
         ];
-        flake.flakeModules = lib.mapAttrs (name: _: ./modules + "/${name}") (
-          lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./modules)
+        flake.flakeModules = lib.mapAttrs (name: _: ./src/modules + "/${name}") (
+          lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./src/modules)
         );
         perSystem =
           { pkgs, system, ... }:
