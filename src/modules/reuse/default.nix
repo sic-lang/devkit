@@ -29,13 +29,13 @@
     {
       devkit.checks = {
         reuse = {
-          tools = [ pkgs.reuse ];
+          packages = [ pkgs.reuse ];
           command = "reuse lint";
         };
         licenses.command = config.devkit.mkCommand {
           name = "check-licenses";
           template = template "check";
-          tools = [
+          packages = [
             pkgs.diffutils
             pkgs.jq
             pkgs.reuse
@@ -50,7 +50,7 @@
         command = config.devkit.mkCommand {
           name = "setup-licenses";
           template = template "setup";
-          tools = [
+          packages = [
             pkgs.diffutils
             pkgs.jq
             pkgs.reuse

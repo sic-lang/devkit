@@ -12,7 +12,7 @@ types.submodule {
       description = "The ShellCheck check of the script, which the flake check builds.";
       type = types.package;
     };
-    tools = mkOption {
+    packages = mkOption {
       description = "The packages whose programs the script runs.";
       type = types.listOf types.package;
     };

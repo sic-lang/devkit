@@ -50,7 +50,7 @@ in
           cfg.mkCommand {
             inherit name;
             template = ./write.sh.in;
-            tools = [ pkgs.diffutils ];
+            packages = [ pkgs.diffutils ];
             replacements = {
               inherit name mode;
             }

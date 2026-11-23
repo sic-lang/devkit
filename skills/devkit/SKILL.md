@@ -38,4 +38,4 @@ This example imports the `reuse` module:
 ```
 
 Each module has its own skill, `devkit-<module>`, which describes what it provides and how to set it up.
-Set the modules' options in `perSystem`, under `devkit`, where `pkgs` gives the packages that their values need, such as a check's tools.
+Set the modules' options in `perSystem`, under `devkit`, where `pkgs` gives the packages that their values need.

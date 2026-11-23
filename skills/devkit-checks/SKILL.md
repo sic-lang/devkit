@@ -13,16 +13,16 @@ The `checks` module lets a repository define its own checks, beyond those that d
 Its `command` receives the check's arguments and returns a failure status when the check fails.
 
 The `command` can be a command line, which Bash runs.
-`tools` lists the packages whose programs it runs:
+`packages` lists the packages that the command line needs:
 
 ```nix
 devkit.checks.actionlint = {
   command = "actionlint -color";
-  tools = [ pkgs.actionlint ];
+  packages = [ pkgs.actionlint ];
 };
 ```
 
-The development shell includes every check's `tools`.
+The development shell includes every check's `packages`.
 
 The `command` can also be built with the `commands` module, as described in the `devkit-commands` skill:
 
@@ -30,7 +30,7 @@ The `command` can also be built with the `commands` module, as described in the 
 devkit.checks.example.command = config.devkit.mkCommand {
   name = "check-example";
   template = ./check-example.sh.in;
-  tools = [ pkgs.jq ];
+  packages = [ pkgs.jq ];
 };
 ```
 

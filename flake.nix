@@ -32,7 +32,7 @@
           {
             devkit.checks = {
               actionlint = {
-                tools = [ pkgs.actionlint ];
+                packages = [ pkgs.actionlint ];
                 command = "actionlint";
               };
             };

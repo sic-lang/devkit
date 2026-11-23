@@ -15,7 +15,7 @@ in
           cfg.mkCommand {
             name = "check-${name}";
             template = pkgs.replaceVars ./check.sh.in { inherit (check) command; };
-            inherit (check) tools;
+            inherit (check) packages;
           }
         else
           check.command
@@ -46,7 +46,7 @@ in
                 '';
                 type = types.either types.str (import ../commands/built.nix lib);
               };
-              tools = mkOption {
+              packages = mkOption {
                 description = "The packages whose programs a command line runs.";
                 type = types.listOf types.package;
                 default = [ ];
@@ -72,7 +72,7 @@ in
                 description = "Run every check";
               };
             };
-          shell.packages = lib.concatMap (command: command.tools) (lib.attrValues checkCommands);
+          shell.packages = lib.concatMap (command: command.packages) (lib.attrValues checkCommands);
         };
       };
     }

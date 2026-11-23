@@ -23,12 +23,12 @@ config.devkit.mkCommand {
   name = "example";
   template = ./example.sh.in;
   replacements.greeting = "hello";
-  tools = [ pkgs.jq ];
+  packages = [ pkgs.jq ];
 }
 ```
 
 - The template has no shebang.
-  `mkCommand` prepends a header that sets the interpreter, the Bash options `errexit`, `nounset` and `pipefail`, the variables from `devkit.commandEnv`, and a `PATH` that includes the programs of `tools`.
+  `mkCommand` prepends a header that sets the interpreter, the Bash options `errexit`, `nounset` and `pipefail`, the variables from `devkit.commandEnv`, and a `PATH` that includes the programs of `packages`.
   The header then changes to the repository's root.
 - Each `@name@` placeholder is replaced with its value from `replacements`, as plain text.
   Either quote the placeholder in the template, or quote the value with `lib.escapeShellArg` (`lib.escapeShellArgs` for a list).
@@ -48,8 +48,8 @@ For example, Lake notices a new Lean only if `LEAN_GITHASH` identifies it, so ev
 
 ```nix
 devkit.commandEnv =
-  { tools, ... }:
-  lib.optionalAttrs (lib.elem pkgs.lean4 tools) { LEAN_GITHASH = "${pkgs.lean4}"; };
+  { packages, ... }:
+  lib.optionalAttrs (lib.elem pkgs.lean4 packages) { LEAN_GITHASH = "${pkgs.lean4}"; };
 ```
 
 ## Configure the development shell

@@ -27,9 +27,10 @@ in
           description = ''
             Builds the command `name` from the Bash template `template`, prefixed with the header
             from header.sh.in. The header sets the Bash options, exports the variables from
-            commandEnv, puts the `tools` packages on PATH and changes to the repository's root. Each
-            @name@ placeholder is replaced with its value from `replacements`. Returns `run`, the
-            script for nix run; `checked`, its ShellCheck check for nix flake check; and `tools`.
+            commandEnv, puts the programs of `packages` on PATH and changes to the repository's
+            root. Each @name@ placeholder is replaced with its value from `replacements`. Returns
+            `run`, the script for nix run; `checked`, its ShellCheck check for nix flake check; and
+            `packages`.
           '';
           type = types.functionTo types.raw;
           readOnly = true;
@@ -59,7 +60,7 @@ in
             name,
             template,
             replacements ? { },
-            tools ? [ ],
+            packages ? [ ],
           }:
           let
             export = name: value: "export ${name}=${lib.escapeShellArg value}";
@@ -79,7 +80,7 @@ in
                     pkgs.coreutils
                     pkgs.git
                   ]
-                  ++ tools
+                  ++ packages
                 );
                 env = lib.concatLines (
                   lib.mapAttrsToList export (
@@ -88,7 +89,7 @@ in
                         name
                         template
                         replacements
-                        tools
+                        packages
                         ;
                     }
                   )
@@ -99,7 +100,7 @@ in
             };
           in
           {
-            inherit run tools;
+            inherit run packages;
             checked = pkgs.runCommand "${name}-checked" {
               nativeBuildInputs = [ pkgs.shellcheck ];
               script = lib.getExe run;

@@ -14,10 +14,10 @@ let
       flakeModules.checks
       {
         perSystem.devkit = {
-          commandEnv = args: lib.optionalAttrs (lib.elem pkgs.hello args.tools) example;
+          commandEnv = args: lib.optionalAttrs (lib.elem pkgs.hello args.packages) example;
           checks = {
             with-hello = {
-              tools = [ pkgs.hello ];
+              packages = [ pkgs.hello ];
               command = print;
             };
             without-hello.command = print;
@@ -29,17 +29,17 @@ let
     ;
 in
 {
-  with-tool = repository {
-    name = "with-tool";
+  with-package = repository {
+    name = "with-package";
     command = apps.check-with-hello.program;
     output = [ "EXAMPLE=it's set" ];
   };
-  without-tool = repository {
-    name = "without-tool";
+  without-package = repository {
+    name = "without-package";
     command = apps.check-without-hello.program;
     output = [ "EXAMPLE=unset" ];
   };
-  # The check command is built without tools.
+  # The check command is built without packages.
   all = repository {
     name = "all";
     command = apps.check.program;

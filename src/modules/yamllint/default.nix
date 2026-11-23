@@ -10,7 +10,7 @@
           replacements.lineLength = toString config.devkit.lineLength;
         };
         checks.yamllint = {
-          tools = [ pkgs.yamllint ];
+          packages = [ pkgs.yamllint ];
           command = "yamllint --strict .";
         };
       };

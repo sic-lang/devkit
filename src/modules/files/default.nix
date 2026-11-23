@@ -61,7 +61,7 @@ in
         checks.files.command = cfg.mkCommand {
           name = "check-files";
           template = ./check.sh.in;
-          tools = [ pkgs.diffutils ];
+          packages = [ pkgs.diffutils ];
           replacements = import ../setups/targets.nix lib generated;
         };
       };
