@@ -39,7 +39,7 @@ in
     command = apps.check-without-hello.program;
     output = [ "EXAMPLE=unset" ];
   };
-  # The check command is built without packages.
+  # The check command is built without packages, which commandEnv must still receive.
   all = repository {
     name = "all";
     command = apps.check.program;

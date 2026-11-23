@@ -9,7 +9,6 @@
 let
   generated = pkgs.writeText "file.txt" "The generated text.\n";
   other = pkgs.writeText "other" "Another text.\n";
-  # The check of example/file.txt generated as file says.
   check =
     file:
     (consumer [

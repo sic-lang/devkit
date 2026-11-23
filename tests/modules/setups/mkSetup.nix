@@ -9,7 +9,6 @@
 let
   recommended = pkgs.writeText "file.txt" "The recommended text.\n";
   other = pkgs.writeText "other" "Another text.\n";
-  # The setup that writes source to example/file.txt.
   setup =
     source:
     (consumer [
@@ -70,7 +69,7 @@ lib.mapAttrs case {
     output = [ "usage: setup-example [--force]" ];
     after = "[ ! -e example ]";
   };
-  # A file of the flake rather than of the Nix store: this test itself.
+  # Unlike a file of the Nix store, a file of the flake must be copied into it.
   local = {
     command = setup ./mkSetup.nix;
     output = [ "created" ];
