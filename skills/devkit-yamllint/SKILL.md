@@ -6,14 +6,13 @@ description: Check a repository's YAML files with yamllint, using a configuratio
 # yamllint
 
 The `yamllint` module checks every YAML file in the repository with `yamllint --strict`.
-It uses a configuration that it generates, `.yamllint.yaml`, which the repository commits so that editors read it too.
+It generates yamllint's configuration, `.yamllint.yaml`, with the `files` module.
 
 ## Set it up
 
 1. Import `inputs.devkit.flakeModules.yamllint`, as the `devkit` skill shows.
 2. Run `nix run .#setup-files`, which writes `.yamllint.yaml`, and commit the file.
 3. Run `nix run .#check-yamllint` and `nix run .#check-files`.
-   The latter fails if `.yamllint.yaml` differs from the generated one.
 
 ## The configuration
 
