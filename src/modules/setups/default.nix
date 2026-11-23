@@ -9,14 +9,13 @@ in
     { config, pkgs, ... }:
     let
       cfg = config.devkit;
+      setups = lib.attrValues cfg.setups;
       setupAll = cfg.mkCommand {
         name = "setup";
         template = ./all.sh.in;
         replacements = {
-          descriptions = lib.escapeShellArgs (lib.mapAttrsToList (_: setup: setup.description) cfg.setups);
-          programs = lib.escapeShellArgs (
-            lib.mapAttrsToList (_: setup: lib.getExe setup.command.run) cfg.setups
-          );
+          descriptions = lib.escapeShellArgs (lib.catAttrs "description" setups);
+          programs = lib.escapeShellArgs (map (setup: lib.getExe setup.command.run) setups);
         };
       };
     in
