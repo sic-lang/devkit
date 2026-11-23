@@ -14,7 +14,10 @@
     inputs.flake-parts.lib.mkFlake { inherit inputs; } (
       { config, lib, ... }:
       {
-        imports = [ ./src/modules/reuse ];
+        imports = [
+          ./src/modules/reuse
+          ./src/modules/yamllint
+        ];
         # The popular systems whose tools are all in the binary cache of nixpkgs.
         systems = [
           "aarch64-darwin"
@@ -31,10 +34,6 @@
               actionlint = {
                 tools = [ pkgs.actionlint ];
                 command = "actionlint";
-              };
-              yamllint = {
-                tools = [ pkgs.yamllint ];
-                command = "yamllint --strict .";
               };
             };
             checks = import ./tests {
