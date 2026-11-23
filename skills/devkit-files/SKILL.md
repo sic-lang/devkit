@@ -5,18 +5,18 @@ description: Implement a custom repository-specific generated file, such as the 
 
 # Generated files
 
-The module `files` writes generated files into the repository, which commits them, so that the editors, GitHub and a fresh clone read the same file as the checks.
+The `files` module writes generated files into the repository, which commits them, so that editors, GitHub and fresh clones all read the same file as the checks.
 
-- `nix run .#setup-files` writes them; it keeps a file that differs, unless it is given `--force`.
-- `nix run .#check-files` fails when one of them is missing or differs from the generated one, and shows the difference: change the file through the options that generate it, then run `nix run .#setup-files -- --force`.
+- `nix run .#setup-files` writes them, but keeps a file that differs unless it is given `--force`.
+- `nix run .#check-files` fails when a file is missing or differs from the generated one, and shows the difference; to change such a file, change the options that generate it, then run `nix run .#setup-files -- --force`.
 
 ## Share a value
 
-`devkit.lineLength`, 100 by default, is the length of the longest line, the default of each generated file that has one.
+`devkit.lineLength` sets the maximum line length, 100 by default, which every generated file that has one uses unless told otherwise.
 
 ## Generate a file
 
-A file is generated from a template of its own, `<file>.in`, whose placeholders `@name@` `pkgs.replaceVars` replaces, under its path in the repository:
+A generated file comes from a template in its own file, such as `example.toml.in`, whose placeholders `@name@` are replaced by `pkgs.replaceVars`, and is declared under its path in the repository:
 
 ```nix
 devkit.files."example.toml" = pkgs.replaceVars ./example.toml.in {
@@ -24,4 +24,4 @@ devkit.files."example.toml" = pkgs.replaceVars ./example.toml.in {
 };
 ```
 
-The template keeps the comments of the file, which give the reason of each value that differs from the default of its tool.
+The template keeps the file's comments, which explain why each value differs from the tool's default.

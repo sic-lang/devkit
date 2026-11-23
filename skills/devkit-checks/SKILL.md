@@ -5,12 +5,14 @@ description: Implement a custom repository-specific check using devkit's checks 
 
 # Checks
 
-The module `checks` lets a repository write checks of its own.
+The `checks` module lets a repository define its own checks, beyond those that devkit's modules provide.
 
 ## Add a check
 
-`devkit.checks.<name>` adds the check `<name>`, whose command receives the arguments of the check and fails when the check fails.
-The command is either a command line, which Bash runs whole, with its arguments, its pipes and its lists of commands, and the packages it runs:
+`devkit.checks.<name>` defines a check named `<name>`.
+Its command receives the check's arguments and returns a failure status when the check fails.
+
+The command is either a command line, which Bash runs as a whole, arguments, pipes and `&&` included, with the tools it needs:
 
 ```nix
 devkit.checks.actionlint = {
@@ -19,7 +21,7 @@ devkit.checks.actionlint = {
 };
 ```
 
-or a command of the module `commands`, as the skill `devkit-commands` describes:
+or a command made with the `commands` module, as the `devkit-commands` skill describes:
 
 ```nix
 devkit.checks.example.command = config.devkit.mkCommand {
@@ -31,8 +33,8 @@ devkit.checks.example.command = config.devkit.mkCommand {
 
 ## Run a check
 
-`nix run .#check-<name>` runs the check `<name>` from the root of the repository, and passes it the arguments given after `--`.
+`nix run .#check-<name>` runs the check `<name>` from the repository's root, and passes it the arguments given after `--`.
 
 ## Run all the checks
 
-`nix run .#check` runs every check of the repository, those of the modules of devkit included, and prints `ok` or `FAIL` for each, with the output of each failure.
+`nix run .#check` runs every check of the repository, including those of devkit's modules, and prints `ok` or `FAIL` for each one, with the output of every failure.

@@ -5,12 +5,14 @@ description: Implement a custom repository-specific setup, which writes recommen
 
 # Setups
 
-The module `setups` lets a repository write setups of its own.
+The `setups` module lets a repository define its own setups, beyond those that devkit's modules provide.
 
 ## Add a setup
 
-`devkit.setups.<name>` adds the setup `<name>`, with a description and a command, which receives the arguments of the setup.
-`devkit.mkSetup` makes the command of a setup that writes files of the Nix store to their paths in the repository, and never overwrites a file that differs from the one it recommends, unless it is given `--force`:
+`devkit.setups.<name>` defines a setup named `<name>`, with a description and a command, which receives the setup's arguments.
+
+`devkit.mkSetup` makes a command that writes files from the Nix store to their paths in the repository.
+It never overwrites a file that differs from the recommended one, unless it is given `--force`:
 
 ```nix
 devkit.setups.vscode = {
@@ -23,12 +25,13 @@ devkit.setups.vscode = {
 };
 ```
 
-The command can also be a command of the module `commands`, as the skill `devkit-commands` describes.
+The command can also be made with the `commands` module, as the `devkit-commands` skill describes.
 
 ## Run a setup
 
-`nix run .#setup-<name>` runs the setup `<name>` from the root of the repository, and passes it the arguments given after `--`.
+`nix run .#setup-<name>` runs the setup `<name>` from the repository's root, and passes it the arguments given after `--`.
 
 ## Run all the setups
 
-`nix run .#setup` asks for each setup of the repository, those of the modules of devkit included, whether to run it, since each configures a tool that the contributor may not use, and passes them the arguments given after `--`, such as `--force`.
+`nix run .#setup` goes through every setup of the repository, including those of devkit's modules, and asks before running each one, since each configures a tool that the contributor may not use.
+It passes them the arguments given after `--`, such as `--force`.
