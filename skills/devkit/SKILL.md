@@ -10,7 +10,7 @@ Its library, `lib`, holds the values that devkit shares between repositories, as
 
 ## Take devkit as an input
 
-Add devkit to the repository's flake inputs, together with the `nixpkgs` that devkit takes its tools from.
+Add devkit to the repository's flake inputs, together with the `nixpkgs` that devkit takes its packages from.
 Then import the modules you need from `flakeModules`.
 This example imports the `reuse` module:
 
