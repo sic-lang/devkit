@@ -3,7 +3,7 @@ name: devkit-commands
 description: Implement a custom repository-specific command as a Bash template using devkit's `commands` module, and set environment variables for all of a repository's commands. Use this when a repository requires a command of its own, or when its commands need environment variables.
 ---
 
-# Commands
+# commands
 
 The `commands` module builds a repository's commands.
 Each command becomes an app, run with `nix run .#<name>`, and a flake check that runs ShellCheck on the command's script.

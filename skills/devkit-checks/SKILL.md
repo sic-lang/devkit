@@ -3,7 +3,7 @@ name: devkit-checks
 description: Implement a repository-specific check with devkit's `checks` module. Use this when a repository needs a check that none of devkit's modules provides.
 ---
 
-# Checks
+# checks
 
 The `checks` module lets a repository define its own checks, beyond those that devkit's modules provide.
 

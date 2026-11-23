@@ -3,7 +3,7 @@ name: devkit-setups
 description: Implement a repository-specific setup, such as one that writes recommended files into the repository, with devkit's `setups` module. Use this when a repository needs a setup that none of devkit's modules provides.
 ---
 
-# Setups
+# setups
 
 The `setups` module lets a repository define its own setups, beyond those that devkit's modules provide.
 
