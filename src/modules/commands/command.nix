@@ -9,7 +9,7 @@ types.submodule {
       type = import ./built.nix lib;
     };
     description = mkOption {
-      description = "The description of the app.";
+      description = "The app's description.";
       type = types.str;
     };
   };

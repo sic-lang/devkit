@@ -3,9 +3,9 @@ extends: default
 rules:
   # Workflows do not start with "---" by convention.
   document-start: disable
-  # Room for actions pinned by commit, followed by their version in a comment.
+  # Leaves room for actions pinned by commit hash, followed by their version in a comment.
   line-length:
     max: 100
-  # "on" is the key of the triggers of a workflow.
+  # Workflows use the "on" key for their triggers.
   truthy:
     check-keys: false

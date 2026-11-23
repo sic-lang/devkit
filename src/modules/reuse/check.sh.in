@@ -1,7 +1,7 @@
 for i in "${!licenses[@]}"; do
   if ! cmp -s "${licenses[$i]}" "${texts[$i]}"; then
     diff -u "${licenses[$i]}" "${texts[$i]}" || true
-    echo "${licenses[$i]} differs from the SPDX text above: setup-licenses rewrites it" >&2
+    echo "${licenses[$i]} differs from the SPDX text above: run setup-licenses to rewrite it" >&2
     status=1
   fi
 done
@@ -16,8 +16,8 @@ if ! toml=$(taplo get -f REUSE.toml -o json); then
 fi
 if ! reuse_jq -e 'include "reuse"; everything | length == 1 and .[0].path == "**"' \
   <<<"$toml" >/dev/null; then
-  echo 'REUSE.toml must have exactly one annotation whose path is "**", as a string,' \
-    'since REUSE applies the last annotation that matches a file' >&2
+  echo 'REUSE.toml must have exactly one annotation whose path is the string "**",' \
+    'because REUSE applies the last annotation that matches a file' >&2
   status=1
 elif ! reuse_jq -e '
   include "reuse";
@@ -25,7 +25,7 @@ elif ! reuse_jq -e '
   | .[0]."SPDX-FileCopyrightText"
   | type == "string" and test("^[0-9]{4} The Sic Contributors$")
 ' <<<"$toml" >/dev/null; then
-  echo 'The SPDX-FileCopyrightText of the annotation "**" of REUSE.toml must be' \
+  echo 'In REUSE.toml, the SPDX-FileCopyrightText of the "**" annotation must be' \
     '"<year> The Sic Contributors"' >&2
   status=1
 fi
@@ -38,8 +38,8 @@ done
 outside=$(reuse_jq -r 'include "reuse"; outside' <<<"$report")
 if [ -n "$outside" ]; then
   echo "$outside" >&2
-  echo "Every copyright and license comes from REUSE.toml: write those above in an" \
-    "annotation of REUSE.toml instead" >&2
+  echo "Every copyright and license must come from REUSE.toml: move those above into an" \
+    "annotation in REUSE.toml" >&2
   status=1
 fi
 exit "$status"

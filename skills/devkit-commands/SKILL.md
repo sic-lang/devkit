@@ -1,11 +1,12 @@
 ---
 name: devkit-commands
-description: Implement a custom repository-specific command as a Bash template using devkit's commands module, and set the environment variables of every command of a repository. Use this when a repository requires a command of its own, or when its commands need environment variables.
+description: Implement a custom repository-specific command as a Bash template using devkit's commands module, and set environment variables for all of a repository's commands. Use this when a repository requires a command of its own, or when its commands need environment variables.
 ---
 
 # Commands
 
-The `commands` module builds the commands of a repository: each command is an app, run by `nix run .#<name>`, and a flake check, which runs ShellCheck on its script.
+The `commands` module builds a repository's commands.
+Each command becomes an app, run with `nix run .#<name>`, and a flake check that runs ShellCheck on the command's script.
 
 ## Write a command
 
@@ -26,16 +27,25 @@ config.devkit.mkCommand {
 }
 ```
 
-- The template has no shebang: mkCommand adds a header that sets the interpreter, the Bash options `errexit`, `nounset` and `pipefail`, the variables of `devkit.commandEnv` and the `PATH` of the tools, then moves to the repository's root.
-- Each placeholder `@name@` is replaced by its value in `replacements`, as plain text: quote it in the template, or quote the value with `lib.escapeShellArg`, or a list with `lib.escapeShellArgs`.
-- The header uses the placeholders `bash`, `path` and `env`, so a template cannot use these names.
-- The build fails when a replacement has no placeholder or a placeholder is left, and the flake check fails when ShellCheck finds a fault in the built script; the template itself is not checked, since it is not valid Bash until its placeholders are replaced.
+- The template has no shebang.
+  `mkCommand` prepends a header that sets the interpreter, the Bash options `errexit`, `nounset` and `pipefail`, the variables from `devkit.commandEnv`, and a `PATH` that includes the tools.
+  The header then changes to the repository's root.
+- Each `@name@` placeholder is replaced with its value from `replacements`, as plain text.
+  Either quote the placeholder in the template, or quote the value with `lib.escapeShellArg` (`lib.escapeShellArgs` for a list).
+- The header uses the `bash`, `path` and `env` placeholders, so templates cannot use these names.
+- The build fails if a replacement matches no placeholder, or if a placeholder is left unreplaced.
+  The flake check fails if ShellCheck finds a problem in the built script.
+  The template itself is not checked, because it is not valid Bash until its placeholders are replaced.
 
-`devkit.commands.<name>` turns the command into the app `<name>`, with a `description`; the app passes its arguments to the script as `"$@"`.
+`devkit.commands.<name>` exposes the command as the `<name>` app, with a `description`.
+The app passes its arguments to the script as `"$@"`.
 
 ## Give the commands an environment
 
-`devkit.commandEnv` sets environment variables for every command of the repository, including those of devkit's modules.
-It is a function that takes the arguments given to mkCommand and returns the variables, so it can, for instance, set a variable only for the commands whose tools include a given package.
+`devkit.commandEnv` sets environment variables for every command in the repository, including those from devkit's modules.
+It is a function that takes the arguments given to `mkCommand` and returns the variables.
+This lets it, for example, set a variable only for commands whose `tools` include a given package.
 
-`devkit.shell` sets the packages, the variables and the hook of the development shell.
+## Configure the development shell
+
+`devkit.shell` sets the development shell's packages, environment variables and hook.

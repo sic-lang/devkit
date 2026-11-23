@@ -12,7 +12,7 @@ in
     in
     {
       options.devkit.yamllint.lineLength = mkOption {
-        description = "The length of the longest line of a YAML file.";
+        description = "The maximum line length of YAML files.";
         type = types.ints.positive;
         default = cfg.lineLength;
         defaultText = lib.literalExpression "config.devkit.lineLength";

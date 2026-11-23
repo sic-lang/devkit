@@ -11,8 +11,8 @@ permissions:
   contents: read
 
 jobs:
-  # Read from the flake, so that a new check or test needs no change here; one job each, so that
-  # the pull request names each failure.
+  # The checks are read from the flake, so that a new check or test needs no change here. Each one
+  # gets its own job, so that the pull request names each failure.
   list:
     runs-on: ubuntu-24.04
     outputs:
@@ -55,8 +55,8 @@ jobs:
         env:
           NAME: ${{ matrix.name }}
 
-  # The ruleset of main requires this job only, so that a new check needs no change of the ruleset;
-  # it runs always, since a skipped job would count as passed.
+  # The main branch's ruleset requires only this job, so that a new check needs no ruleset change.
+  # It always runs, because a skipped job would count as passed.
   checks:
     needs: check
     if: always()

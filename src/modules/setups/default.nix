@@ -23,17 +23,17 @@ in
       options.devkit = {
         setups = mkOption {
           description = ''
-            The setups, each run by its app setup-<name>, and by the app setup if the contributor
-            confirms it, since each one configures a tool they may not use.
+            The setups, each run by its setup-<name> app, and by the setup app if the contributor
+            confirms it, because each setup configures a tool that the contributor may not use.
           '';
           default = { };
           type = types.attrsOf (import ../commands/command.nix lib);
         };
         mkSetup = mkOption {
           description = ''
-            Makes the setup name that writes each file of the Nix store of files to its path in the
-            repository, with the mode mode, without overwriting a file that differs from it, unless
-            --force is given.
+            Builds the setup `name`, which writes each Nix store file in `files` to its path in the
+            repository, with mode `mode`. It never overwrites a file that differs, unless --force is
+            given.
           '';
           type = types.functionTo types.raw;
           readOnly = true;

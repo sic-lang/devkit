@@ -4,12 +4,12 @@ status=0
 for i in "${!targets[@]}"; do
   target=${targets[$i]}
   if [ ! -e "$target" ]; then
-    echo "$target is missing: setup-files writes it" >&2
+    echo "$target is missing: run setup-files to write it" >&2
     status=1
   elif ! cmp -s "${sources[$i]}" "$target"; then
     diff -u "$target" "${sources[$i]}" || true
-    echo "$target differs from the generated one above: setup-files rewrites it" \
-      "with --force, and the options of devkit change it" >&2
+    echo "$target differs from the generated one above: change it through devkit's options," \
+      "then run setup-files --force to rewrite it" >&2
     status=1
   fi
 done

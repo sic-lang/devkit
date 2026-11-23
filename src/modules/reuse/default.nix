@@ -46,7 +46,7 @@
       };
 
       devkit.setups.licenses = {
-        description = "Make LICENSES/ the SPDX texts of the licenses that REUSE needs";
+        description = "Make LICENSES/ hold exactly the SPDX texts of the licenses that REUSE needs";
         command = config.devkit.mkCommand {
           name = "setup-licenses";
           template = template "setup";

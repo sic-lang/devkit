@@ -30,7 +30,7 @@ lib.mapAttrs case {
   up-to-date.files."example/file.txt" = generated;
   missing = {
     status = 1;
-    output = [ "example/file.txt is missing: setup-files writes it" ];
+    output = [ "example/file.txt is missing: run setup-files to write it" ];
   };
   differs = {
     files."example/file.txt" = other;

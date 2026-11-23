@@ -18,7 +18,7 @@
           ./src/modules/reuse
           ./src/modules/yamllint
         ];
-        # The popular systems whose tools are all in the binary cache of nixpkgs.
+        # The popular systems for which all the tools are in nixpkgs' binary cache.
         systems = [
           "aarch64-darwin"
           "aarch64-linux"

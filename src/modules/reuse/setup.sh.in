@@ -1,5 +1,5 @@
-# --force has no effect, since a text of SPDX is never merged by hand, but is accepted, since the
-# app setup passes its arguments to every setup.
+# --force has no effect, because an SPDX text is never merged by hand. It is still accepted,
+# because the setup app passes its arguments to every setup.
 case "$*" in
 "" | --force) ;;
 *)
@@ -32,7 +32,7 @@ for id in $(jq -r '.non_compliant.unused_licenses[]' <<<"$report"); do
     rm "LICENSES/$id.txt"
     echo "removed LICENSES/$id.txt, which no file uses"
   else
-    echo "kept the unused text of $id, which is not LICENSES/$id.txt of the SPDX list" >&2
+    echo "kept the unused text of $id, because it is not an SPDX text at LICENSES/$id.txt" >&2
   fi
 done
 exit "$status"

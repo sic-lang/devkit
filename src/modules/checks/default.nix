@@ -33,21 +33,21 @@ in
     in
     {
       options.devkit.checks = mkOption {
-        description = "The checks, each run from the root of the repository by check-<name>.";
+        description = "The checks, each run from the repository's root by the check-<name> app.";
         default = { };
         type = types.attrsOf (
           types.submodule {
             options = {
               command = mkOption {
                 description = ''
-                  The command of the check, which fails if the check fails, and receives the
-                  arguments of check-<name>: either a command line, which Bash runs and which
-                  receives them as "$@", or a command made by mkCommand.
+                  The check's command. It receives the arguments of check-<name> and returns a
+                  failure status if the check fails. It is either a command line, which Bash runs
+                  with the arguments as "$@", or a command built by mkCommand.
                 '';
                 type = types.either types.str (import ../commands/built.nix lib);
               };
               tools = mkOption {
-                description = "The packages that a command line runs.";
+                description = "The packages that a command line needs.";
                 type = types.listOf types.package;
                 default = [ ];
               };

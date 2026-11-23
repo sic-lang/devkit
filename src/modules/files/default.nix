@@ -21,14 +21,14 @@ in
       options.devkit = {
         files = mkOption {
           description = ''
-            The files that devkit generates, each a file of the Nix store under its path in the
-            repository, where they are committed, so that the editors read them too.
+            The files that devkit generates, each a Nix store file keyed by its path in the
+            repository. The repository commits them, so that editors read them too.
           '';
           default = { };
           type = types.attrsOf types.path;
         };
         lineLength = mkOption {
-          description = "The length of the longest line, the default of the generated files.";
+          description = "The maximum line length, which the generated files use by default.";
           type = types.ints.positive;
           default = 100;
         };

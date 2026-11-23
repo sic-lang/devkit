@@ -5,11 +5,11 @@ in
 types.submodule {
   options = {
     run = mkOption {
-      description = "The script, which the app runs.";
+      description = "The script that the app runs.";
       type = types.package;
     };
     checked = mkOption {
-      description = "The check of the script by ShellCheck, which the flake check builds.";
+      description = "The ShellCheck check of the script, which the flake check builds.";
       type = types.package;
     };
     tools = mkOption {

@@ -1,15 +1,17 @@
 ---
 name: devkit
-description: Add devkit to the flake of a sic-lang repository, and find the module that provides a given check, setup or generated file. Use this when a repository should take something from devkit.
+description: Add devkit to a sic-lang repository's flake, and find the module that provides a given check, setup or generated file. Use this when a repository needs something from devkit.
 ---
 
-# Set devkit up in a repository
+# Set up devkit in a repository
 
 devkit is a flake whose [flake-parts](https://flake.parts) modules give a repository checks, setups and generated files.
 
 ## Take devkit as an input
 
-The repository adds devkit and the `nixpkgs` that provides its tools to its flake's inputs, then imports the modules it needs from `flakeModules`, here the `reuse` module:
+Add devkit to the inputs of the repository's flake, together with the `nixpkgs` that devkit takes its tools from.
+Then import the modules you need from `flakeModules`.
+This example imports the `reuse` module:
 
 ```nix
 {
@@ -35,15 +37,16 @@ The repository adds devkit and the `nixpkgs` that provides its tools to its flak
 }
 ```
 
-All the modules' options live in `perSystem`, under `devkit`.
-`nix run .#check` runs every check that the modules provide, and `nix run .#setup` every setup, asking before each one.
+All module options live under `perSystem.devkit`.
+`nix run .#check` runs every check that the modules provide.
+`nix run .#setup` runs every setup, asking before each one.
 
 ## Choose the modules
 
 Each module has its own skill, which describes what it provides and how to set it up.
 These modules are ready to use:
 
-- `reuse` (`devkit-reuse` skill): checks the licenses of the files with REUSE, and writes their texts from the SPDX list.
+- `reuse` (`devkit-reuse` skill): checks the files' licenses with REUSE and writes the license texts from the SPDX list.
 - `yamllint` (`devkit-yamllint` skill): checks the YAML files.
 
 These modules let a repository define its own:
@@ -51,4 +54,4 @@ These modules let a repository define its own:
 - `checks` (`devkit-checks` skill): checks.
 - `commands` (`devkit-commands` skill): commands, written as Bash templates.
 - `files` (`devkit-files` skill): generated files, built from shared values such as the maximum line length.
-- `setups` (`devkit-setups` skill): setups that write recommended files into the repository.
+- `setups` (`devkit-setups` skill): setups, such as those that write recommended files into the repository.

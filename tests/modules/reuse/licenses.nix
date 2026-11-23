@@ -33,7 +33,7 @@ let
     "check-licenses"
     "check-reuse"
   ];
-  # Split, so that REUSE does not take these lines of this file for its own.
+  # Split so that REUSE does not mistake these lines for this file's own tags.
   tags = ''
     SPDX-${""}FileCopyrightText: 2020 Someone else
     SPDX-${""}License-Identifier: Apache-2.0
@@ -109,7 +109,7 @@ lib.mapAttrs case {
       "Sic.txt" = other;
     };
     status = 1;
-    output = [ "LICENSES/Sic.txt is not named <id>.txt, with <id> a license" ];
+    output = [ "LICENSES/Sic.txt is not named <id>.txt, where <id> is a license" ];
   };
   check-custom-text = {
     licenses = {
@@ -117,7 +117,7 @@ lib.mapAttrs case {
       "LicenseRef-Sic.txt" = other;
     };
     status = 1;
-    output = [ "LICENSES/LicenseRef-Sic.txt is not named <id>.txt, with <id> a license" ];
+    output = [ "LICENSES/LicenseRef-Sic.txt is not named <id>.txt, where <id> is a license" ];
   };
   check-custom-license = {
     licenses = {
@@ -126,7 +126,7 @@ lib.mapAttrs case {
     };
     reuse = reuseToml [ { license = "Apache-2.0 OR LicenseRef-Sic"; } ];
     status = 1;
-    output = [ "LicenseRef-Sic is not a license or exception of the SPDX list" ];
+    output = [ "LicenseRef-Sic is not a license or exception on the SPDX list" ];
   };
   check-custom-exception = {
     licenses = {
@@ -135,7 +135,7 @@ lib.mapAttrs case {
     };
     reuse = reuseToml [ { license = "Apache-2.0 WITH AdditionRef-Sic"; } ];
     status = 1;
-    output = [ "AdditionRef-Sic is not a license or exception of the SPDX list" ];
+    output = [ "AdditionRef-Sic is not a license or exception on the SPDX list" ];
   };
   check-no-reuse-toml = {
     reuse = null;
@@ -196,7 +196,7 @@ lib.mapAttrs case {
     };
     reuse = reuseToml [ { license = "Apache-2.0 OR MIT"; } ];
     status = 1;
-    output = [ "LICENSES/MIT.md is not named <id>.txt, with <id> a license" ];
+    output = [ "LICENSES/MIT.md is not named <id>.txt, where <id> is a license" ];
   };
   check-unused-text = {
     command = "check-reuse";
@@ -278,7 +278,7 @@ lib.mapAttrs case {
     };
     reuse = reuseToml [ { license = "Apache-2.0 OR LicenseRef-Sic"; } ];
     status = 1;
-    output = [ "LICENSES/LicenseRef-Sic.txt is not named <id>.txt, with <id> a license" ];
+    output = [ "LICENSES/LicenseRef-Sic.txt is not named <id>.txt, where <id> is a license" ];
     after = "cmp LICENSES/LicenseRef-Sic.txt ${other}";
   };
   setup-keeps-unused-custom-text = {
@@ -289,8 +289,8 @@ lib.mapAttrs case {
     };
     status = 1;
     output = [
-      "LICENSES/LicenseRef-Sic.txt is not named <id>.txt, with <id> a license"
-      "kept the unused text of LicenseRef-Sic, which is not LICENSES/LicenseRef-Sic.txt"
+      "LICENSES/LicenseRef-Sic.txt is not named <id>.txt, where <id> is a license"
+      "kept the unused text of LicenseRef-Sic, because it is not an SPDX text"
     ];
     after = "cmp LICENSES/LicenseRef-Sic.txt ${other}";
   };
@@ -302,8 +302,8 @@ lib.mapAttrs case {
     };
     status = 1;
     output = [
-      "LICENSES/MIT.md is not named <id>.txt, with <id> a license"
-      "kept the unused text of MIT, which is not LICENSES/MIT.txt of the SPDX list"
+      "LICENSES/MIT.md is not named <id>.txt, where <id> is a license"
+      "kept the unused text of MIT, because it is not an SPDX text at LICENSES/MIT.txt"
     ];
     after = "cmp LICENSES/MIT.md ${spdx}/MIT.txt";
   };
@@ -311,6 +311,6 @@ lib.mapAttrs case {
     command = "setup-licenses";
     reuse = reuseToml [ { license = "Apache-2.0 OR LicenseRef-Other"; } ];
     status = 1;
-    output = [ "LicenseRef-Other is not a license or exception of the SPDX list" ];
+    output = [ "LicenseRef-Other is not a license or exception on the SPDX list" ];
   };
 }

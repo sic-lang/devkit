@@ -1,5 +1,5 @@
 spdx="@spdx@"
-spdx_only="a license or exception of the SPDX list, to which a repository is limited"
+spdx_only="a license or exception on the SPDX list, the only ones a repository may use"
 status=0
 
 licenses=()
@@ -12,7 +12,7 @@ for file in LICENSES/*; do
     licenses+=("$file")
     texts+=("$text")
   else
-    echo "$file is not named <id>.txt, with <id> $spdx_only" >&2
+    echo "$file is not named <id>.txt, where <id> is $spdx_only" >&2
     status=1
   fi
 done

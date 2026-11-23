@@ -11,32 +11,32 @@ in
     {
       options.devkit = {
         commands = mkOption {
-          description = "The commands, each run by its app and checked by its flake check <name>.";
+          description = "The commands, each run by its app <name> and checked by its flake check.";
           default = { };
           type = types.attrsOf (import ./command.nix lib);
         };
         commandEnv = mkOption {
           description = ''
-            The environment variables that a command exports, as a function of the arguments of
-            mkCommand that make it.
+            The environment variables that a command exports, as a function of the arguments passed
+            to mkCommand to build it.
           '';
           type = types.functionTo (types.attrsOf types.str);
           default = _: { };
         };
         mkCommand = mkOption {
           description = ''
-            Makes the command name from the Bash template template, after the header of
-            header.sh.in, which exports the variables of commandEnv, puts the packages tools on
-            PATH and goes to the root of the repository, and whose placeholders @name@ are replaced
-            by the values of replacements: the script run, for nix run, its check by ShellCheck
-            checked, for nix flake check, and tools.
+            Builds the command `name` from the Bash template `template`, prefixed with the header
+            from header.sh.in. The header sets the Bash options, exports the variables from
+            commandEnv, puts the `tools` packages on PATH and changes to the repository's root. Each
+            @name@ placeholder is replaced with its value from `replacements`. Returns `run`, the
+            script for nix run; `checked`, its ShellCheck check for nix flake check; and `tools`.
           '';
           type = types.functionTo types.raw;
           readOnly = true;
         };
         shell = {
           packages = mkOption {
-            description = "The packages of the development shell.";
+            description = "The development shell's packages.";
             type = types.listOf types.package;
             default = [ ];
           };
@@ -71,7 +71,7 @@ in
               ];
               dir = "bin";
               isExecutable = true;
-              # coreutils keeps PATH from starting with an empty entry, the current directory.
+              # coreutils keeps PATH from starting with an empty entry, read as the current directory.
               replacements = {
                 bash = pkgs.runtimeShell;
                 path = lib.makeBinPath (
