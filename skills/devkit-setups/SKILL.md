@@ -13,7 +13,7 @@ The `setups` module lets a repository define its own setups, beyond those that d
 It has a `description` and a `command`, which receives the setup's arguments.
 
 `devkit.mkSetup` builds a command that writes files from the flake or the Nix store to their paths in the repository.
-It never overwrites a file that differs from the recommended one, unless it is given `--force`:
+It never overwrites a file that differs from the one it writes, unless it is given `--force`:
 
 ```nix
 devkit.setups.vscode = {
