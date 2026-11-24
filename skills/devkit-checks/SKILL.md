@@ -23,7 +23,7 @@ devkit.checks.actionlint = {
 ```
 
 The development shell includes every check's `packages`.
-A flake check runs ShellCheck and shfmt on the script that runs the command line, so the command line follows their rules.
+The command line becomes a command of the `commands` module, whose flake check runs ShellCheck and shfmt on it.
 
 The `command` can also be built with the `commands` module, as described in the `devkit-commands` skill:
 
