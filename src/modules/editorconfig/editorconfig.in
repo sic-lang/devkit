@@ -8,7 +8,7 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-# Markdown continues ordered list items with 3 spaces; markdownlint checks its indentation.
+# Markdown continues ordered list items with 3 spaces.
 [*.md]
 indent_size = unset
 
