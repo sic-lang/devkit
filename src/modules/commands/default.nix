@@ -109,7 +109,6 @@ in
                 pkgs.shfmt
               ];
               script = lib.getExe run;
-              dryRun = pkgs.stdenv.shellDryRun;
               indentSize = toString (import ../../lib.nix).indentSize;
             } (builtins.readFile ./checked.sh);
           };
