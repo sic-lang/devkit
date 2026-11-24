@@ -35,6 +35,8 @@ let
 in
 lib.mapAttrs case {
   signed-off.flags = "--signoff";
+  # A trailer's value may continue on an indented line.
+  folded-sign-off.flags = ''-m "$(printf 'Signed-off-by: A U Thor\n <author@example.com>')"'';
   no-sign-off = rejected // {
     output = [ "no Signed-off-by: A U Thor <author@example.com>, which git commit -s adds" ];
   };
