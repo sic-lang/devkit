@@ -10,7 +10,7 @@ let
   recommended = pkgs.writeText "file.txt" "The recommended text.\n";
   other = pkgs.writeText "other" "Another text.\n";
   setup =
-    source:
+    arguments:
     (consumer [
       flakeModules.setups
       {
@@ -19,11 +19,14 @@ let
           {
             devkit.setups.example = {
               description = "Write the example";
-              command = config.devkit.mkSetup {
-                name = "setup-example";
-                mode = "644";
-                files."example/file.txt" = source;
-              };
+              command = config.devkit.mkSetup (
+                {
+                  name = "setup-example";
+                  mode = "644";
+                  files."example/file.txt" = recommended;
+                }
+                // arguments
+              );
             };
           };
       }
@@ -33,7 +36,7 @@ let
     repository (
       {
         inherit name;
-        command = setup recommended;
+        command = setup { };
       }
       // arguments
     );
@@ -71,8 +74,17 @@ lib.mapAttrs case {
   };
   # Unlike a file from the Nix store, a file from the flake must be copied into it.
   local = {
-    command = setup ./mkSetup.nix;
+    command = setup { files."example/file.txt" = ./mkSetup.nix; };
     output = [ "created" ];
     after = "cmp example/file.txt ${./mkSetup.nix}";
+  };
+  # A directory that only the setup's run gives, as the hooks directory of the clone.
+  directory = {
+    command = setup { directory = ''"$(git rev-parse --absolute-git-dir)"''; };
+    output = [ "created" ];
+    after = ''
+      cmp .git/example/file.txt ${recommended}
+      [ ! -e example ]
+    '';
   };
 }

@@ -26,6 +26,17 @@ devkit.setups.vscode = {
 };
 ```
 
+When the directory of the files is known only when the setup runs, `directory` gives it as a Bash word, and the paths in `files` are relative to it:
+
+```nix
+config.devkit.mkSetup {
+  name = "setup-example";
+  mode = "644";
+  directory = ''"$(git rev-parse --absolute-git-dir)"'';
+  files."example/file.txt" = example;
+}
+```
+
 The `command` can also be built with the `commands` module, as described in the `devkit-commands` skill.
 
 ## Run a setup

@@ -34,7 +34,8 @@ in
           description = ''
             Builds the `name` setup, which writes each file in `files`, from the flake or the Nix
             store, to its path in the repository, with mode `mode`. It never overwrites a file that
-            differs, unless `--force` is given.
+            differs, unless `--force` is given. The paths are relative to the repository's root,
+            or to `directory`, a Bash word that gives the directory when the setup runs.
           '';
           type = types.functionTo types.raw;
           readOnly = true;
@@ -47,13 +48,14 @@ in
             name,
             files,
             mode,
+            directory ? "",
           }:
           cfg.mkCommand {
             inherit name;
             template = ./write.sh.in;
             packages = [ pkgs.diffutils ];
             replacements = {
-              inherit name mode;
+              inherit directory name mode;
             }
             // import ./targets.nix lib files;
           };
