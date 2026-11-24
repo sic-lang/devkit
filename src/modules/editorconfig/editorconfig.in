@@ -15,7 +15,7 @@ trim_trailing_whitespace = true
 indent_size = unset
 max_line_length = unset
 
-# The yamllint module checks the line length of YAML files, with lineLength.
+# The yamllint module checks the line length of YAML files, and allows words that cannot be broken.
 [*.{yaml,yml}]
 max_line_length = unset
 
