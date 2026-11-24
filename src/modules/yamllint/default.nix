@@ -1,3 +1,6 @@
+let
+  shared = import ../../lib.nix;
+in
 {
   imports = [ ../files ];
 
@@ -8,8 +11,8 @@
         files.".yamllint.yaml" = {
           template = ./yamllint.yaml.in;
           replacements = {
-            indentSize = toString (import ../../lib.nix).indentSize;
-            lineLength = toString (import ../../lib.nix).lineLength;
+            indentSize = toString shared.indentSize;
+            lineLength = toString shared.lineLength;
           };
         };
         checks.yamllint = {
