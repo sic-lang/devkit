@@ -16,6 +16,12 @@ let
     git update-ref refs/remotes/origin/main HEAD
     git switch -q -c topic
   '';
+  # A clone of the branch topic and of origin/main, each with its last commit only.
+  shallow = ''
+    git clone -q --depth 1 --branch topic "file://$PWD" ../shallow
+    cd ../shallow
+    git fetch -q --depth 1 origin refs/remotes/origin/main:refs/remotes/origin/main
+  '';
   case =
     name:
     {
@@ -157,6 +163,26 @@ lib.mapAttrs case {
     '';
     status = 1;
     output = [ "origin/main is not a commit of the clone" ];
+  };
+  # A shallow clone's commits have no parents, which hides the commits and the merges behind them.
+  shallow-unsigned = {
+    before = ''
+      ${commit} -m Change
+      ${shallow}
+    '';
+    status = 1;
+    output = [ "the clone is shallow" ];
+  };
+  shallow-merge-of-another-branch = {
+    before = ''
+      git switch -q -c other
+      ${commit} -m "Change of another branch"
+      git switch -q topic
+      git merge -q --no-edit --signoff other
+      ${shallow}
+    '';
+    status = 1;
+    output = [ "the clone is shallow" ];
   };
   missing-base = {
     before = "${commit} -m Change";
