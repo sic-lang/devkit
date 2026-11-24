@@ -1,3 +1,5 @@
+license="@license@"
+
 for i in "${!licenses[@]}"; do
   if ! cmp -s "${licenses[$i]}" "${texts[$i]}"; then
     diff -u "${licenses[$i]}" "${texts[$i]}" || true
@@ -19,15 +21,25 @@ if ! reuse_jq -e 'include "reuse"; everything | length == 1 and .[0].path == "**
   echo 'REUSE.toml must have exactly one annotation whose path is the string "**",' \
     'because REUSE applies the last annotation that matches a file' >&2
   status=1
-elif ! reuse_jq -e '
-  include "reuse";
-  everything
-  | .[0]."SPDX-FileCopyrightText"
-  | type == "string" and test("^[0-9]{4} The Sic Contributors$")
-' <<<"$toml" >/dev/null; then
-  echo 'In REUSE.toml, the SPDX-FileCopyrightText of the "**" annotation must be' \
-    '"<year> The Sic Contributors"' >&2
-  status=1
+else
+  if ! reuse_jq -e '
+    include "reuse";
+    everything
+    | .[0]."SPDX-FileCopyrightText"
+    | type == "string" and test("^[0-9]{4} The Sic Contributors$")
+  ' <<<"$toml" >/dev/null; then
+    echo 'In REUSE.toml, the SPDX-FileCopyrightText of the "**" annotation must be' \
+      '"<year> The Sic Contributors"' >&2
+    status=1
+  fi
+  identifier=$(
+    reuse_jq -r 'include "reuse"; everything | .[0]."SPDX-License-Identifier"' <<<"$toml"
+  )
+  if [ "$identifier" != "$license" ]; then
+    echo "In REUSE.toml, the SPDX-License-Identifier of the \"**\" annotation must be" \
+      "\"$license\", Sic's license" >&2
+    status=1
+  fi
 fi
 
 lint
