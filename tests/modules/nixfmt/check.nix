@@ -34,6 +34,11 @@ lib.mapAttrs case {
     output = [ "directory/file.nix: not formatted" ];
   };
   space-in-name.files."a file.nix" = formatted;
+  dash-name = {
+    files."-x.nix" = unformatted;
+    status = 123;
+    output = [ "-x.nix: not formatted" ];
+  };
   # A UTF-8 locale, under which a name that is not valid UTF-8 is not text.
   latin-1-name = {
     files."file.nix" = formatted;

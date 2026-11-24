@@ -27,7 +27,7 @@
       };
       devkit.checks.nixfmt = {
         inherit packages;
-        command = "nix-files | xargs -0 nixfmt --check";
+        command = "nix-files | xargs -0 nixfmt --check --";
       };
     };
 }

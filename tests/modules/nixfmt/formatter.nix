@@ -53,6 +53,25 @@ lib.mapAttrs case {
       cmp file.txt ${unformatted}
     '';
   };
+  dash-name = {
+    files = {
+      "-x.nix" = unformatted;
+      "directory/-y.nix" = unformatted;
+    };
+    after = ''
+      cmp ./-x.nix ${formatted}
+      cmp directory/-y.nix ${formatted}
+    '';
+  };
+  dash-name-in-subdirectory = {
+    files."directory/-y.nix" = unformatted;
+    before = ''
+      git add .
+      cd directory
+    '';
+    arguments = [ "-y.nix" ];
+    after = "cmp ./-y.nix ${formatted}";
+  };
   # A UTF-8 locale, under which a name that is not valid UTF-8 is not text.
   latin-1-name = {
     files."file.nix" = unformatted;
