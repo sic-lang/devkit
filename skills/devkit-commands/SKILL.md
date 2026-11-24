@@ -36,7 +36,6 @@ config.devkit.mkCommand {
 - The header uses the `bash`, `path` and `env` placeholders, so templates cannot use these names.
 - The build fails if a replacement matches no placeholder, or if a placeholder is left unreplaced.
   The flake check fails if ShellCheck finds a problem in the built script, or if shfmt would format it differently.
-  shfmt indents with `indentSize` spaces, from devkit's library, so the template is indented alike.
   The template itself is not checked, because it is not valid Bash until its placeholders are replaced.
 
 `devkit.commands.<name>` exposes its `command` as the `<name>` app, with a `description`.
