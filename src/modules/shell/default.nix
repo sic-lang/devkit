@@ -3,6 +3,10 @@
 
   perSystem =
     { pkgs, ... }:
+    let
+      # Runs a command on the shell scripts.
+      onScripts = command: "git ls-files -z .envrc '*.sh' | xargs -0 ${command}";
+    in
     {
       devkit.checks = {
         shellcheck = {
@@ -10,14 +14,14 @@
             pkgs.findutils
             pkgs.shellcheck
           ];
-          command = "git ls-files -z .envrc '*.sh' | xargs -0 shellcheck";
+          command = onScripts "shellcheck";
         };
         shfmt = {
           packages = [
             pkgs.findutils
             pkgs.shfmt
           ];
-          command = "git ls-files -z .envrc '*.sh' | xargs -0 shfmt --diff";
+          command = onScripts "shfmt --diff";
         };
       };
     };
