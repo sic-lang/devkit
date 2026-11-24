@@ -16,8 +16,7 @@ It generates the [EditorConfig](https://editorconfig.org) file, `.editorconfig`,
 
 ## The configuration
 
-Every file is in UTF-8, ends its lines with a line feed, ends with a line feed, has no trailing whitespace, and indents with 2 spaces.
-Markdown files and license texts in `LICENSES/` may indent by any amount: Markdown continues ordered list items with 3 spaces, and license texts are verbatim copies.
+Every file is encoded in UTF-8, uses line feeds, ends with one, has no trailing whitespace, and indents by multiples of 2 spaces.
+Markdown files and license texts in `LICENSES/` may indent by any number of spaces, but never with tabs: Markdown continues ordered list items with 3 spaces, and license texts are verbatim copies.
 
 The configuration sets no maximum line length.
-Markdown files hold one sentence per line, whatever its length, and license texts keep their own lines.
