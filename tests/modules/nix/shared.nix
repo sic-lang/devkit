@@ -15,8 +15,8 @@ let
 in
 {
   # Bash traces the command that the wrapper runs, with its arguments as nixfmt receives them.
-  shared = repository {
-    name = "shared";
+  values = repository {
+    name = "values";
     command = "${lib.getExe pkgs.bash} -x ${lib.getExe nixfmt} --version";
     output = [ " --width 100 --version" ];
   };
