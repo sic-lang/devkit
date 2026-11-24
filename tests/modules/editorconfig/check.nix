@@ -8,24 +8,45 @@
 }:
 let
   inherit (consumer [ flakeModules.editorconfig ]) apps;
+  text = pkgs.writeText "text";
   case =
-    name:
-    { text, ... }@arguments:
+    name: arguments:
     repository (
-      removeAttrs arguments [ "text" ]
-      // {
+      {
         inherit name;
-        files."file.txt" = pkgs.writeText "file.txt" text;
         before = apps.setup-files.program;
         command = apps.check-editorconfig.program;
       }
+      // arguments
     );
 in
 lib.mapAttrs case {
-  clean.text = "A clean line.\n";
+  clean.files."file.txt" = text "A clean line.\n";
   trailing-whitespace = {
-    text = "A line that ends with a space. \n";
+    files."file.txt" = text "A line that ends with a space. \n";
     status = 1;
     output = [ "1: trailing whitespace" ];
   };
+  odd-indentation = {
+    files."file.txt" = text "a\n   b\n";
+    status = 1;
+    output = [ "wrong amount of left-padding spaces" ];
+  };
+  tab = {
+    files."file.txt" = text "a\n\tb\n";
+    status = 1;
+    output = [ "wrong indent style found (tabs instead of spaces)" ];
+  };
+  crlf = {
+    files."file.txt" = text "a\r\nb\r\n";
+    status = 1;
+    output = [ "not all lines have the correct end of line character" ];
+  };
+  no-final-newline = {
+    files."file.txt" = text "a";
+    status = 1;
+    output = [ "wrong line endings or no final newline" ];
+  };
+  markdown-list.files."list.md" = text "1. a\n   b\n";
+  license-text.files."LICENSES/X.txt" = text "a\n   b\n";
 }
