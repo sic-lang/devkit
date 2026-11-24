@@ -18,7 +18,7 @@ It also provides a `commit-msg` hook that rejects a commit without its author's 
 
 `nix run .#check-commits -- <base> <head>` checks the commits after `<base>` up to `<head>`.
 `<base>` is `origin/main` by default, and `<head>` is `HEAD`.
-The check fails if the clone lacks either of them, or if the clone is shallow, since a shallow clone may miss commits between them.
+The check fails if the clone lacks either of them, or if it is shallow and misses commits between them.
 It requires that:
 
 - every commit has a `Signed-off-by` trailer equal to its author's name and email;

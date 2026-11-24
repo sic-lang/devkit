@@ -197,7 +197,8 @@ lib.mapAttrs case {
     status = 1;
     output = [ "origin/main is not a commit of the clone" ];
   };
-  # A shallow clone's commits have no parents, which hides the commits and the merges behind them.
+  # The deepest commits of a shallow clone have no parents, which hides the commits and the merges
+  # behind them.
   shallow-unsigned = {
     before = ''
       ${commit} -m Change
@@ -217,6 +218,13 @@ lib.mapAttrs case {
     status = 1;
     output = [ "the clone is shallow" ];
   };
+  # A shallow clone that holds every commit after the base hides none.
+  shallow-complete.before = ''
+    ${commit} --signoff -m Change
+    git clone -q --depth 2 --branch topic "file://$PWD" ../shallow
+    cd ../shallow
+    git fetch -q --depth 1 origin refs/remotes/origin/main:refs/remotes/origin/main
+  '';
   missing-base = {
     before = "${commit} -m Change";
     arguments = [ "missing" ];
