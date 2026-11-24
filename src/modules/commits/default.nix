@@ -27,8 +27,9 @@
         };
       };
       # The commit-msg hook rejects a commit without the sign-off of its author, which the commits
-      # check requires, before the commit exists. It runs the contributor's Bash and Git, since its
-      # copy outside the Nix store cannot depend on paths that the store may collect.
+      # check requires, before the commit exists.
+      # It runs the contributor's Bash and Git, since its copy outside the Nix store cannot depend
+      # on paths that the store may collect.
       checks.hook-commit-msg = import ../commands/checked.nix pkgs "commit-msg" ./commit-msg;
     };
 }

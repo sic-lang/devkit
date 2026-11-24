@@ -1,5 +1,6 @@
 # Replace refs could show other commits in place of those of the history, and grafts other
-# parents. Git advises against a graft file each time it reads one, even an empty one.
+# parents.
+# Git advises against a graft file each time it reads one, even an empty one.
 export GIT_NO_REPLACE_OBJECTS=1
 export GIT_GRAFT_FILE=/dev/null
 export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=advice.graftFileDeprecated GIT_CONFIG_VALUE_0=false
