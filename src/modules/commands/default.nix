@@ -12,7 +12,7 @@ in
       options.devkit = {
         commands = mkOption {
           description = ''
-            The commands, each run by its `<name>` app and checked by its `lint-<name>` flake check.
+            The commands, each run by its `<name>` app and linted by its `lint-<name>` flake check.
           '';
           default = { };
           type = types.attrsOf (import ./command.nix lib);
@@ -31,7 +31,7 @@ in
             from `header.sh.in`. The header sets the Bash options, exports the variables from
             `commandEnv`, puts the programs of `packages` on `PATH` and changes to the repository's
             root. Each `@name@` placeholder is replaced with its value from `replacements`. Returns
-            `run`, the script for `nix run`; `checked`, its ShellCheck and shfmt check for
+            `run`, the script for `nix run`; `lint`, its ShellCheck and shfmt lint for
             `nix flake check`; and `packages`.
           '';
           type = types.functionTo types.raw;
@@ -103,14 +103,14 @@ in
           in
           {
             inherit run packages;
-            checked = pkgs.runCommand "lint-${name}" {
+            lint = pkgs.runCommand "lint-${name}" {
               nativeBuildInputs = [
                 pkgs.shellcheck
                 pkgs.shfmt
               ];
               script = lib.getExe run;
               indentSize = toString (import ../../lib.nix).indentSize;
-            } (builtins.readFile ./checked.sh);
+            } (builtins.readFile ./lint.sh);
           };
 
         apps = lib.mapAttrs (name: command: {
@@ -120,7 +120,7 @@ in
         }) cfg.commands;
 
         checks = lib.mapAttrs' (
-          name: command: lib.nameValuePair "lint-${name}" command.command.checked
+          name: command: lib.nameValuePair "lint-${name}" command.command.lint
         ) cfg.commands;
 
         devShells.default = pkgs.mkShellNoCC {
