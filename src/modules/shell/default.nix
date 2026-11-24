@@ -21,7 +21,7 @@
             pkgs.findutils
             pkgs.shfmt
           ];
-          command = onScripts "shfmt --diff";
+          command = onScripts "shfmt --indent ${toString (import ../../lib.nix).indentSize} --diff";
         };
       };
     };

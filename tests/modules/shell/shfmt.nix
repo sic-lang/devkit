@@ -7,19 +7,11 @@
   ...
 }:
 let
-  # shfmt takes its indentation from the .editorconfig that the editorconfig module writes.
-  inherit
-    (consumer [
-      flakeModules.editorconfig
-      flakeModules.shell
-    ])
-    apps
-    ;
+  inherit (consumer [ flakeModules.shell ]) apps;
   text = pkgs.writeText "text";
   clean = text "if true; then\n  echo a\nfi\n";
   unformatted = text "if true;then\n  echo a\nfi\n";
   tab = text "if true; then\n\techo a\nfi\n";
-  setup = "${apps.setup-files.program} && git add -A";
   # The status of xargs when the command it runs fails.
   failure = 123;
   case =
@@ -27,7 +19,7 @@ let
     repository (
       {
         inherit name;
-        before = setup;
+        before = "git add -A";
         command = apps.check-shfmt.program;
       }
       // arguments
@@ -74,7 +66,7 @@ lib.mapAttrs case {
   };
   untracked = {
     files."script.sh" = clean;
-    before = "${setup} && install -m 644 ${unformatted} untracked.sh";
+    before = "git add -A && install -m 644 ${unformatted} untracked.sh";
   };
   other-extension.files = {
     "script.sh" = clean;
@@ -85,13 +77,13 @@ lib.mapAttrs case {
     status = failure;
     output = [ "<standard input>" ];
   };
-}
-// {
-  # Without .editorconfig, shfmt indents with tabs.
-  no-editorconfig = repository {
-    name = "no-editorconfig";
-    files."script.sh" = tab;
-    before = "git add -A";
-    command = (consumer [ flakeModules.shell ]).apps.check-shfmt.program;
+  # The indentation comes from devkit's library, whatever .editorconfig says.
+  editorconfig-ignored = {
+    files = {
+      ".editorconfig" = text "root = true\n\n[*]\nindent_style = tab\n";
+      "script.sh" = tab;
+    };
+    status = failure;
+    output = [ "+  echo a" ];
   };
 }

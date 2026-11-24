@@ -25,5 +25,4 @@ A script that has no shebang, such as `.envrc`, names it in a directive on its f
 # shellcheck shell=bash
 ```
 
-shfmt takes its indentation from `.editorconfig`, and indents with tabs without one.
-So a repository with shell scripts also uses the `editorconfig` module, as the `devkit-editorconfig` skill shows.
+shfmt indents with `indentSize` spaces, from devkit's library, and reads no `.editorconfig`.
