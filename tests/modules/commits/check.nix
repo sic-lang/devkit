@@ -49,6 +49,17 @@ lib.mapAttrs case {
     status = 1;
     output = [ "Change: no Signed-off-by: Someone Else <else@example.com>" ];
   };
+  # A value that starts with the author's ident, but holds more, is not the author's sign-off.
+  sign-off-with-more = {
+    before = ''${commit} --trailer "Signed-off-by: A U Thor <author@example.com>x" -m Change'';
+    status = 1;
+    output = [ "Change: no Signed-off-by: A U Thor <author@example.com>" ];
+  };
+  author-under-another-key = {
+    before = ''${commit} --trailer "Co-authored-by: A U Thor <author@example.com>" -m Change'';
+    status = 1;
+    output = [ "Change: no Signed-off-by: A U Thor <author@example.com>" ];
+  };
   merge-of-the-base.before = ''
     ${commit} --signoff -m Change
     git switch -q --detach origin/main
@@ -67,6 +78,21 @@ lib.mapAttrs case {
     '';
     status = 1;
     output = [ "Merge branch 'other' into topic: merges another branch than origin/main" ];
+  };
+  # Every parent after the first counts, not only the second.
+  octopus-merge-of-another-branch = {
+    before = ''
+      git switch -q -c other
+      ${commit} --signoff -m "Change of another branch"
+      git switch -q --detach origin/main
+      ${commit} --signoff -m "Change of the base"
+      git update-ref refs/remotes/origin/main HEAD
+      git switch -q topic
+      ${commit} --signoff -m Change
+      git merge -q --no-edit --signoff origin/main other
+    '';
+    status = 1;
+    output = [ "merges another branch than origin/main" ];
   };
   merge-without-sign-off = {
     before = ''

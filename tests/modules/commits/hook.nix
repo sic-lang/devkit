@@ -47,4 +47,9 @@ lib.mapAttrs case {
     flags = ''--signoff --author "Someone Else <else@example.com>"'';
     output = [ "no Signed-off-by: Someone Else <else@example.com>" ];
   };
+  # A value that starts with the author's ident, but holds more, is not the author's sign-off.
+  sign-off-with-more = rejected // {
+    flags = ''--trailer "Signed-off-by: A U Thor <author@example.com>x"'';
+    output = [ "no Signed-off-by: A U Thor <author@example.com>" ];
+  };
 }
