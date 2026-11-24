@@ -60,7 +60,8 @@ let
 in
 assert lib.assertMsg (orphans == [ ])
   "tests/modules has directories with no module in src/modules: ${lib.concatStringsSep ", " orphans}";
-# One check per module, which builds all its cases, so that the tests of a module run together.
+# One check per module, which builds all its cases: the CI runs a job per check, and each job sets
+# up a machine and installs Nix, which a check per case would repeat for every case.
 lib.mapAttrs' (
   module: _: lib.nameValuePair "test-${module}" (pkgs.linkFarm "test-${module}" (cases module))
 ) flakeModules
