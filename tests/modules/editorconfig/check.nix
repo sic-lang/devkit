@@ -56,6 +56,10 @@ lib.mapAttrs case {
   longest-line.files."file.txt" = line 100;
   markdown-list.files."list.md" = text "1. a\n   b\n";
   long-markdown-line.files."file.md" = line 101;
+  long-yaml-line.files = {
+    "file.yaml" = line 101;
+    "file.yml" = line 101;
+  };
   license-text.files."LICENSES/X.txt" = text "a\n   b\n";
   long-license-line.files."LICENSES/X.txt" = line 101;
 }

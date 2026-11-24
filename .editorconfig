@@ -15,6 +15,10 @@ trim_trailing_whitespace = true
 indent_size = unset
 max_line_length = unset
 
+# The yamllint module checks the line length of YAML files, with lineLength.
+[*.{yaml,yml}]
+max_line_length = unset
+
 # License texts are verbatim copies, with their own indentation and line breaks.
 [LICENSES/*]
 indent_size = unset
