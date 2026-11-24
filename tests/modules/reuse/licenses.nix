@@ -94,7 +94,8 @@ lib.mapAttrs case {
     reuse = reuseToml [ { license = "MIT"; } ];
     status = 1;
     output = [
-      ''In REUSE.toml, the SPDX-License-Identifier of the "**" annotation must be "Apache-2.0 WITH LLVM-exception", Sic's license''
+      ''In REUSE.toml, the SPDX-License-Identifier of the "**" annotation must be''
+      ''"Apache-2.0 WITH LLVM-exception", Sic's license''
     ];
   };
   check-no-exception = {

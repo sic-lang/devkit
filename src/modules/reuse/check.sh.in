@@ -32,7 +32,9 @@ else
       '"<year> The Sic Contributors"' >&2
     status=1
   fi
-  identifier=$(reuse_jq -r 'include "reuse"; everything | .[0]."SPDX-License-Identifier"' <<<"$toml")
+  identifier=$(
+    reuse_jq -r 'include "reuse"; everything | .[0]."SPDX-License-Identifier"' <<<"$toml"
+  )
   if [ "$identifier" != "$license" ]; then
     echo "In REUSE.toml, the SPDX-License-Identifier of the \"**\" annotation must be" \
       "\"$license\", Sic's license" >&2
