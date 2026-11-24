@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+author=$(git var GIT_AUTHOR_IDENT | sed 's/ [0-9]* [-+][0-9]*$//')
+if ! git interpret-trailers --parse "$1" | grep -qxF "Signed-off-by: $author"; then
+  echo "no Signed-off-by: $author, which git commit -s adds" >&2
+  exit 1
+fi
