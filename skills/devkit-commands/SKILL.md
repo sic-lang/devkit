@@ -6,7 +6,8 @@ description: Implement a custom repository-specific command as a Bash template u
 # commands
 
 The `commands` module builds a repository's commands.
-Each command becomes an app, run with `nix run .#<name>`, and a flake check that runs ShellCheck and shfmt on the command's script.
+Each command becomes an app, run with `nix run .#<name>`.
+Each command also gets a flake check, which runs ShellCheck and shfmt on its script.
 
 ## Write a command
 
