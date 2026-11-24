@@ -6,7 +6,7 @@ description: Add devkit to a sic-lang repository's flake. Use this when a reposi
 # devkit
 
 devkit is a flake whose [flake-parts](https://flake.parts) modules give a repository checks, setups and generated files.
-Its library, `lib`, holds the values that devkit shares between repositories, as the `devkit-files` skill describes.
+Its library, `lib`, holds the values that devkit shares between repositories, such as `lineLength` and `license`, which the skills of the modules that use them describe.
 
 ## Take devkit as an input
 
