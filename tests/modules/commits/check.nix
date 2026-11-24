@@ -228,4 +228,20 @@ lib.mapAttrs case {
     status = 1;
     output = [ "missing is not a commit of the clone" ];
   };
+  # A ref may name another object than a commit, such as a tree.
+  tree-base = {
+    before = "${commit} -m Change";
+    arguments = [ "HEAD^{tree}" ];
+    status = 1;
+    output = [ "HEAD^{tree} is not a commit of the clone" ];
+  };
+  tree-head = {
+    before = "${commit} -m Change";
+    arguments = [
+      "origin/main"
+      "HEAD^{tree}"
+    ];
+    status = 1;
+    output = [ "HEAD^{tree} is not a commit of the clone" ];
+  };
 }
