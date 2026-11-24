@@ -53,7 +53,11 @@ let
     );
 in
 lib.mapAttrs case {
-  signed-off.before = "${commit} --signoff -m Change";
+  # A check that passes prints nothing.
+  signed-off = {
+    before = "${commit} --signoff -m Change";
+    after = ''test ! -s "$TMPDIR/output"'';
+  };
   no-sign-off = {
     before = "${commit} -m Change";
     status = 1;
