@@ -49,6 +49,10 @@ lib.mapAttrs case {
     status = 1;
     output = [ "Change: no Signed-off-by: Someone Else <else@example.com>" ];
   };
+  # A trailer's value may continue on an indented line.
+  folded-sign-off.before = ''
+    ${commit} -m Change -m "$(printf 'Signed-off-by: A U Thor\n <author@example.com>')"
+  '';
   # A value that starts with the author's ident, but holds more, is not the author's sign-off.
   sign-off-with-more = {
     before = ''${commit} --trailer "Signed-off-by: A U Thor <author@example.com>x" -m Change'';

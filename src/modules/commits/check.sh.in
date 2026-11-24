@@ -22,7 +22,7 @@ done
 commits=$(git rev-list "$base..$head")
 for commit in $commits; do
   author=$(git log -1 --format='%an <%ae>' "$commit")
-  signoffs=$(git log -1 --format='%(trailers:key=Signed-off-by,valueonly)' "$commit")
+  signoffs=$(git log -1 --format='%(trailers:key=Signed-off-by,valueonly,unfold)' "$commit")
   if ! grep -qxF "$author" <<<"$signoffs"; then
     echo "$(git log -1 --format='%h %s' "$commit"): no Signed-off-by: $author" >&2
     status=1
