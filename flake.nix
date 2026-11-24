@@ -16,6 +16,7 @@
       {
         imports = [
           ./src/modules/editorconfig
+          ./src/modules/nixfmt
           ./src/modules/reuse
           ./src/modules/yamllint
         ];
