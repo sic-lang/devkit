@@ -4,8 +4,8 @@
   perSystem =
     { pkgs, ... }:
     let
-      # Runs a command on the shell scripts.
-      onScripts = command: "git ls-files -z .envrc '*.sh' | xargs -0 ${command}";
+      # Runs a command on the shell scripts, after `--` so that it reads no name as an option.
+      onScripts = command: "git ls-files -z .envrc '*.sh' | xargs -0 ${command} --";
     in
     {
       devkit.checks = {

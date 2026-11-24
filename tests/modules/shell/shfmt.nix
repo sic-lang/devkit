@@ -66,6 +66,12 @@ lib.mapAttrs case {
     status = failure;
     output = [ "--- a script.sh.orig" ];
   };
+  # The file's name starts with a dash, which shfmt must not read as an option.
+  dash-in-name = {
+    files."./-x.sh" = unformatted;
+    status = failure;
+    output = [ "--- -x.sh.orig" ];
+  };
   untracked = {
     files."script.sh" = clean;
     before = "${setup} && install -m 644 ${unformatted} untracked.sh";

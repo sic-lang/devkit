@@ -51,6 +51,12 @@ lib.mapAttrs case {
     status = failure;
     output = [ "In a script.sh line 2:" ];
   };
+  # The file's name starts with a dash, which ShellCheck must not read as an option.
+  dash-in-name = {
+    files."./-x.sh" = finding;
+    status = failure;
+    output = [ "In -x.sh line 2:" ];
+  };
   untracked = {
     files."script.sh" = clean;
     before = "git add -A && install -m 644 ${finding} untracked.sh";
