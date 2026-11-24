@@ -7,7 +7,7 @@
   ...
 }:
 let
-  inherit (consumer [ flakeModules.nixfmt ]) apps;
+  inherit (consumer [ flakeModules.nix ]) apps;
   formatted = pkgs.writeText "formatted.nix" "{ a = 1; }\n";
   unformatted = pkgs.writeText "unformatted.nix" "{a=1;}\n";
   case =

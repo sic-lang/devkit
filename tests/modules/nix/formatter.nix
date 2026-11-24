@@ -7,7 +7,7 @@
   ...
 }:
 let
-  inherit (consumer [ flakeModules.nixfmt ]) formatter;
+  inherit (consumer [ flakeModules.nix ]) formatter;
   formatted = pkgs.writeText "formatted.nix" "{ a = 1; }\n";
   unformatted = pkgs.writeText "unformatted.nix" "{a=1;}\n";
   # nixfmt leaves a file that is not a Nix file as it is, but warns that it is deprecated.

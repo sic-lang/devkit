@@ -1,17 +1,17 @@
 ---
-name: devkit-nixfmt
-description: Check and format a repository's Nix files with nixfmt, using devkit's `nixfmt` module. Use this when setting up the Nix formatting check, when it fails, or when formatting Nix files.
+name: devkit-nix
+description: Check and format a repository's Nix files with nixfmt, using devkit's `nix` module. Use this when setting up the Nix formatting check, when it fails, or when formatting Nix files.
 ---
 
-# nixfmt
+# nix
 
-The `nixfmt` module checks that every Nix file that git tracks is formatted by [nixfmt](https://github.com/NixOS/nixfmt).
+The `nix` module checks that every Nix file that git tracks is formatted by [nixfmt](https://github.com/NixOS/nixfmt).
 A file that git does not track is not checked.
 The module also gives the flake a formatter, so that `nix fmt` formats the same files.
 
 ## Set it up
 
-1. Import `inputs.devkit.flakeModules.nixfmt`, as the `devkit` skill shows.
+1. Import `inputs.devkit.flakeModules.nix`, as the `devkit` skill shows.
 2. Run `nix run .#check-nixfmt`.
 
 ## Format the files

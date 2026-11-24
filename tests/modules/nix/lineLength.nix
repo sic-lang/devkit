@@ -7,7 +7,7 @@
   ...
 }:
 let
-  inherit (consumer [ flakeModules.nixfmt ]) devShells;
+  inherit (consumer [ flakeModules.nix ]) devShells;
   # The nixfmt that the module provides, which the check and the formatter also run.
   nixfmt = lib.findFirst (
     package: package.name == "nixfmt"
