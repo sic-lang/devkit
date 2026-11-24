@@ -18,6 +18,7 @@ lib.mapAttrs (
         lib.attrValues outputs.checks
         ++ lib.attrValues outputs.devShells
         ++ map (app: app.program) (lib.attrValues outputs.apps)
+        ++ lib.optional (outputs.formatter != null) outputs.formatter
       )
     )
   )
