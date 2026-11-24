@@ -51,7 +51,7 @@ jobs:
           NAME: ${{ matrix.name }}
       - if: matrix.kind == 'build'
         name: Build the flake check
-        run: nix build --quiet --no-link ".#checks.x86_64-linux.$NAME"
+        run: nix build --quiet --keep-going --no-link ".#checks.x86_64-linux.$NAME"
         env:
           NAME: ${{ matrix.name }}
 
