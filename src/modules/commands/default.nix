@@ -66,8 +66,6 @@ in
           }:
           let
             export = name: value: "export ${name}=${lib.escapeShellArg value}";
-            # The .editorconfig of every repository, from which shfmt takes its indentation.
-            editorconfig = import ../editorconfig/file.nix;
             run = pkgs.replaceVarsWith {
               inherit name;
               src = pkgs.concatText "${name}.sh.in" [
@@ -112,7 +110,7 @@ in
               ];
               script = lib.getExe run;
               dryRun = pkgs.stdenv.shellDryRun;
-              editorconfig = pkgs.replaceVars editorconfig.template editorconfig.replacements;
+              indentSize = toString (import ../../lib.nix).indentSize;
             } (builtins.readFile ./checked.sh);
           };
 
