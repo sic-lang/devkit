@@ -33,6 +33,3 @@ The build fails if a replacement matches no placeholder, or if a placeholder is 
 A value that generated files share is a constant of devkit's library.
 A repository reads it as `inputs.devkit.lib.<name>` and passes it to its templates as a replacement, as in the example above.
 The value then has one source, and no repository can change it.
-
-`lineLength` is the maximum line length, 100.
-Every generated file that has a maximum line length uses it, even when 100 is already its tool's default.
