@@ -28,6 +28,8 @@ in
 {
   clean = checked "if true; then\n  echo \"$1\"\nfi";
   shellcheck = failure "shellcheck" "echo $1" [ "SC2086" ];
+  # A syntax error, which ShellCheck rejects without needing Bash.
+  syntax = failure "syntax" "if true; then" [ "SC1073" ];
   shfmt = failure "shfmt" "if true;then\n  echo \"$1\"\nfi" [
     "--- check-example.orig"
     "+if true; then"
