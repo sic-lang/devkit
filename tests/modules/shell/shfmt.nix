@@ -56,9 +56,23 @@ lib.mapAttrs case {
     status = failure;
     output = [ "+  echo a" ];
   };
+  nested = {
+    files."directory/script.sh" = unformatted;
+    status = failure;
+    output = [ "--- directory/script.sh.orig" ];
+  };
+  space-in-name = {
+    files."a script.sh" = unformatted;
+    status = failure;
+    output = [ "--- a script.sh.orig" ];
+  };
   untracked = {
     files."script.sh" = clean;
     before = "${setup} && install -m 644 ${unformatted} untracked.sh";
+  };
+  other-extension.files = {
+    "script.sh" = clean;
+    "script.bash" = unformatted;
   };
   no-script.status = failure;
 }
