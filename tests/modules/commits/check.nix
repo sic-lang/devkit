@@ -283,4 +283,9 @@ lib.mapAttrs case {
     status = 1;
     output = [ "Unsigned: no Signed-off-by: A U Thor <author@example.com>" ];
   };
+  # A pull request with no commit after its base, such as one that its base merged.
+  no-commits.arguments = [
+    "origin/main"
+    "origin/main"
+  ];
 }
