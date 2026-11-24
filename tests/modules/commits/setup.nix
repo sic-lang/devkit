@@ -30,7 +30,9 @@ in
       patchShebangs --build hooks/commit-msg
       git config user.name "A U Thor"
       git config user.email author@example.com
-      ! git commit -q --allow-empty -m Change
+      if git commit -q --allow-empty -m Change; then
+        exit 1
+      fi
     '';
   };
 }
