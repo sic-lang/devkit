@@ -1,3 +1,6 @@
+let
+  shared = import ../../lib.nix;
+in
 {
   imports = [ ../checks ];
 
@@ -13,11 +16,15 @@
         ];
         text = builtins.readFile ./nix-files.sh;
       };
-      # nixfmt with devkit's line length, for the check, the formatter and the development shell.
+      # nixfmt with devkit's line length and indentation, for the check, the formatter and the
+      # development shell.
       nixfmt = pkgs.writeShellApplication {
         name = "nixfmt";
         text = ''
-          exec ${lib.getExe pkgs.nixfmt} --width ${toString (import ../../lib.nix).lineLength} "$@"
+          exec ${lib.getExe pkgs.nixfmt} \
+            --width ${toString shared.lineLength} \
+            --indent ${toString shared.indentSize} \
+            "$@"
         '';
       };
       packages = [

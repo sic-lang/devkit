@@ -18,6 +18,6 @@ in
   values = repository {
     name = "values";
     command = "${lib.getExe pkgs.bash} -x ${lib.getExe nixfmt} --version";
-    output = [ " --width 100 --version" ];
+    output = [ " --width 100 --indent 2 --version" ];
   };
 }
