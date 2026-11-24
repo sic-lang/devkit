@@ -1,4 +1,7 @@
 {
   template = ./editorconfig.in;
-  replacements.lineLength = toString (import ../../lib.nix).lineLength;
+  replacements = {
+    indentSize = toString (import ../../lib.nix).indentSize;
+    lineLength = toString (import ../../lib.nix).lineLength;
+  };
 }
