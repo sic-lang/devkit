@@ -36,7 +36,7 @@ It also writes the license texts from the SPDX license list.
   - that annotation's copyright is `<year> The Sic Contributors`;
   - that annotation's license is `license` in devkit's library.
 
-A third-party file gets its own annotation in `REUSE.toml`, after the `"**"` one, since REUSE applies the last annotation that matches a file.
+A third-party file gets its own annotation in `REUSE.toml`, after the `"**"` one.
 That annotation keeps the file's own copyright and license, which may be any license on the SPDX list.
 
 ## Write the license texts
