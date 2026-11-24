@@ -6,7 +6,7 @@ description: Implement a custom repository-specific command as a Bash template u
 # commands
 
 The `commands` module builds a repository's commands.
-Each command becomes an app, run with `nix run .#<name>`, and a flake check that runs ShellCheck on the command's script.
+Each command becomes an app, run with `nix run .#<name>`, and a flake check that runs ShellCheck and shfmt on the command's script.
 
 ## Write a command
 
@@ -34,7 +34,8 @@ config.devkit.mkCommand {
   Either quote the placeholder in the template, or quote the value with `lib.escapeShellArg` (`lib.escapeShellArgs` for a list).
 - The header uses the `bash`, `path` and `env` placeholders, so templates cannot use these names.
 - The build fails if a replacement matches no placeholder, or if a placeholder is left unreplaced.
-  The flake check fails if ShellCheck finds a problem in the built script.
+  The flake check fails if ShellCheck finds a problem in the built script, or if shfmt would format it differently.
+  shfmt follows the `.editorconfig` that devkit's `editorconfig` module generates, so the template is indented with two spaces.
   The template itself is not checked, because it is not valid Bash until its placeholders are replaced.
 
 `devkit.commands.<name>` exposes its `command` as the `<name>` app, with a `description`.
