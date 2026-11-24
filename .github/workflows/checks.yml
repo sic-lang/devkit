@@ -11,8 +11,10 @@ permissions:
   contents: read
 
 jobs:
-  # The checks are read from the flake, so that a new check or test needs no change here. Each one
-  # gets its own job, so that the pull request names each failure.
+  # The jobs are read from the flake, so that a new check or test needs no change here.
+  # Each job is named after what it does, so that the pull request names each failure.
+  # A check-<name> job runs a check of the repository.
+  # A test-<module> job builds the tests of a module, which also lint the module's commands.
   list:
     runs-on: ubuntu-24.04
     outputs:
@@ -21,22 +23,22 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       - uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b  # 31.11.3
       - id: list
-        name: List the checks
+        name: List the jobs
         run: |
           apps=$(nix eval --json .#apps.x86_64-linux --apply builtins.attrNames)
           checks=$(nix eval --json .#checks.x86_64-linux --apply builtins.attrNames)
           jq -nr --argjson apps "$apps" --argjson checks "$checks" '
             "matrix=" + ({
               include: (
-                [$apps[] | select(startswith("check-")) | {kind: "run", name: .}]
-                + [$checks[] | {kind: "build", name: .}]
+                [$apps[] | select(startswith("check-")) | {name: ., run: .}]
+                + [$checks[] | select(startswith("test-")) | {name: ., build: .}]
               )
             } | tojson)
           ' >>"$GITHUB_OUTPUT"
 
   check:
     needs: list
-    name: ${{ matrix.kind }} ${{ matrix.name }}
+    name: ${{ matrix.name }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.list.outputs.matrix) }}
@@ -44,16 +46,14 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       - uses: cachix/install-nix-action@75c75c31ebece974e48ebc36b4ad125bd97bd97b  # 31.11.3
-      - if: matrix.kind == 'run' && matrix.name != 'check-commits'
+      - if: matrix.run && matrix.run != 'check-commits'
         name: Run the check
-        run: nix run --quiet ".#$NAME"
+        run: nix run --quiet ".#$RUN"
         env:
-          NAME: ${{ matrix.name }}
+          RUN: ${{ matrix.run }}
       # The commits of a pull request only, after its base, with the history of both; main and the
       # merge queue get them through a merge commit.
-      - if: >-
-          matrix.kind == 'run' && matrix.name == 'check-commits'
-          && github.event_name == 'pull_request'
+      - if: matrix.run == 'check-commits' && github.event_name == 'pull_request'
         name: Run the check
         run: |
           git fetch --quiet --unshallow origin "$HEAD" "$BASE"
@@ -61,11 +61,12 @@ jobs:
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
           HEAD: ${{ github.event.pull_request.head.sha }}
-      - if: matrix.kind == 'build'
-        name: Build the flake check
-        run: nix build --quiet --no-link ".#checks.x86_64-linux.$NAME"
+      # --keep-going builds every case after a failure too, so that the job reports them all.
+      - if: matrix.build
+        name: Build the tests
+        run: nix build --quiet --keep-going --no-link ".#checks.x86_64-linux.$BUILD"
         env:
-          NAME: ${{ matrix.name }}
+          BUILD: ${{ matrix.build }}
 
   # The main branch's ruleset requires only this job, so that a new check needs no ruleset change.
   # It always runs, because a skipped job would count as passed.

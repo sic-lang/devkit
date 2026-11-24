@@ -1,10 +1,10 @@
-# The ShellCheck and shfmt check of the Bash script `script`.
+# The ShellCheck and shfmt lint of the Bash script `script`, the flake check lint-<name>.
 pkgs: name: script:
-pkgs.runCommand "${name}-checked" {
+pkgs.runCommand "lint-${name}" {
   nativeBuildInputs = [
     pkgs.shellcheck
     pkgs.shfmt
   ];
   inherit script;
   indentSize = toString (import ../../lib.nix).indentSize;
-} (builtins.readFile ./checked.sh)
+} (builtins.readFile ./lint.sh)

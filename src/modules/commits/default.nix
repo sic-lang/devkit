@@ -30,6 +30,6 @@
       # check requires, before the commit exists.
       # It runs the contributor's Bash and Git, since its copy outside the Nix store cannot depend
       # on paths that the store may collect.
-      checks.hook-commit-msg = import ../commands/checked.nix pkgs "commit-msg" ./commit-msg;
+      checks.lint-hook-commit-msg = import ../commands/lint.nix pkgs "hook-commit-msg" ./commit-msg;
     };
 }

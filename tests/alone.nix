@@ -1,5 +1,6 @@
-# devkit's own use of the reuse module does not test the modules that reuse imports on their own,
-# so each module is tested alone here.
+# devkit imports every module, so its own use would not show that a module misses an import that
+# another module provides.
+# Each module is therefore imported alone here, and everything that it gives the flake is built.
 {
   consumer,
   flakeModules,
