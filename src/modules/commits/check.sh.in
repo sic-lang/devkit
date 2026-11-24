@@ -8,18 +8,22 @@ for ref in "$base" "$head"; do
   fi
 done
 status=0
-for commit in $(git rev-list --merges "$base..$head"); do
-  for parent in $(git log -1 --format='%P' "$commit" | cut -d ' ' -f 2-); do
+merges=$(git rev-list --merges "$base..$head")
+for commit in $merges; do
+  line=$(git log -1 --format='%P' "$commit")
+  read -r -a parents <<<"$line"
+  for parent in "${parents[@]:1}"; do
     if ! git merge-base --is-ancestor "$parent" "$base"; then
       echo "$(git log -1 --format='%h %s' "$commit"): merges another branch than $base" >&2
       status=1
     fi
   done
 done
-for commit in $(git rev-list "$base..$head"); do
+commits=$(git rev-list "$base..$head")
+for commit in $commits; do
   author=$(git log -1 --format='%an <%ae>' "$commit")
-  if ! git log -1 --format='%(trailers:key=Signed-off-by,valueonly)' "$commit" |
-    grep -qxF "$author"; then
+  signoffs=$(git log -1 --format='%(trailers:key=Signed-off-by,valueonly)' "$commit")
+  if ! grep -qxF "$author" <<<"$signoffs"; then
     echo "$(git log -1 --format='%h %s' "$commit"): no Signed-off-by: $author" >&2
     status=1
   fi
