@@ -51,8 +51,8 @@ jobs:
         run: nix run --quiet ".#$RUN"
         env:
           RUN: ${{ matrix.run }}
-      # The commits of a pull request only, after its base, with the history of both; main and the
-      # merge queue get them through a merge commit.
+      # On a pull request, the check gets the commits after its base, with the history of both.
+      # main and the merge queue get these commits through a merge commit, so the check skips them.
       - if: matrix.run == 'check-commits' && github.event_name == 'pull_request'
         name: Run the check
         run: |
