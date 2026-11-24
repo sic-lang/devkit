@@ -19,7 +19,7 @@ It also writes the license texts from the SPDX license list.
    [[annotations]]
    path = "**"
    SPDX-FileCopyrightText = "2026 The Sic Contributors"
-   SPDX-License-Identifier = "Apache-2.0"
+   SPDX-License-Identifier = "Apache-2.0 WITH LLVM-exception"
    ```
 
 3. Run `nix run .#setup-licenses` to write the license texts into `LICENSES/`.
@@ -33,9 +33,11 @@ It also writes the license texts from the SPDX license list.
   - every copyright and license comes from `REUSE.toml`, never from a file header or a `.license` file;
   - every license and exception is on the SPDX list: no `LicenseRef-` or `AdditionRef-` identifiers;
   - in `REUSE.toml`, exactly one annotation's path includes `"**"`, and that path is the string `"**"` itself, not a list;
-  - that annotation's copyright is `<year> The Sic Contributors`.
+  - that annotation's copyright is `<year> The Sic Contributors`;
+  - that annotation's license is Sic's license, `Apache-2.0 WITH LLVM-exception`, which is `license` in devkit's library.
 
 A third-party file gets its own annotation in `REUSE.toml`, after the `"**"` one, since REUSE applies the last annotation that matches a file.
+That annotation keeps the file's own copyright and license, which may be any license on the SPDX list.
 
 ## Write the license texts
 
