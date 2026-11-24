@@ -31,8 +31,8 @@ in
             from `header.sh.in`. The header sets the Bash options, exports the variables from
             `commandEnv`, puts the programs of `packages` on `PATH` and changes to the repository's
             root. Each `@name@` placeholder is replaced with its value from `replacements`. Returns
-            `run`, the script for `nix run`; `checked`, its ShellCheck check for `nix flake check`;
-            and `packages`.
+            `run`, the script for `nix run`; `checked`, its ShellCheck and shfmt check for
+            `nix flake check`; and `packages`.
           '';
           type = types.functionTo types.raw;
           readOnly = true;
@@ -104,9 +104,12 @@ in
           {
             inherit run packages;
             checked = pkgs.runCommand "${name}-checked" {
-              nativeBuildInputs = [ pkgs.shellcheck ];
+              nativeBuildInputs = [
+                pkgs.shellcheck
+                pkgs.shfmt
+              ];
               script = lib.getExe run;
-              dryRun = pkgs.stdenv.shellDryRun;
+              indentSize = toString (import ../../lib.nix).indentSize;
             } (builtins.readFile ./checked.sh);
           };
 

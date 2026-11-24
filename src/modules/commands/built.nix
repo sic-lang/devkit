@@ -9,7 +9,7 @@ types.submodule {
       type = types.package;
     };
     checked = mkOption {
-      description = "The ShellCheck check of the script, which the flake check builds.";
+      description = "The ShellCheck and shfmt check of the script, which the flake check builds.";
       type = types.package;
     };
     packages = mkOption {
