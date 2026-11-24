@@ -17,6 +17,7 @@
         imports = [
           ./src/modules/editorconfig
           ./src/modules/reuse
+          ./src/modules/shell
           ./src/modules/yamllint
         ];
         # The popular systems for which all the tools are in nixpkgs' binary cache.
