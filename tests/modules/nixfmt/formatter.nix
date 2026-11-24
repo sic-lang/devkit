@@ -135,6 +135,17 @@ lib.mapAttrs case {
       cmp file.nix ${formatted}
     '';
   };
+  literal-path = {
+    files = {
+      "g[1].nix" = unformatted;
+      "g1.nix" = unformatted;
+    };
+    arguments = [ "g[1].nix" ];
+    after = ''
+      cmp 'g[1].nix' ${formatted}
+      cmp g1.nix ${unformatted}
+    '';
+  };
   no-nix-path = {
     files = {
       "file.nix" = unformatted;

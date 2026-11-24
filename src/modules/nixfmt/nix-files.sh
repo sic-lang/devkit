@@ -2,6 +2,9 @@
 # paths, relative to the current directory and each followed by a NUL character.
 if [ "$#" -eq 0 ]; then
   set -- :/
+else
+  # The paths are names, not patterns.
+  export GIT_LITERAL_PATHSPECS=1
 fi
 # grep fails when it selects no file, which is no error here. -a keeps a name that is not valid in
 # the locale, which grep would otherwise take for binary data and leave out.
