@@ -21,3 +21,5 @@ Markdown files and license texts in `LICENSES/` may indent by any number of spac
 
 Lines may be as long as `lineLength` in devkit's library, so that every repository wraps at the same length.
 Markdown files and license texts may have lines of any length: Markdown puts one sentence on each line, and license texts are verbatim copies.
+The EditorConfig sets no limit on YAML files either, because the `yamllint` module checks their line length, with the same `lineLength`, and allows long words that cannot be broken, such as URLs.
+So a repository with YAML files also uses the `yamllint` module, as the `devkit-yamllint` skill shows.
