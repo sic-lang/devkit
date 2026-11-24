@@ -1,0 +1,25 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+# So that every repository wraps at the same length.
+max_line_length = @lineLength@
+trim_trailing_whitespace = true
+
+# Markdown continues ordered list items with 3 spaces, and puts one sentence on each line.
+[*.md]
+indent_size = unset
+max_line_length = unset
+
+# The yamllint module checks the line length of YAML files, and allows words that cannot be broken.
+[*.{yaml,yml}]
+max_line_length = unset
+
+# License texts are verbatim copies, with their own indentation and line breaks.
+[LICENSES/*]
+indent_size = unset
+max_line_length = unset
