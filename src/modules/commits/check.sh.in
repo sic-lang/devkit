@@ -1,5 +1,12 @@
 base=${1:-origin/main}
 head=${2:-HEAD}
+for ref in "$base" "$head"; do
+  if ! git rev-parse --verify --quiet "$ref^{commit}" >/dev/null; then
+    echo "$ref is not a commit of the clone: fetch it, or give the base and head as arguments" \
+      >&2
+    exit 1
+  fi
+done
 status=0
 for commit in $(git rev-list --merges "$base..$head"); do
   for parent in $(git log -1 --format='%P' "$commit" | cut -d ' ' -f 2-); do

@@ -119,4 +119,28 @@ lib.mapAttrs case {
     status = 1;
     output = [ "merges another branch than base" ];
   };
+  # A shallow clone, such as a workflow's checkout, may lack the base, which would hide the commits.
+  no-origin-main = {
+    before = ''
+      ${commit} -m Change
+      git update-ref -d refs/remotes/origin/main
+    '';
+    status = 1;
+    output = [ "origin/main is not a commit of the clone" ];
+  };
+  missing-base = {
+    before = "${commit} -m Change";
+    arguments = [ "missing" ];
+    status = 1;
+    output = [ "missing is not a commit of the clone" ];
+  };
+  missing-head = {
+    before = "${commit} -m Change";
+    arguments = [
+      "origin/main"
+      "missing"
+    ];
+    status = 1;
+    output = [ "missing is not a commit of the clone" ];
+  };
 }
