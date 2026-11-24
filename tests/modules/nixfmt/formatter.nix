@@ -53,6 +53,19 @@ lib.mapAttrs case {
       cmp file.txt ${unformatted}
     '';
   };
+  # A UTF-8 locale, under which a name that is not valid UTF-8 is not text.
+  latin-1-name = {
+    files."file.nix" = unformatted;
+    before = ''
+      export LC_ALL=C.UTF-8
+      cp ${unformatted} "$(printf 'caf\351.nix')"
+      git add .
+    '';
+    after = ''
+      cmp file.nix ${formatted}
+      cmp "$(printf 'caf\351.nix')" ${formatted}
+    '';
+  };
   subdirectory = {
     files = {
       "file.nix" = unformatted;
