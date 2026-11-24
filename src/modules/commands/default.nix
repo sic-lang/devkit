@@ -12,7 +12,7 @@ in
       options.devkit = {
         commands = mkOption {
           description = ''
-            The commands, each run by its `<name>` app and checked by its flake check.
+            The commands, each run by its `<name>` app and checked by its `lint-<name>` flake check.
           '';
           default = { };
           type = types.attrsOf (import ./command.nix lib);
@@ -103,7 +103,7 @@ in
           in
           {
             inherit run packages;
-            checked = pkgs.runCommand "${name}-checked" {
+            checked = pkgs.runCommand "lint-${name}" {
               nativeBuildInputs = [
                 pkgs.shellcheck
                 pkgs.shfmt
@@ -119,7 +119,9 @@ in
           meta = { inherit (command) description; };
         }) cfg.commands;
 
-        checks = lib.mapAttrs (name: command: command.command.checked) cfg.commands;
+        checks = lib.mapAttrs' (
+          name: command: lib.nameValuePair "lint-${name}" command.command.checked
+        ) cfg.commands;
 
         devShells.default = pkgs.mkShellNoCC {
           packages = lib.unique cfg.shell.packages;

@@ -12,7 +12,7 @@ let
     (consumer [
       flakeModules.checks
       { perSystem.devkit.checks.example.command = command; }
-    ]).checks.check-example;
+    ]).checks.lint-check-example;
   # Builds the check of `command`, which must fail with each line of `output` in its log.
   failure =
     name: command: output:
