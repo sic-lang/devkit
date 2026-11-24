@@ -10,6 +10,10 @@ let
   inherit (consumer [ flakeModules.nixfmt ]) formatter;
   formatted = pkgs.writeText "formatted.nix" "{ a = 1; }\n";
   unformatted = pkgs.writeText "unformatted.nix" "{a=1;}\n";
+  # nixfmt leaves a file that is not a Nix file as it is, but warns that it is deprecated.
+  notGivenOtherFiles = ''
+    if grep -qF deprecated "$TMPDIR/output"; then exit 1; fi
+  '';
   case =
     name: arguments:
     repository (
@@ -51,6 +55,7 @@ lib.mapAttrs case {
     after = ''
       cmp file.nix ${formatted}
       cmp file.txt ${unformatted}
+      ${notGivenOtherFiles}
     '';
   };
   dash-name = {
@@ -139,6 +144,7 @@ lib.mapAttrs case {
     after = ''
       cmp file.nix ${unformatted}
       cmp file.txt ${unformatted}
+      ${notGivenOtherFiles}
     '';
   };
 }
