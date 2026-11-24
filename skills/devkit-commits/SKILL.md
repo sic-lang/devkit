@@ -26,17 +26,7 @@ It requires that:
 
 The author commits with `git commit --signoff`.
 
-A pull request's workflow gives the base and the head of the pull request, and fetches the history of both:
-
-```yaml
-- if: github.event_name == 'pull_request'
-  run: |
-    git fetch --quiet --unshallow origin "$HEAD" "$BASE"
-    nix run --quiet .#check-commits -- "$BASE" "$HEAD"
-  env:
-    BASE: ${{ github.event.pull_request.base.sha }}
-    HEAD: ${{ github.event.pull_request.head.sha }}
-```
+A pull request's workflow gives the check the base and the head of the pull request, and fetches the history of both, as [devkit's workflow](https://github.com/sic-lang/devkit/blob/main/.github/workflows/checks.yml) does.
 
 ## The hook
 
