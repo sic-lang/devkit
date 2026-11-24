@@ -103,14 +103,7 @@ in
           in
           {
             inherit run packages;
-            lint = pkgs.runCommand "lint-${name}" {
-              nativeBuildInputs = [
-                pkgs.shellcheck
-                pkgs.shfmt
-              ];
-              script = lib.getExe run;
-              indentSize = toString (import ../../lib.nix).indentSize;
-            } (builtins.readFile ./lint.sh);
+            lint = import ./lint.nix pkgs name (lib.getExe run);
           };
 
         apps = lib.mapAttrs (name: command: {

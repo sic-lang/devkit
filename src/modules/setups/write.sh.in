@@ -7,11 +7,12 @@ case "$*" in
   exit 2
   ;;
 esac
+directory=@directory@
 targets=(@targets@)
 sources=(@sources@)
 status=0
 for i in "${!targets[@]}"; do
-  target=${targets[$i]}
+  target=${directory:+$directory/}${targets[$i]}
   source=${sources[$i]}
   if [ ! -e "$target" ]; then
     install -D -m @mode@ "$source" "$target"
