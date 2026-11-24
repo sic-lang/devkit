@@ -13,6 +13,6 @@ in
     name = "writes";
     command = apps.setup-files.program;
     output = [ "created .editorconfig" ];
-    after = "sed s/@lineLength@/100/ ${template} | cmp - .editorconfig";
+    after = "sed 's/@indentSize@/2/; s/@lineLength@/100/' ${template} | cmp - .editorconfig";
   };
 }

@@ -1,7 +1,10 @@
-# The ShellCheck check of the Bash script `script`, after Bash's own parse of it.
+# The ShellCheck and shfmt check of the Bash script `script`.
 pkgs: name: script:
 pkgs.runCommand "${name}-checked" {
-  nativeBuildInputs = [ pkgs.shellcheck ];
+  nativeBuildInputs = [
+    pkgs.shellcheck
+    pkgs.shfmt
+  ];
   inherit script;
-  dryRun = pkgs.stdenv.shellDryRun;
+  indentSize = toString (import ../../lib.nix).indentSize;
 } (builtins.readFile ./checked.sh)

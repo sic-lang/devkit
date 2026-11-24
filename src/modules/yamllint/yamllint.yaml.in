@@ -3,7 +3,10 @@ extends: default
 rules:
   # Workflows do not start with "---" by convention.
   document-start: disable
-  # So that every generated file has the same maximum line length.
+  # So that YAML files indent like the other files.
+  indentation:
+    spaces: @indentSize@
+  # So that YAML files wrap at the same length as the other files that have a limit.
   line-length:
     max: @lineLength@
   # Workflows use the "on" key for their triggers.

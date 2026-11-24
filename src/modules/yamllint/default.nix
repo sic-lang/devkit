@@ -1,3 +1,6 @@
+let
+  shared = import ../../lib.nix;
+in
 {
   imports = [ ../files ];
 
@@ -7,7 +10,10 @@
       devkit = {
         files.".yamllint.yaml" = {
           template = ./yamllint.yaml.in;
-          replacements.lineLength = toString (import ../../lib.nix).lineLength;
+          replacements = {
+            indentSize = toString shared.indentSize;
+            lineLength = toString shared.lineLength;
+          };
         };
         checks.yamllint = {
           packages = [ pkgs.yamllint ];

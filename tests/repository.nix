@@ -10,7 +10,7 @@
   after ? "",
 }:
 let
-  install = file: source: "install -D -m 644 ${source} ${lib.escapeShellArg file}";
+  install = file: source: "install -D -m 644 -- ${source} ${lib.escapeShellArg file}";
 in
 pkgs.runCommand name { nativeBuildInputs = [ pkgs.git ]; } ''
   export HOME=$TMPDIR
