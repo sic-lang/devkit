@@ -31,8 +31,8 @@ in
             from `header.sh.in`. The header sets the Bash options, exports the variables from
             `commandEnv`, puts the programs of `packages` on `PATH` and changes to the repository's
             root. Each `@name@` placeholder is replaced with its value from `replacements`. Returns
-            `run`, the script for `nix run`; `checked`, its ShellCheck check for `nix flake check`;
-            and `packages`.
+            `run`, the script for `nix run`; `checked`, its ShellCheck and shfmt check for
+            `nix flake check`; and `packages`.
           '';
           type = types.functionTo types.raw;
           readOnly = true;
@@ -66,6 +66,8 @@ in
           }:
           let
             export = name: value: "export ${name}=${lib.escapeShellArg value}";
+            # The .editorconfig of every repository, from which shfmt takes its indentation.
+            editorconfig = import ../editorconfig/file.nix;
             run = pkgs.replaceVarsWith {
               inherit name;
               src = pkgs.concatText "${name}.sh.in" [
@@ -104,9 +106,13 @@ in
           {
             inherit run packages;
             checked = pkgs.runCommand "${name}-checked" {
-              nativeBuildInputs = [ pkgs.shellcheck ];
+              nativeBuildInputs = [
+                pkgs.shellcheck
+                pkgs.shfmt
+              ];
               script = lib.getExe run;
               dryRun = pkgs.stdenv.shellDryRun;
+              editorconfig = pkgs.replaceVars editorconfig.template editorconfig.replacements;
             } (builtins.readFile ./checked.sh);
           };
 
