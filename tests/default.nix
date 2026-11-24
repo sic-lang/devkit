@@ -58,9 +58,8 @@ let
   # module.
   orphans = lib.attrNames (lib.removeAttrs directories (lib.attrNames flakeModules));
 in
-assert lib.assertMsg (
-  orphans == [ ]
-) "tests/modules has directories of no module: ${lib.concatStringsSep ", " orphans}";
+assert lib.assertMsg (orphans == [ ])
+  "tests/modules has directories with no module in src/modules: ${lib.concatStringsSep ", " orphans}";
 # One check per module, which builds all its cases, so that the tests of a module run together.
 lib.mapAttrs' (
   module: _: lib.nameValuePair "test-${module}" (pkgs.linkFarm "test-${module}" (cases module))
