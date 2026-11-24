@@ -11,11 +11,11 @@ permissions:
   contents: read
 
 jobs:
-  # The jobs are read from the flake, so that a new check or test needs no change here, and each
-  # is named after what it does, so that the pull request names each failure: check-<name> runs a
-  # check of the repository, and test-<module> builds the tests of a module. The tests of a module
-  # lint its commands, so the lint-<command> flake checks of devkit's own flake, the same scripts
-  # with the data of all the modules, get no job.
+  # The jobs are read from the flake, so that a new check or test needs no change here.
+  # Each job is named after what it does, so that the pull request names each failure.
+  # A check-<name> job runs a check of the repository.
+  # A test-<module> job builds the tests of a module, which also lint the module's commands.
+  # devkit's own lint-<command> flake checks get no job, since these tests already lint their code.
   list:
     runs-on: ubuntu-24.04
     outputs:

@@ -1,6 +1,6 @@
 # devkit imports every module, so its own use would not show that a module misses an import that
-# another module provides. Each module is therefore imported alone here, and everything that it
-# gives the flake is built.
+# another module provides.
+# Each module is therefore imported alone here, and everything that it gives the flake is built.
 {
   consumer,
   flakeModules,
