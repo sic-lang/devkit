@@ -15,6 +15,8 @@ jobs:
   # Each job is named after what it does, so that the pull request names each failure.
   # A check-<name> job runs a check of the repository.
   # A test-<module> job builds the tests of a module, which also lint the module's commands.
+  # The lint job lints the commands that devkit defines itself.
+  # The lint-<command> flake checks are left out, since one of these jobs builds each of them.
   list:
     runs-on: ubuntu-24.04
     outputs:
@@ -31,7 +33,7 @@ jobs:
             "matrix=" + ({
               include: (
                 [$apps[] | select(startswith("check-")) | {name: ., run: .}]
-                + [$checks[] | select(startswith("test-")) | {name: ., build: .}]
+                + [$checks[] | select(startswith("lint-") | not) | {name: ., build: .}]
               )
             } | tojson)
           ' >>"$GITHUB_OUTPUT"
@@ -51,9 +53,9 @@ jobs:
         run: nix run --quiet ".#$RUN"
         env:
           RUN: ${{ matrix.run }}
-      # --keep-going builds every case after a failure too, so that the job reports them all.
+      # --keep-going builds every part of a check after a failure too, so that the job reports all.
       - if: matrix.build
-        name: Build the tests
+        name: Build the flake check
         run: nix build --quiet --keep-going --no-link ".#checks.x86_64-linux.$BUILD"
         env:
           BUILD: ${{ matrix.build }}

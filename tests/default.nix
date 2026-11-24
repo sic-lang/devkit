@@ -1,4 +1,5 @@
 {
+  commands,
   flakeModules,
   inputs,
   lib,
@@ -26,6 +27,10 @@ let
       };
   };
   alone = import ./alone.nix args;
+  # The commands that devkit defines itself, which no module gives a repository.
+  own = lib.removeAttrs commands (
+    lib.attrNames (lib.concatMapAttrs (_: module: (args.consumer [ module ]).apps) flakeModules)
+  );
   directories = builtins.readDir ./modules;
   # The cases of a module: its import alone, and those of each file of its directory, if it has one.
   # Each case is named after its module, file and case, so that a failure names it.
@@ -68,3 +73,8 @@ assert lib.assertMsg (
 lib.mapAttrs' (
   module: _: lib.nameValuePair "test-${module}" (pkgs.linkFarm "test-${module}" (cases module))
 ) flakeModules
+// lib.optionalAttrs (own != { }) {
+  # The lint of each command that devkit defines itself, since the tests of a module lint only the
+  # commands of the module.
+  lint = pkgs.linkFarm "lint" (lib.mapAttrs (_: command: command.command.lint) own);
+}
