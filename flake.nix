@@ -32,7 +32,7 @@
           lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./src/modules)
         );
         perSystem =
-          { pkgs, system, ... }@systemArgs:
+          { pkgs, system, ... }:
           {
             devkit.checks = {
               actionlint = {
@@ -41,7 +41,6 @@
               };
             };
             checks = import ./tests {
-              inherit (systemArgs.config.devkit) commands;
               inherit (config.flake) flakeModules;
               inherit
                 inputs
