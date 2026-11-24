@@ -74,7 +74,11 @@ lib.mapAttrs case {
     "script.sh" = clean;
     "script.bash" = unformatted;
   };
-  no-script.status = failure;
+  # Without a script, xargs runs shfmt once without a file, so shfmt reads its empty input.
+  no-script = {
+    status = failure;
+    output = [ "<standard input>" ];
+  };
 }
 // {
   # Without .editorconfig, shfmt indents with tabs.
