@@ -19,6 +19,10 @@ let
       in
       lib.mapAttrs (_: output: output.${system}) {
         inherit (flake) apps checks devShells;
+      }
+      # A flake without a formatter has none for the system.
+      // {
+        formatter = flake.formatter.${system} or null;
       };
   };
   prefixed = prefix: lib.mapAttrs' (case: lib.nameValuePair "${prefix}-${case}");
