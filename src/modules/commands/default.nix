@@ -103,11 +103,7 @@ in
           in
           {
             inherit run packages;
-            checked = pkgs.runCommand "${name}-checked" {
-              nativeBuildInputs = [ pkgs.shellcheck ];
-              script = lib.getExe run;
-              dryRun = pkgs.stdenv.shellDryRun;
-            } (builtins.readFile ./checked.sh);
+            checked = import ./checked.nix pkgs name (lib.getExe run);
           };
 
         apps = lib.mapAttrs (name: command: {
