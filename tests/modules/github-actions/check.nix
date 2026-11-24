@@ -31,13 +31,15 @@ lib.mapAttrs case {
     status = 1;
     output = [ ''"runs-on" section is missing in job "a"'' ];
   };
+  # The check relies on actionlint to lint the scripts of the steps, which devkit would otherwise
+  # need a check of its own for.
   # ShellCheck reports the unquoted variable of the step's script as SC2086.
   shellcheck = {
     files.".github/workflows/finding.yml" = workflow "run: echo $1";
     status = 1;
     output = [ "shellcheck reported issue in this script: SC2086" ];
   };
-  # pyflakes reports the undefined name of the step's Python.
+  # The same for the Python of the steps: pyflakes reports the undefined name.
   pyflakes = {
     files.".github/workflows/finding.yml" = workflow "shell: python\n        run: print(x)";
     status = 1;
