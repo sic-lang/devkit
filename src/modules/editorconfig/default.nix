@@ -5,10 +5,7 @@
     { pkgs, ... }:
     {
       devkit = {
-        files.".editorconfig" = {
-          template = ./editorconfig.in;
-          replacements.lineLength = toString (import ../../lib.nix).lineLength;
-        };
+        files.".editorconfig" = import ./file.nix;
         checks.editorconfig = {
           packages = [ pkgs.editorconfig-checker ];
           command = "editorconfig-checker";
