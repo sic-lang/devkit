@@ -26,7 +26,7 @@ devkit.setups.vscode = {
 };
 ```
 
-When the directory of the files is known only when the setup runs, `directory` gives it as a Bash word, and the paths in `files` are relative to it:
+When the directory of the files is known only when the setup runs, `directory` gives the Bash code that expands to it, and the paths in `files` are relative to it:
 
 ```nix
 config.devkit.mkSetup {
