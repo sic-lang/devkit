@@ -4,8 +4,8 @@
   perSystem =
     { pkgs, ... }:
     {
-      # nixpkgs' actionlint runs ShellCheck on the scripts of the steps, and pyflakes on their
-      # Python.
+      # nixpkgs' actionlint puts ShellCheck and pyflakes on its PATH, so the check needs no other
+      # package to lint the scripts of the steps.
       devkit.checks.actionlint = {
         packages = [ pkgs.actionlint ];
         command = "actionlint";

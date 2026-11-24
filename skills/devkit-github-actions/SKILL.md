@@ -6,14 +6,14 @@ description: Check a repository's GitHub Actions workflows with actionlint, usin
 # github-actions
 
 The `github-actions` module checks the workflows in `.github/workflows` with [actionlint](https://github.com/rhysd/actionlint).
-Its `actionlint` check also runs ShellCheck on the script of each `run` step, and pyflakes on its Python.
+Its `actionlint` check also runs ShellCheck on the scripts of the `run` steps in Bash or sh, and pyflakes on those in Python.
 
 ## Set it up
 
 1. Import `inputs.devkit.flakeModules.github-actions`, as the `devkit` skill shows.
 2. Run `nix run .#check-actionlint`.
 
-The check fails in a repository without a `.github/workflows` directory, so only a repository with workflows imports the module.
+The check fails in a repository without a workflow in `.github/workflows`, so only a repository with workflows imports the module.
 
 ## When it fails
 
