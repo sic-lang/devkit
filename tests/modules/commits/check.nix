@@ -244,4 +244,22 @@ lib.mapAttrs case {
     status = 1;
     output = [ "HEAD^{tree} is not a commit of the clone" ];
   };
+  # A commit that git cannot read stops the check, rather than leaving the commits behind it unseen.
+  missing-object = {
+    before = ''
+      ${commit} --signoff -m Change
+      git switch -q --detach origin/main
+      ${commit} --signoff -m "Change of the base"
+      merged=$(git rev-parse HEAD)
+      git update-ref refs/remotes/origin/main HEAD
+      git switch -q topic
+      git merge -q --no-edit --signoff origin/main
+      git switch -q --detach origin/main
+      ${commit} --signoff -m "Later change of the base"
+      git update-ref refs/remotes/origin/main HEAD
+      git switch -q topic
+      rm ".git/objects/''${merged:0:2}/''${merged:2}"
+    '';
+    status = 128;
+  };
 }

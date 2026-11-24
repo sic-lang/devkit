@@ -17,19 +17,19 @@ show() {
   git log -1 --no-show-signature --format="$1" "$2"
 }
 status=0
-merges=$(git rev-list --merges "$base..$head")
-for commit in $merges; do
-  line=$(show '%P' "$commit")
-  read -r -a parents <<<"$line"
-  for parent in "${parents[@]:1}"; do
+# Each commit, followed by its parents.
+history=$(git rev-list --parents "$base..$head")
+while read -r -a parents; do
+  if [ "${#parents[@]}" -eq 0 ]; then
+    continue
+  fi
+  commit=${parents[0]}
+  for parent in "${parents[@]:2}"; do
     if ! git merge-base --is-ancestor "$parent" "$base"; then
       echo "$(show '%h %s' "$commit"): merges another branch than $base" >&2
       status=1
     fi
   done
-done
-commits=$(git rev-list "$base..$head")
-for commit in $commits; do
   author=$(show '%an <%ae>' "$commit")
   signoffs=$(show '%(trailers:key=Signed-off-by,valueonly,unfold)' "$commit")
   # Whole lines compared, so that an author on several lines matches none.
@@ -43,5 +43,5 @@ for commit in $commits; do
     echo "$(show '%h %s' "$commit"): no Signed-off-by: $author" >&2
     status=1
   fi
-done
+done <<<"$history"
 exit "$status"
