@@ -2,6 +2,7 @@
   consumer,
   flakeModules,
   lib,
+  pkgs,
   repository,
   ...
 }:
@@ -22,6 +23,20 @@ let
     cd ../shallow
     git fetch -q --depth 1 origin refs/remotes/origin/main:refs/remotes/origin/main
   '';
+  # An SSH key that signs the commits, and whose signatures git log checks and shows.
+  signing =
+    let
+      ssh-keygen = lib.getExe' pkgs.openssh "ssh-keygen";
+    in
+    ''
+      ${ssh-keygen} -q -t ed25519 -N "" -C "" -f "$TMPDIR/key"
+      echo "author@example.com $(cat "$TMPDIR/key.pub")" >"$TMPDIR/signers"
+      git config gpg.format ssh
+      git config gpg.ssh.program ${ssh-keygen}
+      git config gpg.ssh.allowedSignersFile "$TMPDIR/signers"
+      git config user.signingKey "$TMPDIR/key"
+      git config log.showSignature true
+    '';
   case =
     name:
     {
@@ -70,6 +85,20 @@ lib.mapAttrs case {
     status = 1;
     output = [ "Change: no Signed-off-by: A U Thor <author@example.com>" ];
   };
+  # With log.showSignature, git log prints the signature's check before the format, in the author
+  # and in the sign-offs alike.
+  no-sign-off-with-show-signature = {
+    before = ''
+      ${signing}
+      ${commit} --gpg-sign -m Change
+    '';
+    status = 1;
+    output = [ "Change: no Signed-off-by: A U Thor <author@example.com>" ];
+  };
+  signed-off-with-show-signature.before = ''
+    ${signing}
+    ${commit} --gpg-sign --signoff -m Change
+  '';
   merge-of-the-base.before = ''
     ${commit} --signoff -m Change
     git switch -q --detach origin/main

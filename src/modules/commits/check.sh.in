@@ -12,24 +12,35 @@ for ref in "$base" "$head"; do
     exit 1
   fi
 done
+# A format of a commit, without the check of its signature that log.showSignature would print.
+show() {
+  git log -1 --no-show-signature --format="$1" "$2"
+}
 status=0
 merges=$(git rev-list --merges "$base..$head")
 for commit in $merges; do
-  line=$(git log -1 --format='%P' "$commit")
+  line=$(show '%P' "$commit")
   read -r -a parents <<<"$line"
   for parent in "${parents[@]:1}"; do
     if ! git merge-base --is-ancestor "$parent" "$base"; then
-      echo "$(git log -1 --format='%h %s' "$commit"): merges another branch than $base" >&2
+      echo "$(show '%h %s' "$commit"): merges another branch than $base" >&2
       status=1
     fi
   done
 done
 commits=$(git rev-list "$base..$head")
 for commit in $commits; do
-  author=$(git log -1 --format='%an <%ae>' "$commit")
-  signoffs=$(git log -1 --format='%(trailers:key=Signed-off-by,valueonly,unfold)' "$commit")
-  if ! grep -qxF "$author" <<<"$signoffs"; then
-    echo "$(git log -1 --format='%h %s' "$commit"): no Signed-off-by: $author" >&2
+  author=$(show '%an <%ae>' "$commit")
+  signoffs=$(show '%(trailers:key=Signed-off-by,valueonly,unfold)' "$commit")
+  # Whole lines compared, so that an author on several lines matches none.
+  signed=false
+  while IFS= read -r signoff; do
+    if [ "$signoff" = "$author" ]; then
+      signed=true
+    fi
+  done <<<"$signoffs"
+  if ! "$signed"; then
+    echo "$(show '%h %s' "$commit"): no Signed-off-by: $author" >&2
     status=1
   fi
 done

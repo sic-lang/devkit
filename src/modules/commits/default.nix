@@ -14,7 +14,6 @@
         checks.commits.command = config.devkit.mkCommand {
           name = "check-commits";
           template = ./check.sh.in;
-          packages = [ pkgs.gnugrep ];
         };
         setups.hooks = {
           description = "Copy the recommended Git hooks to the hooks of the clone";
