@@ -41,5 +41,5 @@ let
       lib.filterAttrs (file: _: lib.hasSuffix ".nix" file) (builtins.readDir directory)
     );
 in
-prefixed "test-modules" (import ./modules.nix args)
+prefixed "test-modules" (import ./alone.nix args)
 // lib.concatMapAttrs module (builtins.readDir ./modules)
