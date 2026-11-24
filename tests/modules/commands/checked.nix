@@ -32,6 +32,6 @@ in
     "--- check-example.orig"
     "+if true; then"
   ];
-  # shfmt indents with two spaces, as the .editorconfig of every repository says.
+  # shfmt indents with indentSize spaces, from devkit's library.
   shfmt-tab = failure "shfmt-tab" "if true; then\n\techo \"$1\"\nfi" [ "+  echo \"$1\"" ];
 }
