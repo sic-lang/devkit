@@ -13,8 +13,9 @@ permissions:
 jobs:
   # The jobs are read from the flake, so that a new check or test needs no change here, and each
   # is named after what it does, so that the pull request names each failure: check-<name> runs a
-  # check of the repository, test-<module> builds the tests of a module, and lint builds the lint
-  # of every command of devkit's own flake, whose scripts depend on all its modules together.
+  # check of the repository, test-<module> builds the tests of a module, and lint builds the lints
+  # of devkit's own commands that no test builds, since some scripts, such as check-files', depend
+  # on all the modules together.
   list:
     runs-on: ubuntu-24.04
     outputs:
@@ -26,13 +27,28 @@ jobs:
         name: List the jobs
         run: |
           apps=$(nix eval --json .#apps.x86_64-linux --apply builtins.attrNames)
-          checks=$(nix eval --json .#checks.x86_64-linux --apply builtins.attrNames)
-          jq -nr --argjson apps "$apps" --argjson checks "$checks" '
-            "matrix=" + ({
+          # The derivation of each flake check.
+          checks=$(
+            nix eval --json .#checks.x86_64-linux \
+              --apply 'builtins.mapAttrs (_: check: check.drvPath)'
+          )
+          mapfile -t tests < <(
+            jq -r 'to_entries[] | select(.key | startswith("test-")) | .value' <<<"$checks"
+          )
+          # The derivations of the lints that the tests build.
+          tested=$(
+            nix-store --query --requisites "${tests[@]}" \
+              | { grep -- '-lint-[^/]*\.drv$' || true; } \
+              | jq -R . | jq -s .
+          )
+          jq -nr --argjson apps "$apps" --argjson checks "$checks" --argjson tested "$tested" '
+            [$checks | to_entries[] | select(.key | startswith("lint-"))
+              | select(.value as $lint | $tested | index($lint) | not) | .key] as $lints
+            | "matrix=" + ({
               include: (
                 [$apps[] | select(startswith("check-")) | {name: ., run: .}]
-                + [$checks[] | select(startswith("lint-") | not) | {name: ., build: [.]}]
-                + [{name: "lint", build: [$checks[] | select(startswith("lint-"))]}]
+                + [$checks | keys[] | select(startswith("lint-") | not) | {name: ., build: [.]}]
+                + if $lints == [] then [] else [{name: "lint", build: $lints}] end
               )
             } | tojson)
           ' >>"$GITHUB_OUTPUT"
