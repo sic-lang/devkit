@@ -41,8 +41,13 @@ lib.mapAttrs case {
       cp ${unformatted} untracked.nix
     '';
   };
-  other-extension.files = {
-    "file.nix" = formatted;
-    "file.txt" = unformatted;
+  other-extension = {
+    files = {
+      "file.nix" = formatted;
+      "file.txt" = unformatted;
+    };
+    after = ''
+      if grep -qF file.txt "$TMPDIR/output"; then exit 1; fi
+    '';
   };
 }
