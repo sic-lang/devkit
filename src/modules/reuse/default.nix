@@ -41,7 +41,10 @@
             pkgs.reuse
             pkgs.taplo
           ];
-          replacements = { inherit jq spdx; };
+          replacements = {
+            inherit jq spdx;
+            inherit (import ../../lib.nix) license;
+          };
         };
       };
 
