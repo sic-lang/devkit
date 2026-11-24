@@ -12,6 +12,6 @@ in
     name = "writes";
     command = apps.setup-files.program;
     output = [ "created .editorconfig" ];
-    after = "grep -qx 'root = true' .editorconfig";
+    after = "cmp .editorconfig ${../../../src/modules/editorconfig/editorconfig.in}";
   };
 }
