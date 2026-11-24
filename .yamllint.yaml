@@ -3,6 +3,9 @@ extends: default
 rules:
   # Workflows do not start with "---" by convention.
   document-start: disable
+  # So that every generated file has the same indentation.
+  indentation:
+    spaces: 2
   # So that every generated file has the same maximum line length.
   line-length:
     max: 100
