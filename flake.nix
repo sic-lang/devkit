@@ -16,6 +16,7 @@
       {
         imports = [
           ./src/modules/editorconfig
+          ./src/modules/github-actions
           ./src/modules/nix
           ./src/modules/reuse
           ./src/modules/shell
@@ -34,12 +35,6 @@
         perSystem =
           { pkgs, system, ... }:
           {
-            devkit.checks = {
-              actionlint = {
-                packages = [ pkgs.actionlint ];
-                command = "actionlint";
-              };
-            };
             checks = import ./tests {
               inherit (config.flake) flakeModules;
               inherit

@@ -21,5 +21,4 @@ Each path must name a file or a directory that git tracks.
 
 ## When it fails
 
-The check names each file that is not formatted.
-Run `nix fmt` to format them.
+Run `nix fmt` to format the files.
