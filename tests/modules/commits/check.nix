@@ -273,4 +273,14 @@ lib.mapAttrs case {
     status = 1;
     output = [ "Change: no Signed-off-by: A U Thor <author@example.com>" ];
   };
+  # A graft would give a commit other parents than those of the history.
+  grafted = {
+    before = ''
+      ${commit} -m Unsigned
+      ${commit} --signoff -m Signed
+      echo "$(git rev-parse HEAD) $(git rev-parse origin/main)" >.git/info/grafts
+    '';
+    status = 1;
+    output = [ "Unsigned: no Signed-off-by: A U Thor <author@example.com>" ];
+  };
 }
