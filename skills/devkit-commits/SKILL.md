@@ -30,7 +30,5 @@ A pull request's workflow gives the check the base and the head of the pull requ
 
 ## The hook
 
-`nix run .#setup-hooks` copies the `commit-msg` hook to the directory where Git looks for the hooks: `.git/hooks`, unless `core.hooksPath` gives another one.
-It keeps a hook that differs from it, unless it is given `--force`.
-The hook rejects a commit whose message has no `Signed-off-by` trailer equal to its author.
-It runs the contributor's Bash and Git, so it keeps working when the Nix store changes.
+`nix run .#setup-hooks` installs the `commit-msg` hook in the clone.
+The hook needs Bash and Git on the contributor's `PATH`.
