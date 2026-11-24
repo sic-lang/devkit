@@ -7,7 +7,7 @@ description: Implement a custom repository-specific command as a Bash template u
 
 The `commands` module builds a repository's commands.
 Each command becomes an app, run with `nix run .#<name>`.
-Each command also gets a flake check.
+Each command also gets a flake check, `lint-<name>`.
 
 ## Write a command
 

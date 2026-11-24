@@ -8,8 +8,8 @@ types.submodule {
       description = "The script that the app runs.";
       type = types.package;
     };
-    checked = mkOption {
-      description = "The ShellCheck and shfmt check of the script, which the flake check builds.";
+    lint = mkOption {
+      description = "The ShellCheck and shfmt lint of the script, the `lint-<name>` flake check.";
       type = types.package;
     };
     packages = mkOption {
