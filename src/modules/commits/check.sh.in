@@ -1,3 +1,5 @@
+# Replace refs could show other commits in place of those of the history.
+export GIT_NO_REPLACE_OBJECTS=1
 base=${1:-origin/main}
 head=${2:-HEAD}
 shallow=$(git rev-parse --is-shallow-repository)

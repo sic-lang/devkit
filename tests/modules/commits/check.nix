@@ -262,4 +262,15 @@ lib.mapAttrs case {
     '';
     status = 128;
   };
+  # A replace ref would show git another commit in place of the one in the history.
+  replaced = {
+    before = ''
+      ${commit} -m Change
+      signoff="Signed-off-by: A U Thor <author@example.com>"
+      signed=$(git commit-tree -p HEAD^ -m Change -m "$signoff" HEAD^{tree})
+      git replace HEAD "$signed"
+    '';
+    status = 1;
+    output = [ "Change: no Signed-off-by: A U Thor <author@example.com>" ];
+  };
 }
