@@ -6,7 +6,6 @@ description: Check and format a repository's Nix files with nixfmt, using devkit
 # nix
 
 The `nix` module checks that every Nix file that git tracks is formatted by [nixfmt](https://github.com/NixOS/nixfmt).
-A file that git does not track is not checked.
 It also provides the flake's formatter, which `nix fmt` runs.
 
 ## Set it up
