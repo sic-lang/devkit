@@ -56,10 +56,13 @@ let
     );
   # A directory of tests whose module does not exist would be ignored, as after a rename of the
   # module.
-  orphans = lib.attrNames (lib.removeAttrs directories (lib.attrNames flakeModules));
+  orphans = lib.concatStringsSep ", " (
+    lib.attrNames (lib.removeAttrs directories (lib.attrNames flakeModules))
+  );
 in
-assert lib.assertMsg (orphans == [ ])
-  "tests/modules has directories with no module in src/modules: ${lib.concatStringsSep ", " orphans}";
+assert lib.assertMsg (
+  orphans == ""
+) "tests/modules has directories with no module in src/modules: ${orphans}";
 # One check per module, which builds all its cases: the CI runs a job per check, and each job sets
 # up a machine and installs Nix, which a check per case would repeat for every case.
 lib.mapAttrs' (
