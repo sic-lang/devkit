@@ -18,6 +18,7 @@ The module also gives the flake a formatter, so that `nix fmt` formats the same 
 
 `nix fmt` formats every Nix file that git tracks, from any directory of the repository.
 `nix fmt -- <path>...` formats only those under the given paths.
+Each path must name a file or a directory that git tracks.
 
 ## When it fails
 
