@@ -16,9 +16,9 @@ The `command` can be a command line, which Bash runs.
 `packages` lists the packages that the command line needs:
 
 ```nix
-devkit.checks.actionlint = {
-  command = "actionlint -color";
-  packages = [ pkgs.actionlint ];
+devkit.checks.lychee = {
+  command = "lychee --offline --no-progress .";
+  packages = [ pkgs.lychee ];
 };
 ```
 
