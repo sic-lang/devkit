@@ -25,21 +25,46 @@ let
         formatter = flake.formatter.${system} or null;
       };
   };
-  prefixed = prefix: lib.mapAttrs' (case: lib.nameValuePair "${prefix}-${case}");
-  module =
-    name: _:
+  alone = import ./alone.nix args;
+  directories = builtins.readDir ./modules;
+  # The cases of a module: its import alone, and those of each file of its directory, if it has one.
+  # Each case is named after its module, file and case, so that a failure names it.
+  cases =
+    module:
     let
-      directory = ./modules + "/${name}";
+      directory = ./modules + "/${module}";
+      named = name: test: test.overrideAttrs { name = "test-${module}-${name}"; };
       file =
         file: _:
         let
-          cases = import (directory + "/${file}") args;
+          case =
+            case: test:
+            let
+              name = "${lib.removeSuffix ".nix" file}-${case}";
+            in
+            lib.nameValuePair name (named name test);
         in
-        prefixed "test-${name}-${lib.removeSuffix ".nix" file}" cases;
+        lib.mapAttrs' case (import (directory + "/${file}") args);
     in
-    lib.concatMapAttrs file (
-      lib.filterAttrs (file: _: lib.hasSuffix ".nix" file) (builtins.readDir directory)
+    {
+      alone = named "alone" alone.${module};
+    }
+    // lib.optionalAttrs (directories ? ${module}) (
+      lib.concatMapAttrs file (
+        lib.filterAttrs (file: _: lib.hasSuffix ".nix" file) (builtins.readDir directory)
+      )
     );
+  # A directory of tests whose module does not exist would be ignored, as after a rename of the
+  # module.
+  orphans = lib.concatStringsSep ", " (
+    lib.attrNames (lib.removeAttrs directories (lib.attrNames flakeModules))
+  );
 in
-prefixed "test-modules" (import ./modules.nix args)
-// lib.concatMapAttrs module (builtins.readDir ./modules)
+assert lib.assertMsg (
+  orphans == ""
+) "tests/modules has directories with no module in src/modules: ${orphans}";
+# One check per module, which builds all its cases: the CI runs a job per test-<module> check, and
+# each job sets up a machine and installs Nix, which a check per case would repeat for every case.
+lib.mapAttrs' (
+  module: _: lib.nameValuePair "test-${module}" (pkgs.linkFarm "test-${module}" (cases module))
+) flakeModules
