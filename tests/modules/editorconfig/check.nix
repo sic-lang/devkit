@@ -9,6 +9,7 @@
 let
   inherit (consumer [ flakeModules.editorconfig ]) apps;
   text = pkgs.writeText "text";
+  line = length: text "${lib.strings.replicate length "a"}\n";
   case =
     name: arguments:
     repository (
@@ -47,6 +48,14 @@ lib.mapAttrs case {
     status = 1;
     output = [ "wrong line endings or no final newline" ];
   };
+  long-line = {
+    files."file.txt" = line 101;
+    status = 1;
+    output = [ "1: line too long (101 instead of 100)" ];
+  };
+  longest-line.files."file.txt" = line 100;
   markdown-list.files."list.md" = text "1. a\n   b\n";
+  long-markdown-line.files."file.md" = line 101;
   license-text.files."LICENSES/X.txt" = text "a\n   b\n";
+  long-license-line.files."LICENSES/X.txt" = line 101;
 }

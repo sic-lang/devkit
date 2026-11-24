@@ -12,6 +12,6 @@ in
     name = "writes";
     command = apps.setup-files.program;
     output = [ "created .editorconfig" ];
-    after = "cmp .editorconfig ${../../../src/modules/editorconfig/editorconfig.in}";
+    after = "sed s/@lineLength@/100/ ${../../../src/modules/editorconfig/editorconfig.in} | cmp - .editorconfig";
   };
 }

@@ -6,12 +6,16 @@ end_of_line = lf
 indent_size = 2
 indent_style = space
 insert_final_newline = true
+# So that every repository wraps at the same length.
+max_line_length = 100
 trim_trailing_whitespace = true
 
-# Markdown continues ordered list items with 3 spaces.
+# Markdown continues ordered list items with 3 spaces, and puts one sentence on each line.
 [*.md]
 indent_size = unset
+max_line_length = unset
 
-# License texts are verbatim copies, with their own indentation.
+# License texts are verbatim copies, with their own indentation and line breaks.
 [LICENSES/*]
 indent_size = unset
+max_line_length = unset
