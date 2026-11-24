@@ -19,4 +19,5 @@ It generates the [EditorConfig](https://editorconfig.org) file, `.editorconfig`,
 Every file is encoded in UTF-8, uses line feeds, ends with one, has no trailing whitespace, and indents by multiples of 2 spaces.
 Markdown files and license texts in `LICENSES/` may indent by any number of spaces, but never with tabs: Markdown continues ordered list items with 3 spaces, and license texts are verbatim copies.
 
-The configuration sets no maximum line length.
+Lines may be as long as `lineLength` in devkit's library, so that every repository wraps at the same length.
+Markdown files and license texts may have lines of any length: Markdown puts one sentence on each line, and license texts are verbatim copies.
