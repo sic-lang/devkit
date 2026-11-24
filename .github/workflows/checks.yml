@@ -51,7 +51,9 @@ jobs:
           NAME: ${{ matrix.name }}
       # The commits of a pull request only, after its base, with the history of both; main and the
       # merge queue get them through a merge commit.
-      - if: matrix.name == 'check-commits' && github.event_name == 'pull_request'
+      - if: >-
+          matrix.kind == 'run' && matrix.name == 'check-commits'
+          && github.event_name == 'pull_request'
         name: Run the check
         run: |
           git fetch --quiet --unshallow origin "$HEAD" "$BASE"
