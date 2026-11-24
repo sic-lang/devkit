@@ -146,6 +146,26 @@ lib.mapAttrs case {
       cmp g1.nix ${unformatted}
     '';
   };
+  missing-path = {
+    files."file.nix" = unformatted;
+    arguments = [
+      "file.nix"
+      "missing.nix"
+    ];
+    status = 1;
+    output = [ "error: pathspec 'missing.nix' did not match any file(s) known to git" ];
+  };
+  untracked-path = {
+    files."file.nix" = unformatted;
+    before = ''
+      git add .
+      cp ${unformatted} untracked.nix
+    '';
+    arguments = [ "untracked.nix" ];
+    status = 1;
+    output = [ "error: pathspec 'untracked.nix' did not match any file(s) known to git" ];
+    after = "cmp untracked.nix ${unformatted}";
+  };
   no-nix-path = {
     files = {
       "file.nix" = unformatted;
