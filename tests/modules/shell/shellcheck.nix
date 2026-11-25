@@ -36,6 +36,7 @@ lib.mapAttrs case {
     status = failure;
     output = [ "In script.sh line 2:" ];
   };
+  # .envrc has no .sh extension, so the check names it.
   envrc = {
     files.".envrc" = text "use flake\n";
     status = failure;
@@ -65,6 +66,8 @@ lib.mapAttrs case {
     "script.sh" = clean;
     "script.bash" = finding;
   };
+  # Without a script, xargs runs ShellCheck once without a file, which fails, so a repository without
+  # scripts does not import the module.
   no-script = {
     status = failure;
     output = [ "No files specified." ];
