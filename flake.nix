@@ -55,7 +55,7 @@
           { pkgs, system, ... }:
           {
             # A commit cannot hold its own hash, so devkit calls the workflow of its own commit.
-            devkit.github-actions.flakeChecks = "./.github/workflows/flake-checks.yml";
+            devkit.github-actions.flakeChecksWorkflow = "./.github/workflows/flake-checks.yml";
             checks = import ./tests {
               inherit
                 inputs

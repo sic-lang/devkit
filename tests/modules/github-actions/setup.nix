@@ -16,7 +16,9 @@ in
     name = "writes";
     command = apps.setup-files.program;
     output = [ "created .github/workflows/checks.yml" ];
-    after = "sed 's|@flakeChecks@|${reference}|' ${template} | cmp - .github/workflows/checks.yml";
+    after = ''
+      sed 's|@flakeChecksWorkflow@|${reference}|' ${template} | cmp - .github/workflows/checks.yml
+    '';
   };
   # Without a commit of devkit, only the apps that write or compare the workflow fail.
   no-revision =

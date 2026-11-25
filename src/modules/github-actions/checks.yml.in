@@ -9,4 +9,4 @@ on:
 
 jobs:
   flake:
-    uses: @flakeChecks@
+    uses: @flakeChecksWorkflow@
