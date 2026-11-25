@@ -34,7 +34,12 @@
         flakeModules = modules self;
       in
       {
-        imports = lib.attrVals [
+        # flake-parts' flakeModules option gives each exported module a key, so that a flake that
+        # imports a module twice gets it once.
+        imports = [
+          inputs.flake-parts.flakeModules.flakeModules
+        ]
+        ++ lib.attrVals [
           "commits"
           "editorconfig"
           "github-actions"
