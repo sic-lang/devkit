@@ -66,8 +66,8 @@ lib.mapAttrs case {
     "script.sh" = clean;
     "script.bash" = finding;
   };
-  # Without a script, xargs runs ShellCheck once without a file, which fails, so a repository without
-  # scripts does not import the module.
+  # Without a script, xargs runs ShellCheck once without a file, which fails, so a repository
+  # without scripts does not import the module.
   no-script = {
     status = failure;
     output = [ "No files specified." ];

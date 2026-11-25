@@ -30,7 +30,8 @@ let
     ]).apps.setup.program;
   # The contributor answers each question with a line of answers.
   case =
-    name: { answers, ... }@arguments:
+    name:
+    { answers, ... }@arguments:
     repository (
       {
         inherit name;
