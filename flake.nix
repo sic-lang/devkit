@@ -42,6 +42,7 @@
         imports = lib.attrVals [
           "commits"
           "editorconfig"
+          "envrc"
           "github-actions"
           "nix"
           "licenses"
