@@ -19,9 +19,9 @@
           ./src/modules/editorconfig
           ./src/modules/github-actions
           ./src/modules/nix
-          ./src/modules/reuse
+          ./src/modules/licenses
           ./src/modules/shell
-          ./src/modules/yamllint
+          ./src/modules/yaml
         ];
         # The popular systems for which all the tools are in nixpkgs' binary cache.
         systems = [
