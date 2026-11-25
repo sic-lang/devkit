@@ -4,6 +4,7 @@
   perSystem =
     { pkgs, ... }:
     let
+      indentSize = toString (import ../../lib.nix).indentSize;
       # A check that runs a command on the shell scripts.
       onScripts =
         command: package:
@@ -19,7 +20,7 @@
     {
       devkit.checks = {
         shellcheck = onScripts "shellcheck" pkgs.shellcheck;
-        shfmt = onScripts "shfmt --indent ${toString (import ../../lib.nix).indentSize} --diff" pkgs.shfmt;
+        shfmt = onScripts "shfmt --indent ${indentSize} --diff" pkgs.shfmt;
       };
     };
 }
