@@ -11,9 +11,10 @@ From that file, [direnv](https://direnv.net) loads the development shell of the 
 
 ## Set it up
 
-The repository sets up the module once, and each contributor who uses direnv takes the last step in their clone:
+These steps set up the module in a repository:
 
 1. Import `inputs.devkit.flakeModules.direnv`, as the `devkit` skill shows.
 2. Run `nix run .#setup-files`, which writes `.envrc`, and commit the file.
 3. Run `nix run .#check-files`.
-4. [Hook direnv into your shell](https://direnv.net/docs/hook.html), then run `direnv allow`, which lets direnv load `.envrc`.
+
+Each contributor who uses direnv then sets it up as [its documentation](https://direnv.net/#getting-started) says.
