@@ -10,6 +10,7 @@ let
   inherit (consumer [ flakeModules.nix ]) apps;
   formatted = pkgs.writeText "formatted.nix" "{ a = 1; }\n";
   unformatted = pkgs.writeText "unformatted.nix" "{a=1;}\n";
+  failure = import ../../libs/xargs-failure.nix;
   case =
     name: arguments:
     repository (
@@ -25,18 +26,18 @@ lib.mapAttrs case {
   formatted.files."file.nix" = formatted;
   unformatted = {
     files."file.nix" = unformatted;
-    status = 123;
+    status = failure;
     output = [ "file.nix: not formatted" ];
   };
   nested-unformatted = {
     files."directory/file.nix" = unformatted;
-    status = 123;
+    status = failure;
     output = [ "directory/file.nix: not formatted" ];
   };
   space-in-name.files."a file.nix" = formatted;
   dash-name = {
     files."-x.nix" = unformatted;
-    status = 123;
+    status = failure;
     output = [ "-x.nix: not formatted" ];
   };
   # A UTF-8 locale, under which a name that is not valid UTF-8 is not text.
@@ -48,7 +49,7 @@ lib.mapAttrs case {
       git add .
     '';
     # nixfmt 1.5.0 fails to print such a name, so the output does not name the file.
-    status = 123;
+    status = failure;
   };
   untracked = {
     files."file.nix" = formatted;
@@ -56,6 +57,9 @@ lib.mapAttrs case {
       git add .
       cp ${unformatted} untracked.nix
     '';
+  };
+  no-nix-file = import ../../libs/no-file.nix // {
+    files."file.txt" = formatted;
   };
   other-extension = {
     files = {

@@ -5,7 +5,7 @@ description: Check a repository's shell scripts with ShellCheck and shfmt, using
 
 # shell
 
-The `shell` module checks the repository's shell scripts: `.envrc` and every `*.sh` file that Git tracks.
+The `shell` module checks the repository's shell scripts: every regular `.envrc` or `*.sh` file that Git tracks.
 Its `shellcheck` check runs [ShellCheck](https://www.shellcheck.net) on them.
 Its `shfmt` check runs [shfmt](https://github.com/mvdan/sh) on them, and shows how shfmt would format each file that it would change.
 
