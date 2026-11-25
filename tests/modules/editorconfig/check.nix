@@ -12,8 +12,7 @@ let
   line = length: text "${lib.strings.replicate length "a"}\n";
   trailing = text "A line that ends with a space. \n";
   failure = import ../../libs/xargs-failure.nix;
-  # Git tracks the files of a case, and the generated .editorconfig.
-  setup = "${apps.setup-files.program} && git add -A";
+  setup = import ../../libs/setup-tracked.nix apps;
   case =
     name: arguments:
     repository (

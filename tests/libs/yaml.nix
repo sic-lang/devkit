@@ -12,8 +12,7 @@ in
 rec {
   text = pkgs.writeText "text";
   failure = import ./xargs-failure.nix;
-  # Git tracks the files of a case, and the generated .yamllint.yaml.
-  setup = "${apps.setup-files.program} && git add -A";
+  setup = import ./setup-tracked.nix apps;
   case =
     name: arguments:
     repository (
