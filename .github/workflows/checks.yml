@@ -8,6 +8,5 @@ on:
       - main
 
 jobs:
-  # The main branch's ruleset requires flake / checks, which starts with this job's id.
   flake:
     uses: ./.github/workflows/flake-checks.yml

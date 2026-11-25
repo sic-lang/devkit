@@ -46,12 +46,7 @@ Set the modules' options in `perSystem`, under `devkit`, where `pkgs` gives the 
 
 devkit's [`flake-checks.yml`](https://github.com/sic-lang/devkit/blob/main/.github/workflows/flake-checks.yml) is a [reusable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows).
 It runs every `check-*` app and builds every `test-*` check of the repository's flake, one job each.
-Its job `checks` passes only when all of them pass, so a ruleset requires only this job.
+Its job `checks` passes only when all of them pass.
 
-A workflow of the repository calls it with a job such as this one:
-
-```yaml
-jobs:
-  flake:
-    uses: sic-lang/devkit/.github/workflows/flake-checks.yml@<commit>
-```
+The `github-actions` module generates the repository's workflow that calls it from the job `flake`, as the `devkit-github-actions` skill shows.
+A [ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) therefore requires only the check `flake / checks`.
