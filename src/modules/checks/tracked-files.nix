@@ -7,7 +7,17 @@ pkgs:
   command,
   packages,
 }:
+let
+  list = pkgs.lib.escapeShellArgs (
+    [
+      "git"
+      "ls-files"
+      "-z"
+    ]
+    ++ pathspecs
+  );
+in
 {
-  command = "git ls-files -z ${pkgs.lib.escapeShellArgs pathspecs} | xargs -0 ${command} --";
+  command = "${list} | xargs -0 ${command} --";
   packages = [ pkgs.findutils ] ++ packages;
 }

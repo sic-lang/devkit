@@ -15,9 +15,10 @@ in
             lineLength = toString shared.lineLength;
           };
         };
-        checks.editorconfig = {
-          packages = [ pkgs.editorconfig-checker ];
+        # Without files, editorconfig-checker also checks the files that Git does not track.
+        checks.editorconfig = import ../checks/tracked-files.nix pkgs {
           command = "editorconfig-checker";
+          packages = [ pkgs.editorconfig-checker ];
         };
       };
     };
