@@ -13,8 +13,7 @@ let
   # ShellCheck reports the unquoted variable as SC2086.
   finding = text "#!/usr/bin/env bash\necho $1\n";
   envrc = text "# shellcheck shell=bash\nuse flake\n";
-  # The status of xargs when the command it runs fails.
-  failure = 123;
+  failure = import ../../libs/xargs-failure.nix;
   case =
     name: arguments:
     repository (

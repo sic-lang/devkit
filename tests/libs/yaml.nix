@@ -11,8 +11,7 @@ let
 in
 rec {
   text = pkgs.writeText "text";
-  # The status of xargs when the command it runs fails.
-  failure = 123;
+  failure = import ./xargs-failure.nix;
   # Git tracks the files of a case, and the generated .yamllint.yaml.
   setup = "${apps.setup-files.program} && git add -A";
   case =

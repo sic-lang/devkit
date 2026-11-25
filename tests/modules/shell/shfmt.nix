@@ -12,8 +12,7 @@ let
   clean = text "if true; then\n  echo a\nfi\n";
   unformatted = text "if true;then\n  echo a\nfi\n";
   tab = text "if true; then\n\techo a\nfi\n";
-  # The status of xargs when the command it runs fails.
-  failure = 123;
+  failure = import ../../libs/xargs-failure.nix;
   case =
     name: arguments:
     repository (

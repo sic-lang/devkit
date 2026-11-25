@@ -9,8 +9,7 @@
 let
   inherit (consumer [ flakeModules.github-actions ]) apps;
   text = pkgs.writeText "text";
-  # The status of xargs when the command it runs fails.
-  failure = 123;
+  failure = import ../../libs/xargs-failure.nix;
   # A workflow whose job has the step `step`, given as the lines of a YAML mapping.
   workflow =
     step: text "on: push\njobs:\n  a:\n    runs-on: ubuntu-24.04\n    steps:\n      - ${step}\n";

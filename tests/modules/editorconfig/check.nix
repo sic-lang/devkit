@@ -11,8 +11,7 @@ let
   text = pkgs.writeText "text";
   line = length: text "${lib.strings.replicate length "a"}\n";
   trailing = text "A line that ends with a space. \n";
-  # The status of xargs when the command it runs fails.
-  failure = 123;
+  failure = import ../../libs/xargs-failure.nix;
   # Git tracks the files of a case, and the generated .editorconfig.
   setup = "${apps.setup-files.program} && git add -A";
   case =
