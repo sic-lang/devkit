@@ -45,7 +45,7 @@ Set the modules' options in `perSystem`, under `devkit`, where `pkgs` gives the 
 
 devkit's [`flake-checks.yml`](https://github.com/sic-lang/devkit/blob/main/.github/workflows/flake-checks.yml) is a [reusable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows).
 It runs every `check-*` app and builds every `test-*` check of the repository's flake, one job each.
-[The job `checks`](https://github.com/sic-lang/devkit/blob/main/.github/workflows/flake-checks.yml#L69) passes only when all of them pass, so the repository's ruleset requires only this job.
+[The job `checks`](https://github.com/sic-lang/devkit/blob/main/.github/workflows/flake-checks.yml) passes only when all of them pass, so the repository's ruleset requires only this job.
 The workflow sets its own permissions, so the calling workflow does not set any.
 
 The repository calls it from a workflow of its own, which sets the events as [devkit's `checks.yml`](https://github.com/sic-lang/devkit/blob/main/.github/workflows/checks.yml) does.
