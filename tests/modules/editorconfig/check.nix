@@ -85,6 +85,16 @@ lib.mapAttrs case {
       cp ${trailing} directory/file.txt
     '';
   };
+  # Git tracks the link, not the content of its target.
+  symbolic-link-to-file = {
+    files."file.txt" = text "A clean line.\n";
+    before = ''
+      ${setup}
+      cp ${trailing} target.txt
+      ln -s target.txt link
+      git add link
+    '';
+  };
   # editorconfig-checker would fail to read the target.
   broken-symbolic-link = {
     files."file.txt" = text "A clean line.\n";
