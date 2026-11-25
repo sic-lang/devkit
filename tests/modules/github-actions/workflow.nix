@@ -1,4 +1,5 @@
-# The generated workflow passes the checks of the modules that a repository with workflows imports.
+# The generated workflow passes the check of the module and that of the yaml module, which checks
+# every YAML file.
 {
   consumer,
   flakeModules,
