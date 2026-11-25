@@ -5,7 +5,7 @@ description: Check a repository's GitHub Actions workflows with actionlint, usin
 
 # github-actions
 
-The `github-actions` module checks the workflows, every `*.yaml` and `*.yml` file under `.github/workflows` that Git tracks, with [actionlint](https://github.com/rhysd/actionlint).
+The `github-actions` module checks the workflows, every regular `*.yaml` and `*.yml` file under `.github/workflows` that Git tracks, with [actionlint](https://github.com/rhysd/actionlint).
 
 ## Set it up
 
