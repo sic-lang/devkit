@@ -58,6 +58,9 @@ lib.mapAttrs case {
       cp ${unformatted} untracked.nix
     '';
   };
+  no-nix-file = import ../../libs/no-file.nix // {
+    files."file.txt" = formatted;
+  };
   other-extension = {
     files = {
       "file.nix" = formatted;

@@ -7,12 +7,13 @@ in
   perSystem =
     { lib, pkgs, ... }:
     let
+      tracked = import ../checks/tracked-files.nix pkgs;
       # The one selection of the files that the check checks and the formatter formats.
       nixFiles = pkgs.writeShellApplication {
         name = "nix-files";
         runtimeInputs = [
           pkgs.gnugrep
-          (import ../checks/tracked-files.nix pkgs).trackedFiles
+          tracked.trackedFiles
         ];
         text = builtins.readFile ./nix-files.sh;
       };
@@ -40,8 +41,8 @@ in
         text = builtins.readFile ./format.sh;
       };
       devkit.checks.nixfmt = {
-        inherit packages;
-        command = "nix-files | xargs -0 nixfmt --check --";
+        packages = packages ++ [ tracked.onFiles ];
+        command = "nix-files | on-files 'Git tracks no Nix file' nixfmt --check";
       };
     };
 }

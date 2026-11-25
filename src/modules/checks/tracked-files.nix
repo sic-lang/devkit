@@ -8,17 +8,22 @@ let
     runtimeInputs = [ pkgs.git ];
     text = builtins.readFile ./tracked-files.sh;
   };
+  onFiles = pkgs.writeShellApplication {
+    name = "on-files";
+    runtimeInputs = [ pkgs.findutils ];
+    text = builtins.readFile ./on-files.sh;
+  };
   onTrackedFiles = pkgs.writeShellApplication {
     name = "on-tracked-files";
     runtimeInputs = [
-      pkgs.findutils
+      onFiles
       trackedFiles
     ];
     text = builtins.readFile ./on-tracked-files.sh;
   };
 in
 {
-  inherit trackedFiles;
+  inherit onFiles trackedFiles;
   # A check that runs the command line `command` on the files that `pathspecs` selects.
   check =
     {
