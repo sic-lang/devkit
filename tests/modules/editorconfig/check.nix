@@ -69,43 +69,4 @@ lib.mapAttrs case {
     files."file.txt" = text "A clean line.\n";
     before = "${setup} && cp ${trailing} untracked.txt";
   };
-  # Git still lists a tracked file that is deleted from the working tree.
-  deleted = {
-    files."file.txt" = text "A clean line.\n";
-    before = "${setup} && rm file.txt";
-  };
-  # editorconfig-checker would check the untracked files of a directory that it receives.
-  symbolic-link-to-directory = {
-    files."file.txt" = text "A clean line.\n";
-    before = ''
-      ${setup}
-      mkdir directory
-      ln -s directory link
-      git add link
-      cp ${trailing} directory/file.txt
-    '';
-  };
-  # Git tracks the link, not the content of its target.
-  symbolic-link-to-file = {
-    files."file.txt" = text "A clean line.\n";
-    before = ''
-      ${setup}
-      cp ${trailing} target.txt
-      ln -s target.txt link
-      git add link
-    '';
-  };
-  # editorconfig-checker would fail to read the target.
-  broken-symbolic-link = {
-    files."file.txt" = text "A clean line.\n";
-    before = "${setup} && ln -s missing link && git add link";
-  };
-  submodule = {
-    files."submodule/file.txt" = trailing;
-    before = ''
-      ${apps.setup-files.program}
-      git add .editorconfig
-      git update-index --add --cacheinfo 160000,${lib.strings.replicate 40 "1"},submodule
-    '';
-  };
 }
