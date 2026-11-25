@@ -1,3 +1,3 @@
-# The status of xargs when the command it runs fails, the status of a failed check that passes its
-# files through xargs.
+# The status of a check whose tool reports a problem.
+# The check passes the files to the tool with xargs, which returns 123 when the tool fails.
 123
