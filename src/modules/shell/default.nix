@@ -4,25 +4,23 @@
   perSystem =
     { pkgs, ... }:
     let
-      # Runs a command on the shell scripts, after `--` so that it reads no name as an option.
-      onScripts = command: "git ls-files -z .envrc '*.sh' | xargs -0 ${command} --";
+      indentSize = toString (import ../../lib.nix).indentSize;
+      # A check that runs a command on the shell scripts.
+      onScripts =
+        command: package:
+        (import ../checks/tracked-files.nix pkgs).check {
+          pathspecs = [
+            ".envrc"
+            "*.sh"
+          ];
+          inherit command;
+          packages = [ package ];
+        };
     in
     {
       devkit.checks = {
-        shellcheck = {
-          packages = [
-            pkgs.findutils
-            pkgs.shellcheck
-          ];
-          command = onScripts "shellcheck";
-        };
-        shfmt = {
-          packages = [
-            pkgs.findutils
-            pkgs.shfmt
-          ];
-          command = onScripts "shfmt --indent ${toString (import ../../lib.nix).indentSize} --diff";
-        };
+        shellcheck = onScripts "shellcheck" pkgs.shellcheck;
+        shfmt = onScripts "shfmt --indent ${indentSize} --diff" pkgs.shfmt;
       };
     };
 }

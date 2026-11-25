@@ -39,6 +39,7 @@ This example imports the `licenses` module:
 ```
 
 Each module has its own skill, `devkit-<module>`, which describes what it provides and how to set it up.
+A check of a kind of files reads only the regular files that Git tracks, and fails with `No file to check` when Git tracks none of them.
 Set the modules' options in `perSystem`, under `devkit`, where `pkgs` gives the packages that their values need.
 
 ## Run the checks on GitHub
