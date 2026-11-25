@@ -16,6 +16,7 @@
       {
         imports = [
           ./src/modules/commits
+          ./src/modules/direnv
           ./src/modules/editorconfig
           ./src/modules/github-actions
           ./src/modules/nix
