@@ -7,7 +7,7 @@
   ...
 }:
 let
-  inherit (consumer [ flakeModules.yamllint ]) apps;
+  inherit (consumer [ flakeModules.yaml ]) apps;
   text = pkgs.writeText "text";
   case =
     name: arguments:

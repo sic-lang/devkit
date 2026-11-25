@@ -6,7 +6,7 @@
   ...
 }:
 let
-  inherit (consumer [ flakeModules.yamllint ]) apps;
+  inherit (consumer [ flakeModules.yaml ]) apps;
 in
 {
   values = repository {
