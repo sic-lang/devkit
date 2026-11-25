@@ -12,7 +12,7 @@ Its library, `lib`, holds the values that devkit shares between repositories.
 
 Add devkit to the repository's flake inputs, together with the `nixpkgs` that devkit takes its packages from.
 Then import the modules you need from `flakeModules`.
-This example imports the `reuse` module:
+This example imports the `licenses` module:
 
 ```nix
 {
@@ -32,7 +32,7 @@ This example imports the `reuse` module:
   outputs =
     inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ inputs.devkit.flakeModules.reuse ];
+      imports = [ inputs.devkit.flakeModules.licenses ];
       systems = [ "x86_64-linux" ];
     };
 }

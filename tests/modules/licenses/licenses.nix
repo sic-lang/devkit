@@ -15,7 +15,7 @@ let
     "Apache-2.0.txt" = apache;
     "LLVM-exception.txt" = llvm;
   };
-  inherit (consumer [ flakeModules.reuse ]) apps;
+  inherit (consumer [ flakeModules.licenses ]) apps;
   annotation =
     {
       path ? "**",

@@ -19,7 +19,7 @@
           ./src/modules/editorconfig
           ./src/modules/github-actions
           ./src/modules/nix
-          ./src/modules/reuse
+          ./src/modules/licenses
           ./src/modules/shell
           ./src/modules/yaml
         ];
