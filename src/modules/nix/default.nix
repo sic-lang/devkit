@@ -42,7 +42,7 @@ in
       };
       devkit.checks.nixfmt = {
         packages = packages ++ [ tracked.onFiles ];
-        command = "nix-files | on-files 'Git tracks no Nix file' nixfmt --check";
+        command = "on-files 'Git tracks no Nix file' nixfmt --check -- nix-files";
       };
     };
 }

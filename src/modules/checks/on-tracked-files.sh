@@ -12,4 +12,4 @@ if [ "${#pathspecs[@]}" -gt 0 ]; then
   alternatives=$(printf ' or %s' "${pathspecs[@]}")
   reason+=" that matches ${alternatives# or }"
 fi
-tracked-files -- "${pathspecs[@]}" | on-files "$reason" "$@"
+on-files "$reason" "$@" -- tracked-files -- "${pathspecs[@]}"

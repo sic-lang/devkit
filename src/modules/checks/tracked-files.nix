@@ -1,4 +1,5 @@
-# The programs that select the files that Git tracks, and the checks that run a command on them.
+# The programs that list the files that Git tracks and run a command on a list of files, and the
+# checks that run a command on the files that Git tracks.
 # Commands run them from the directory of their choice, so they are packages, not commands built by
 # mkCommand, which would change to the repository's root.
 pkgs:
