@@ -11,5 +11,3 @@ The `github-actions` module checks the workflows in `.github/workflows` with [ac
 
 1. Import `inputs.devkit.flakeModules.github-actions`, as the `devkit` skill shows.
 2. Run `nix run .#check-actionlint`.
-
-Only a repository with workflows imports the module.

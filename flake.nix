@@ -18,8 +18,8 @@
           ./src/modules/commits
           ./src/modules/editorconfig
           ./src/modules/github-actions
-          ./src/modules/nix
           ./src/modules/licenses
+          ./src/modules/nix
           ./src/modules/shell
           ./src/modules/yaml
         ];

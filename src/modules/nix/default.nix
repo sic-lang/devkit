@@ -8,6 +8,8 @@ in
     { lib, pkgs, ... }:
     let
       # The one selection of the files that the check checks and the formatter formats.
+      # The formatter runs from any directory, with paths relative to that directory, so neither it
+      # nor this selection is built with mkCommand, whose commands change to the repository's root.
       nixFiles = pkgs.writeShellApplication {
         name = "nix-files";
         runtimeInputs = [

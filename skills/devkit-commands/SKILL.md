@@ -1,6 +1,6 @@
 ---
 name: devkit-commands
-description: Implement a custom repository-specific command as a Bash template using devkit's `commands` module, and set environment variables for all of a repository's commands. Use this when a repository requires a command of its own, or when its commands need environment variables.
+description: Implement a repository-specific command as a Bash template with devkit's `commands` module, and set environment variables for every command of a repository. Use this when a repository needs a command that none of devkit's modules provides, or when its commands need environment variables.
 ---
 
 # commands
@@ -35,7 +35,7 @@ config.devkit.mkCommand {
   Either quote the placeholder in the template, or quote the value with `lib.escapeShellArg` (`lib.escapeShellArgs` for a list).
 - The header uses the `bash`, `path` and `env` placeholders, so templates cannot use these names.
 - The build fails if a replacement matches no placeholder, or if a placeholder is left unreplaced.
-  The flake check fails if ShellCheck finds a problem in the built script, or if shfmt would format it differently.
+  The flake check fails if [ShellCheck](https://www.shellcheck.net) finds a problem in the built script, or if [shfmt](https://github.com/mvdan/sh) would format it differently.
   The template itself is not checked, because it is not valid Bash until its placeholders are replaced.
 
 `devkit.commands.<name>` exposes its `command` as the `<name>` app, with a `description`.

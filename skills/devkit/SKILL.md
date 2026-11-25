@@ -11,7 +11,7 @@ Its library, `lib`, holds the values that devkit shares between repositories.
 ## Take devkit as an input
 
 Add devkit to the repository's flake inputs, together with the `nixpkgs` that devkit takes its packages from.
-Then import the modules you need from `flakeModules`.
+Then import from `flakeModules` the modules that the repository needs, including the module of each kind of files that it has, and no module for a kind of files that it lacks.
 This example imports the `licenses` module:
 
 ```nix
