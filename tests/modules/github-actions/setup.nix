@@ -20,13 +20,30 @@ in
       sed 's|@flakeChecksWorkflow@|${reference}|' ${template} | cmp - .github/workflows/checks.yml
     '';
   };
-  # Without a commit of devkit, the apps that need the generated files fail to evaluate, but the
-  # check of the workflows does not.
+  # At a version of devkit that no commit holds, the setup writes the other generated files and
+  # leaves the committed workflow alone.
   no-revision =
     let
-      inherit (consumer [ (modules { }).github-actions ]) apps;
-      evaluates = app: (builtins.tryEval apps.${app}.program).success;
+      inherit (modules { }) github-actions yaml;
+      inherit
+        (consumer [
+          github-actions
+          yaml
+        ])
+        apps
+        ;
+      workflow = pkgs.writeText "checks.yml" "Any content.\n";
     in
-    assert !evaluates "setup-files" && !evaluates "check-files" && evaluates "check-actionlint";
-    pkgs.writeText "no-revision" "";
+    repository {
+      name = "no-revision";
+      files.".github/workflows/checks.yml" = workflow;
+      before = "git add -A";
+      command = apps.setup-files.program;
+      output = [ "created .yamllint.yaml" ];
+      after = ''
+        cmp ${workflow} .github/workflows/checks.yml
+        git add -A
+        ${apps.check-files.program}
+      '';
+    };
 }

@@ -22,6 +22,5 @@ The module is set up in three steps:
 After an update of devkit in `flake.lock`, `check-files` fails until `nix run .#setup-files -- --force` rewrites the workflow with the new commit.
 Commit the workflow with `flake.lock`.
 
-The module takes the commit from devkit's flake.
-When that flake has none, as when the repository tries a local devkit with [`--override-input`](https://nix.dev/manual/nix/latest/command-ref/new-cli/nix3-run.html#opt-override-input), the generated files cannot be evaluated: `setup-files`, `check-files`, `setup`, `check` and `nix flake check` fail.
-To run them meanwhile, set `devkit.github-actions.flakeChecksWorkflow` to the reference that the committed workflow calls, `sic-lang/devkit/.github/workflows/flake-checks.yml@<commit>`.
+A version of devkit that no commit holds, such as a clone with uncommitted changes given to [`--override-input`](https://nix.dev/manual/nix/latest/command-ref/new-cli/nix3-run.html#opt-override-input), has no commit to pin.
+With such a version, the module does not generate the workflow, so the setups and checks leave the committed one as it is, and Nix prints a warning.
