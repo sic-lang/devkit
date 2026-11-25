@@ -7,6 +7,7 @@
   ...
 }:
 let
+  helper = ../../../src/modules/checks/tracked-files.nix;
   # The check-<name> app of a check that runs `command` on the files that `pathspecs` selects.
   program =
     name: arguments:
@@ -16,9 +17,7 @@ let
         perSystem =
           { pkgs, ... }:
           {
-            devkit.checks.${name} = (import ../../../src/modules/checks/tracked-files.nix pkgs).check (
-              { packages = [ ]; } // arguments
-            );
+            devkit.checks.${name} = (import helper pkgs).check ({ packages = [ ]; } // arguments);
           };
       }
     ]).apps."check-${name}".program;
