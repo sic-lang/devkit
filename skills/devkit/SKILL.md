@@ -48,14 +48,23 @@ It runs every `check-*` app and builds every `test-*` check of the repository's 
 [The job `checks`](https://github.com/sic-lang/devkit/blob/main/.github/workflows/flake-checks.yml) passes only when all of them pass, so the repository's ruleset requires only this job.
 The workflow sets its own permissions, so the calling workflow does not set any.
 
-The repository calls it from a workflow of its own, which sets the events as [devkit's `checks.yml`](https://github.com/sic-lang/devkit/blob/main/.github/workflows/checks.yml) does.
-Its jobs call the workflow with a single job:
+The repository calls it from a workflow of its own, with a single job:
 
 ```yaml
+on:
+  merge_group:
+  pull_request:
+  push:
+    branches:
+      - main
+
 jobs:
   flake:
     uses: sic-lang/devkit/.github/workflows/flake-checks.yml@<commit>
 ```
+
+The checks run on every pull request, in the merge queue, and on `main` after each merge.
+`merge_group` is needed only when the ruleset of `main` requires a merge queue.
 
 `uses:` gives the workflow's path in devkit, followed by `@` and a full commit hash of devkit, because a branch or a tag can move.
 GitHub names each job after the calling job and the called job, so the ruleset requires `flake / checks`.
