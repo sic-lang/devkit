@@ -15,6 +15,7 @@ These steps set up the module in a repository:
 
 1. Import `inputs.devkit.flakeModules.envrc`, as the `devkit` skill shows.
 2. Run `nix run .#setup-files`, which writes `.envrc`, and commit the file.
-3. Run `nix run .#check-files`.
+3. Add `/.direnv/`, where direnv caches the development shell, to `.gitignore`.
+4. Run `nix run .#check-files`.
 
 Each contributor who uses direnv then sets it up as [its documentation](https://direnv.net/#getting-started) says.
