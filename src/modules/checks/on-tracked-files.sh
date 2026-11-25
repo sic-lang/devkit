@@ -9,6 +9,7 @@ done
 shift
 reason="Git tracks no regular file"
 if [ "${#pathspecs[@]}" -gt 0 ]; then
-  reason+=" that matches ${pathspecs[*]}"
+  alternatives=$(printf ' or %s' "${pathspecs[@]}")
+  reason+=" that matches ${alternatives# or }"
 fi
 tracked-files -- "${pathspecs[@]}" | on-files "$reason" "$@"
