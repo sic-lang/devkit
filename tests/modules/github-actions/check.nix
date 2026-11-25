@@ -51,10 +51,9 @@ lib.mapAttrs case {
     files.".github/workflows/valid.yml" = workflow ''run: echo "$1"'';
     before = "git add -A && cp ${workflow "run: echo $1"} .github/workflows/untracked.yml";
   };
-  # actionlint finds no workflow directory, so a repository without workflows does not import the
-  # module.
-  no-workflows = {
-    status = failure;
-    output = [ "no project was found" ];
+  # A repository without workflows does not import the module.
+  no-workflows = import ../../libs/no-file.nix;
+  untracked-only = import ../../libs/no-file.nix // {
+    before = "install -D ${workflow "run: echo $1"} .github/workflows/untracked.yml";
   };
 }

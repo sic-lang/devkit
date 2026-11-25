@@ -16,7 +16,7 @@ in
           };
         };
         # Without files, editorconfig-checker also checks the files that Git does not track.
-        checks.editorconfig = import ../checks/tracked-files.nix pkgs {
+        checks.editorconfig = (import ../checks/tracked-files.nix pkgs).check {
           command = "editorconfig-checker";
           packages = [ pkgs.editorconfig-checker ];
         };

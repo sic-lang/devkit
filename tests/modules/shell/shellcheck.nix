@@ -64,8 +64,5 @@ lib.mapAttrs case {
     "script.sh" = clean;
     "script.bash" = finding;
   };
-  no-script = {
-    status = failure;
-    output = [ "No files specified." ];
-  };
+  no-script = import ../../libs/no-file.nix;
 }

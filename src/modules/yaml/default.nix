@@ -16,7 +16,7 @@ in
           };
         };
         # Given a directory, yamllint also checks the files that Git does not track.
-        checks.yamllint = import ../checks/tracked-files.nix pkgs {
+        checks.yamllint = (import ../checks/tracked-files.nix pkgs).check {
           pathspecs = [
             "*.yaml"
             "*.yml"

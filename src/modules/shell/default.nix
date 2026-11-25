@@ -8,7 +8,7 @@
       # A check that runs a command on the shell scripts.
       onScripts =
         command: package:
-        import ../checks/tracked-files.nix pkgs {
+        (import ../checks/tracked-files.nix pkgs).check {
           pathspecs = [
             ".envrc"
             "*.sh"

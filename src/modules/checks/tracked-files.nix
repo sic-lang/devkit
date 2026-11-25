@@ -1,23 +1,36 @@
-# Builds a check that runs the command line `command` on the files that Git tracks.
-# `pathspecs` selects among them, and without pathspecs the command receives every tracked file.
-# The names follow `--`, so that the command reads no name as an option.
+# The programs that select the files that Git tracks, and the checks that run a command on them.
+# Commands run them from the directory of their choice, so they are packages, not commands built by
+# mkCommand, which would change to the repository's root.
 pkgs:
-{
-  pathspecs ? [ ],
-  command,
-  packages,
-}:
 let
-  list = pkgs.lib.escapeShellArgs (
-    [
-      "git"
-      "ls-files"
-      "-z"
-    ]
-    ++ pathspecs
-  );
+  trackedFiles = pkgs.writeShellApplication {
+    name = "tracked-files";
+    runtimeInputs = [ pkgs.git ];
+    text = builtins.readFile ./tracked-files.sh;
+  };
+  onTrackedFiles = pkgs.writeShellApplication {
+    name = "on-tracked-files";
+    runtimeInputs = [
+      pkgs.findutils
+      trackedFiles
+    ];
+    text = builtins.readFile ./on-tracked-files.sh;
+  };
 in
 {
-  command = "${list} | xargs -0 ${command} --";
-  packages = [ pkgs.findutils ] ++ packages;
+  inherit trackedFiles;
+  # A check that runs the command line `command` on the files that `pathspecs` selects.
+  check =
+    {
+      pathspecs ? [ ],
+      command,
+      packages,
+    }:
+    let
+      run = pkgs.lib.escapeShellArgs ([ "on-tracked-files" ] ++ pathspecs ++ [ "--" ]);
+    in
+    {
+      command = "${run} ${command}";
+      packages = [ onTrackedFiles ] ++ packages;
+    };
 }

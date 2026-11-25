@@ -11,8 +11,8 @@ in
       nixFiles = pkgs.writeShellApplication {
         name = "nix-files";
         runtimeInputs = [
-          pkgs.git
           pkgs.gnugrep
+          (import ../checks/tracked-files.nix pkgs).trackedFiles
         ];
         text = builtins.readFile ./nix-files.sh;
       };
