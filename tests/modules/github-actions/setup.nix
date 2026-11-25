@@ -20,7 +20,8 @@ in
       sed 's|@flakeChecksWorkflow@|${reference}|' ${template} | cmp - .github/workflows/checks.yml
     '';
   };
-  # Without a commit of devkit, only the apps that write or compare the workflow fail.
+  # Without a commit of devkit, the apps that need the generated files fail to evaluate, but the
+  # check of the workflows does not.
   no-revision =
     let
       inherit (consumer [ (modules { }).github-actions ]) apps;

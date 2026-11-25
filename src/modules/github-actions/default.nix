@@ -7,7 +7,8 @@ let
     devkit.rev or (throw (
       "devkit.github-actions.flakeChecksWorkflow pins flake-checks.yml to the commit of devkit"
       + " that the flake locks, but devkit's flake has none, as when it is a path or a Git working"
-      + " tree with changes: lock devkit at a commit"
+      + " tree with changes: lock devkit at a commit, or set the option to the reference that the"
+      + " committed workflow calls"
     ));
 in
 {
