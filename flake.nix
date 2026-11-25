@@ -12,17 +12,37 @@
   outputs =
     inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } (
-      { config, lib, ... }:
       {
-        imports = [
-          ./src/modules/commits
-          ./src/modules/editorconfig
-          ./src/modules/github-actions
-          ./src/modules/nix
-          ./src/modules/licenses
-          ./src/modules/shell
-          ./src/modules/yaml
-        ];
+        flake-parts-lib,
+        lib,
+        self,
+        ...
+      }:
+      let
+        # The modules, as a function of devkit's flake, so that the tests can give it any commit.
+        # A module runs in the flake that imports it, whose self and inputs are not devkit's.
+        modules =
+          devkit:
+          lib.mapAttrs (name: _: ./src/modules + "/${name}") (
+            lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./src/modules)
+          )
+          // {
+            github-actions = flake-parts-lib.importApply ./src/modules/github-actions {
+              inherit devkit;
+            };
+          };
+        flakeModules = modules self;
+      in
+      {
+        imports = lib.attrVals [
+          "commits"
+          "editorconfig"
+          "github-actions"
+          "nix"
+          "licenses"
+          "shell"
+          "yaml"
+        ] flakeModules;
         # The popular systems for which all the tools are in nixpkgs' binary cache.
         systems = [
           "aarch64-darwin"
@@ -30,17 +50,17 @@
           "x86_64-linux"
         ];
         flake.lib = import ./src/lib.nix;
-        flake.flakeModules = lib.mapAttrs (name: _: ./src/modules + "/${name}") (
-          lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./src/modules)
-        );
+        flake.flakeModules = flakeModules;
         perSystem =
           { pkgs, system, ... }:
           {
+            # A commit cannot hold its own hash, so devkit calls the workflow of its own commit.
+            devkit.github-actions.flakeChecks = "./.github/workflows/flake-checks.yml";
             checks = import ./tests {
-              inherit (config.flake) flakeModules;
               inherit
                 inputs
                 lib
+                modules
                 pkgs
                 system
                 ;

@@ -1,13 +1,21 @@
 {
-  flakeModules,
   inputs,
   lib,
+  modules,
   pkgs,
   system,
 }:
 let
+  # The modules of devkit at a fixed commit, since devkit's own flake has none when its working tree
+  # has changes.
+  flakeModules = modules { rev = lib.strings.replicate 40 "0"; };
   args = {
-    inherit flakeModules lib pkgs;
+    inherit
+      flakeModules
+      lib
+      modules
+      pkgs
+      ;
     repository = import ./libs/repository.nix { inherit lib pkgs; };
     consumer =
       modules:
