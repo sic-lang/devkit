@@ -5,7 +5,7 @@ description: Check a repository's YAML files with yamllint, using a configuratio
 
 # yaml
 
-The `yaml` module checks every YAML file in the repository with `yamllint --strict`.
+The `yaml` module checks the repository's YAML files, every `*.yaml` and `*.yml` file that Git tracks, with `yamllint --strict`.
 It generates yamllint's configuration, `.yamllint.yaml`, with the `files` module.
 
 ## Set it up

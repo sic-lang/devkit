@@ -15,9 +15,15 @@ in
             lineLength = toString shared.lineLength;
           };
         };
-        checks.yamllint = {
+        # yamllint checks the files that it finds in a directory, so that it would check the files that
+        # Git does not track.
+        checks.yamllint = import ../checks/tracked-files.nix pkgs {
+          pathspecs = [
+            "*.yaml"
+            "*.yml"
+          ];
+          command = "yamllint --strict";
           packages = [ pkgs.yamllint ];
-          command = "yamllint --strict .";
         };
       };
     };
