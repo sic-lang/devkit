@@ -17,6 +17,7 @@
         imports = [
           ./src/modules/commits
           ./src/modules/editorconfig
+          ./src/modules/envrc
           ./src/modules/github-actions
           ./src/modules/nix
           ./src/modules/licenses
