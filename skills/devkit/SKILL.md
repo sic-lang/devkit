@@ -40,3 +40,32 @@ This example imports the `licenses` module:
 
 Each module has its own skill, `devkit-<module>`, which describes what it provides and how to set it up.
 Set the modules' options in `perSystem`, under `devkit`, where `pkgs` gives the packages that their values need.
+
+## Run the checks on GitHub
+
+devkit's [`flake-checks.yml`](https://github.com/sic-lang/devkit/blob/main/.github/workflows/flake-checks.yml) is a [reusable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows).
+It runs every `check-*` app and builds every `test-*` check of the repository's flake, one job each.
+The job `checks` passes only when all of them pass, so the repository's ruleset requires only this job.
+
+The repository calls it from a workflow of its own, which chooses the events, as this example shows:
+
+```yaml
+name: Checks
+
+on:
+  merge_group:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  flake:
+    uses: sic-lang/devkit/.github/workflows/flake-checks.yml@<commit>
+```
+
+Pin the workflow to a full commit hash of devkit, because a branch or a tag can move.
+GitHub names each job after the calling job and the called job, so the ruleset requires `flake / checks`.
