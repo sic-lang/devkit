@@ -71,7 +71,6 @@ lib.mapAttrs case {
     "script.sh" = clean;
     "script.bash" = unformatted;
   };
-  # Without a script, xargs runs shfmt once without a file, so shfmt reads its empty input.
   no-script = import ../../libs/no-file.nix;
   # The indentation comes from devkit's library, whatever .editorconfig says.
   editorconfig-ignored = {
