@@ -20,22 +20,23 @@ in
       sed 's|@flakeChecksWorkflow@|${reference}|' ${template} | cmp - .github/workflows/checks.yml
     '';
   };
-  # At a version of devkit that no commit holds, the setup writes the other generated files and
-  # leaves the committed workflow alone.
-  no-revision =
+  # The option defaults to null at a version of devkit that no commit holds.
+  # Setting it here tests the same setup without the warning of that default.
+  without-workflow =
     let
-      inherit (modules { }) github-actions yaml;
+      inherit (modules { rev = revision; }) github-actions yaml;
       inherit
         (consumer [
           github-actions
           yaml
+          { perSystem.devkit.github-actions.flakeChecksWorkflow = null; }
         ])
         apps
         ;
       workflow = pkgs.writeText "checks.yml" "Any content.\n";
     in
     repository {
-      name = "no-revision";
+      name = "without-workflow";
       files.".github/workflows/checks.yml" = workflow;
       before = "git add -A";
       command = apps.setup-files.program;
