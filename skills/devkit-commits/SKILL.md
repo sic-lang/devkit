@@ -26,7 +26,7 @@ It requires that:
 
 The author commits with `git commit --signoff`.
 
-A pull request's workflow gives the check the base and the head of the pull request, and fetches the history of both, as [devkit's workflow](https://github.com/sic-lang/devkit/blob/main/.github/workflows/checks.yml) does.
+A pull request's workflow gives the check the base and the head of the pull request, and fetches the history of both, as [devkit's reusable workflow](https://github.com/sic-lang/devkit/blob/main/.github/workflows/flake-checks.yml) does.
 
 ## The hook
 
