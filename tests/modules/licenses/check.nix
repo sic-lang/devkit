@@ -1,6 +1,6 @@
 { lib, ... }@args:
 let
-  helpers = import ./lib args;
+  helpers = import ../../libs/licenses.nix args;
   inherit (helpers)
     apache
     other

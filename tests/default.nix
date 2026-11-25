@@ -8,7 +8,7 @@
 let
   args = {
     inherit flakeModules lib pkgs;
-    repository = import ./repository.nix { inherit lib pkgs; };
+    repository = import ./libs/repository.nix { inherit lib pkgs; };
     consumer =
       modules:
       let
@@ -28,7 +28,6 @@ let
   alone = import ./alone.nix args;
   directories = builtins.readDir ./modules;
   # The cases of a module: its import alone, and those of each file of its directory, if it has one.
-  # A subdirectory holds helpers that the files of the directory share, so it has no cases.
   # Each case is named after its module, file and case, so that a failure names it.
   cases =
     module:
@@ -52,9 +51,7 @@ let
     }
     // lib.optionalAttrs (directories ? ${module}) (
       lib.concatMapAttrs file (
-        lib.filterAttrs (file: type: type == "regular" && lib.hasSuffix ".nix" file) (
-          builtins.readDir directory
-        )
+        lib.filterAttrs (file: _: lib.hasSuffix ".nix" file) (builtins.readDir directory)
       )
     );
   # A directory of tests whose module does not exist would be ignored, as after a rename of the
