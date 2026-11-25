@@ -5,7 +5,6 @@
   ...
 }:
 let
-  # The shell module checks .envrc as a shell script, so the generated file must pass its checks.
   inherit
     (consumer [
       flakeModules.direnv
