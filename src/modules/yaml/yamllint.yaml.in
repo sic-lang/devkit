@@ -7,8 +7,10 @@ rules:
   indentation:
     spaces: @indentSize@
   # So that YAML files wrap at the same length as the other files that have a limit.
+  # A value without spaces cannot wrap, so it may go past the limit after its key.
   line-length:
     max: @lineLength@
+    allow-non-breakable-inline-mappings: true
   # Workflows use the "on" key for their triggers.
   truthy:
     check-keys: false
