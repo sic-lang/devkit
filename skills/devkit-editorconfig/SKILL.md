@@ -17,5 +17,5 @@ It generates the [EditorConfig](https://editorconfig.org) file, `.editorconfig`,
 ## The configuration
 
 `.editorconfig` holds the rules, and the reason for each exception.
-It sets no maximum line length for YAML files, because the `yamllint` module checks it.
-So a repository with YAML files also uses the `yamllint` module, as the `devkit-yamllint` skill shows.
+It sets no maximum line length for YAML files, because the `yaml` module checks it.
+So a repository with YAML files also uses the `yaml` module, as the `devkit-yaml` skill shows.

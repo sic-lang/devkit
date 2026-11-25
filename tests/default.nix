@@ -8,7 +8,7 @@
 let
   args = {
     inherit flakeModules lib pkgs;
-    repository = import ./repository.nix { inherit lib pkgs; };
+    repository = import ./libs/repository.nix { inherit lib pkgs; };
     consumer =
       modules:
       let
