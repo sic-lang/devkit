@@ -5,8 +5,8 @@
   ...
 }:
 let
-  inherit (consumer [ flakeModules.direnv ]) apps;
-  template = ../../../src/modules/direnv/envrc.in;
+  inherit (consumer [ flakeModules.envrc ]) apps;
+  template = ../../../src/modules/envrc/envrc.in;
 in
 {
   writes = repository {

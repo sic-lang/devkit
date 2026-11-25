@@ -7,7 +7,7 @@
 let
   inherit
     (consumer [
-      flakeModules.direnv
+      flakeModules.envrc
       flakeModules.shell
     ])
     apps
