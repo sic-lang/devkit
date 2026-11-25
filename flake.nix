@@ -27,19 +27,19 @@
             lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./src/modules)
           )
           // {
-            github-actions = flake-parts-lib.importApply ./src/modules/github-actions {
-              inherit devkit;
+            # importApply gives the module a file but no key, so the key of its path makes a flake
+            # that imports it twice get it once, as for the other modules, which are paths.
+            github-actions = {
+              key = toString ./src/modules/github-actions;
+              imports = [
+                (flake-parts-lib.importApply ./src/modules/github-actions { inherit devkit; })
+              ];
             };
           };
         flakeModules = modules self;
       in
       {
-        # flake-parts' flakeModules option gives each exported module a key, so that a flake that
-        # imports a module twice gets it once.
-        imports = [
-          inputs.flake-parts.flakeModules.flakeModules
-        ]
-        ++ lib.attrVals [
+        imports = lib.attrVals [
           "commits"
           "editorconfig"
           "github-actions"
