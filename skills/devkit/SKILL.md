@@ -45,27 +45,17 @@ Set the modules' options in `perSystem`, under `devkit`, where `pkgs` gives the 
 
 devkit's [`flake-checks.yml`](https://github.com/sic-lang/devkit/blob/main/.github/workflows/flake-checks.yml) is a [reusable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows).
 It runs every `check-*` app and builds every `test-*` check of the repository's flake, one job each.
-The job `checks` passes only when all of them pass, so the repository's ruleset requires only this job.
+[The job `checks`](https://github.com/sic-lang/devkit/blob/main/.github/workflows/flake-checks.yml#L69) passes only when all of them pass, so the repository's ruleset requires only this job.
+The workflow sets its own permissions, so the calling workflow does not set any.
 
-The repository calls it from a workflow of its own, which chooses the events, as this example shows:
+The repository calls it from a workflow of its own, which sets the events as [devkit's `checks.yml`](https://github.com/sic-lang/devkit/blob/main/.github/workflows/checks.yml) does.
+Its jobs call the workflow with a single job:
 
 ```yaml
-name: Checks
-
-on:
-  merge_group:
-  pull_request:
-  push:
-    branches:
-      - main
-
-permissions:
-  contents: read
-
 jobs:
   flake:
     uses: sic-lang/devkit/.github/workflows/flake-checks.yml@<commit>
 ```
 
-Pin the workflow to a full commit hash of devkit, because a branch or a tag can move.
+`uses:` gives the workflow's path in devkit, followed by `@` and a full commit hash of devkit, because a branch or a tag can move.
 GitHub names each job after the calling job and the called job, so the ruleset requires `flake / checks`.
