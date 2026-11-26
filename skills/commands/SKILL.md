@@ -1,5 +1,5 @@
 ---
-name: devkit-commands
+name: commands
 description: Implement a custom repository-specific command as a Bash template using devkit's `commands` module, and set environment variables for all of a repository's commands. Use this when a repository requires a command of its own, or when its commands need environment variables.
 ---
 
@@ -56,7 +56,7 @@ devkit.commandEnv =
 ## Configure the development shell
 
 The `commands` module also defines the repository's development shell, which `nix develop` starts.
-With the `envrc` module, [direnv](https://direnv.net) also loads it, as the `devkit-envrc` skill shows.
+With the `envrc` module, [direnv](https://direnv.net) also loads it, as the `devkit:envrc` skill shows.
 `devkit.shell.packages` adds packages to it, `devkit.shell.env` sets its environment variables, and `devkit.shell.shellHook` runs commands when it starts:
 
 ```nix

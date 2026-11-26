@@ -23,14 +23,18 @@ let
         flake = inputs.flake-parts.lib.mkFlake { inherit inputs; } {
           imports = modules;
           systems = [ system ];
+          # Gives the generated files, whose sources a case may need to inspect, in allSystems.
+          debug = true;
         };
       in
       lib.mapAttrs (_: output: output.${system}) {
         inherit (flake) apps checks devShells;
       }
-      # A flake without a formatter has none for the system.
+      # A flake without a formatter has none for the system, and one without the files module no
+      # generated files.
       // {
         formatter = flake.formatter.${system} or null;
+        files = flake.allSystems.${system}.devkit.files or { };
       };
   };
   alone = import ./alone.nix args;

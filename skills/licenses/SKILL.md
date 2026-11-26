@@ -1,5 +1,5 @@
 ---
-name: devkit-licenses
+name: licenses
 description: Check a repository's licenses with REUSE and write their texts from the SPDX license list, with devkit's `licenses` module. Use this when setting up a repository's licenses, when the `reuse` or `licenses` check fails, or when adding a third-party file.
 ---
 
@@ -10,7 +10,7 @@ It also writes the license texts from the SPDX license list.
 
 ## Set it up
 
-1. Import `inputs.devkit.flakeModules.licenses`, as the `devkit` skill shows.
+1. Import `inputs.devkit.flakeModules.licenses`, as the `devkit:adopt` skill shows.
 2. Write at least this `REUSE.toml`, whose annotation covers every file:
 
    ```toml

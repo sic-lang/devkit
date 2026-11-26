@@ -6,8 +6,11 @@ It holds what they share to develop, check and review their content: the modules
 ## Usage
 
 The skills in [`skills/`](skills) explain how to use devkit, for agents and humans alike.
-The [`devkit`](skills/devkit/SKILL.md) skill explains how to set up devkit in a repository.
+The [`adopt`](skills/adopt/SKILL.md) skill explains how to set up devkit in a repository.
 Each module has its own skill, which describes what the module offers and how to use it.
+
+devkit is also a [Claude Code plugin](https://code.claude.com/docs/en/plugins/overview) that gives these skills to Claude Code, from the marketplace `sic-lang` of [`.claude-plugin/`](.claude-plugin).
+The [`claude-code`](skills/claude-code/SKILL.md) skill explains how to enable it in a repository.
 
 ## License
 

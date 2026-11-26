@@ -3,6 +3,7 @@
 { flake-parts-lib, lib, ... }:
 let
   inherit (lib) mkOption types;
+  inherit (import ../../lib.nix) repository;
 in
 {
   imports = [
@@ -26,7 +27,7 @@ in
         type = types.nullOr types.str;
         default =
           if devkit ? rev then
-            "sic-lang/devkit/.github/workflows/flake-checks.yml@${devkit.rev}"
+            "${repository}/.github/workflows/flake-checks.yml@${devkit.rev}"
           else
             lib.warn (
               "devkit is at a version that no commit holds, such as a working tree with changes,"

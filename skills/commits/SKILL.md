@@ -1,5 +1,5 @@
 ---
-name: devkit-commits
+name: commits
 description: Check that a branch's commits are signed off by their authors and merge only their base, and install a Git hook that rejects a commit without its author's sign-off, with devkit's `commits` module. Use this when setting up the commits check or the hook, or when the check or the hook fails.
 ---
 
@@ -10,7 +10,7 @@ It also provides a `commit-msg` hook that rejects a commit without its author's 
 
 ## Set it up
 
-1. Import `inputs.devkit.flakeModules.commits`, as the `devkit` skill shows.
+1. Import `inputs.devkit.flakeModules.commits`, as the `devkit:adopt` skill shows.
 2. Run `nix run .#setup-hooks` to install the hook.
 3. Run `nix run .#check-commits`.
 

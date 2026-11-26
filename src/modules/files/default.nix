@@ -12,8 +12,7 @@ in
     { config, pkgs, ... }:
     let
       cfg = config.devkit;
-      generate = file: pkgs.replaceVars file.template file.replacements;
-      generated = lib.mapAttrs (_: generate) cfg.files;
+      generated = lib.mapAttrs (_: file: file.source) cfg.files;
     in
     {
       options.devkit.files = mkOption {
@@ -23,19 +22,33 @@ in
         '';
         default = { };
         type = types.attrsOf (
-          types.submodule {
-            options = {
-              template = mkOption {
-                description = "The file's template, from the flake or the Nix store.";
-                type = types.path;
+          types.submodule (
+            { config, ... }:
+            {
+              options = {
+                source = mkOption {
+                  description = ''
+                    The file, from the flake or the Nix store, which devkit copies as it is. It
+                    defaults to the file built from `template`.
+                  '';
+                  type = types.path;
+                };
+                template = mkOption {
+                  description = "The file's template, from the flake or the Nix store.";
+                  type = types.nullOr types.path;
+                  default = null;
+                };
+                replacements = mkOption {
+                  description = "The value of each `@name@` placeholder of the template.";
+                  type = types.attrsOf types.str;
+                  default = { };
+                };
               };
-              replacements = mkOption {
-                description = "The value of each `@name@` placeholder of the template.";
-                type = types.attrsOf types.str;
-                default = { };
-              };
-            };
-          }
+              config.source = lib.mkIf (config.template != null) (
+                pkgs.replaceVars config.template config.replacements
+              );
+            }
+          )
         );
       };
 
