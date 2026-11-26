@@ -23,14 +23,14 @@
         # A module runs in the flake that imports it, whose self and inputs are not devkit's.
         modules =
           devkit:
-          lib.mapAttrs (name: _: ./src/modules + "/${name}") (
-            lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./src/modules)
+          lib.mapAttrs (name: _: ./sources/modules + "/${name}") (
+            lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./sources/modules)
           )
           # The modules that take devkit's flake, to pin its commit.
           // lib.genAttrs [ "claude-code" "github-actions" ] (
             name:
             let
-              path = ./src/modules + "/${name}";
+              path = ./sources/modules + "/${name}";
             in
             {
               # importApply gives the module a file but no key, so the key of its path makes a flake
@@ -40,7 +40,7 @@
             }
           );
         flakeModules = modules self;
-        devkitLib = import ./src/lib.nix;
+        devkitLib = import ./sources/lib.nix;
       in
       {
         imports = lib.attrVals [

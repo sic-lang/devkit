@@ -16,7 +16,7 @@ It generates yamllint's configuration, `.yamllint.yaml`, with the `files` module
 
 ## The configuration
 
-`.yamllint.yaml` holds the rules: yamllint's default, with the changes whose reasons the module's [source](https://github.com/sic-lang/devkit/blob/main/src/modules/yaml/default.nix) gives.
+`.yamllint.yaml` holds the rules: yamllint's default, with the changes whose reasons the module's [source](https://github.com/sic-lang/devkit/blob/main/sources/modules/yaml/default.nix) gives.
 
 ## Add the repository's settings
 
