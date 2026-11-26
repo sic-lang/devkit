@@ -30,7 +30,6 @@ let
     # `--` lists, each followed by a NUL character.
     # The first argument says why the list can be empty, for the message of the failure.
     # The names follow the command's own `--`, so that it reads no name as an option.
-    # Without files, the command would search for files itself or read its standard input.
     text = ''
       reason=$1
       shift
@@ -42,6 +41,7 @@ let
       shift
       mapfile -d ''' files < <("$@")
       wait "$!"
+      # Without files, the command would search for files itself or read its standard input.
       if [ "''${#files[@]}" -eq 0 ]; then
         echo "No file to check: $reason" >&2
         exit 1
