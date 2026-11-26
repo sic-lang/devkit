@@ -1,8 +1,9 @@
 {
-  "name": "devkit",
-  "description": "Skills to adopt devkit in a repository and to use its modules",
   "author": {
     "name": "The Sic Contributors"
   },
+  "description": "Skills to adopt devkit in a repository and to use its modules",
+  "license": "Apache-2.0 WITH LLVM-exception",
+  "name": "devkit",
   "repository": "https://github.com/sic-lang/devkit"
 }
