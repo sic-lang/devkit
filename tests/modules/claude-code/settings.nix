@@ -44,8 +44,11 @@ in
     imports = [ claude-code ];
     perSystem.devkit.claude-code.settings.env.EXAMPLE = "@HOME@";
   } (equals (plugin // { env.EXAMPLE = "@HOME@"; }));
-  # jq indents with indentSize spaces, from devkit's library.
-  two-spaces = case "two-spaces" claude-code ''
-    sed -n 2p .claude/settings.json | grep -q '^  "'
-  '';
+  # jq receives indentSize, from devkit's library, which equals jq's default, so the case reads it
+  # from the command that builds the settings rather than from their indentation.
+  indent = repository {
+    name = "indent";
+    command = "grep -qF -- '--indent 2' <<<";
+    arguments = [ (consumer [ claude-code ]).files.".claude/settings.json".source.buildCommand ];
+  };
 }
