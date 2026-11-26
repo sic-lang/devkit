@@ -160,7 +160,8 @@
           ];
           # --force has no effect, because an SPDX text is never merged by hand.
           # It is still accepted, because the setup app passes its arguments to every setup.
-          text = ''
+          text = common + ''
+
             case "$*" in
             "" | --force) ;;
             *)
@@ -168,10 +169,6 @@
               exit 2
               ;;
             esac
-
-          ''
-          + common
-          + ''
 
             for i in "''${!licenses[@]}"; do
               if cmp -s "''${texts[$i]}" "''${licenses[$i]}"; then
