@@ -1,13 +1,21 @@
 {
-  flakeModules,
   inputs,
   lib,
+  modules,
   pkgs,
   system,
 }:
 let
+  # The modules of devkit at a fixed commit, since devkit's own flake has none when its working tree
+  # has changes.
+  flakeModules = modules { rev = lib.strings.replicate 40 "0"; };
   args = {
-    inherit flakeModules lib pkgs;
+    inherit
+      flakeModules
+      lib
+      modules
+      pkgs
+      ;
     repository = import ./libs/repository.nix { inherit lib pkgs; };
     consumer =
       modules:
@@ -15,14 +23,19 @@ let
         flake = inputs.flake-parts.lib.mkFlake { inherit inputs; } {
           imports = modules;
           systems = [ system ];
+          # Gives in allSystems the generated files and the commands, which a case may build.
+          debug = true;
         };
       in
       lib.mapAttrs (_: output: output.${system}) {
         inherit (flake) apps checks devShells;
       }
-      # A flake without a formatter has none for the system.
+      # A flake without a formatter has none for the system, and one without the files or commands
+      # module no generated files or commands.
       // {
         formatter = flake.formatter.${system} or null;
+        files = flake.allSystems.${system}.devkit.files or { };
+        commands = flake.allSystems.${system}.devkit.commands or { };
       };
   };
   alone = import ./alone.nix args;

@@ -12,8 +12,7 @@ let
   clean = text "if true; then\n  echo a\nfi\n";
   unformatted = text "if true;then\n  echo a\nfi\n";
   tab = text "if true; then\n\techo a\nfi\n";
-  # The status of xargs when the command it runs fails.
-  failure = 123;
+  failure = import ../../libs/xargs-failure.nix;
   case =
     name: arguments:
     repository (
@@ -72,11 +71,7 @@ lib.mapAttrs case {
     "script.sh" = clean;
     "script.bash" = unformatted;
   };
-  # Without a script, xargs runs shfmt once without a file, so shfmt reads its empty input.
-  no-script = {
-    status = failure;
-    output = [ "<standard input>" ];
-  };
+  no-script = import ../../libs/no-file.nix;
   # The indentation comes from devkit's library, whatever .editorconfig says.
   editorconfig-ignored = {
     files = {

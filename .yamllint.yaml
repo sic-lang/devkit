@@ -1,14 +1,10 @@
 extends: default
-
 rules:
-  # Workflows do not start with "---" by convention.
   document-start: disable
-  # So that YAML files indent like the other files.
   indentation:
     spaces: 2
-  # So that YAML files wrap at the same length as the other files that have a limit.
   line-length:
+    allow-non-breakable-inline-mappings: true
     max: 100
-  # Workflows use the "on" key for their triggers.
   truthy:
     check-keys: false
