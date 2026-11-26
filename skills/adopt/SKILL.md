@@ -1,5 +1,5 @@
 ---
-name: devkit
+name: adopt
 description: Add devkit to a sic-lang repository's flake. Use this when a repository needs something from devkit.
 ---
 
@@ -38,7 +38,7 @@ This example imports the `licenses` module:
 }
 ```
 
-Each module has its own skill, `devkit-<module>`, which describes what it provides and how to set it up.
+Each module has its own skill, `devkit:<module>`, which describes what it provides and how to set it up.
 A check of a kind of files reads only the regular files that Git tracks, and fails with `No file to check` when Git tracks none of them.
 Set the modules' options in `perSystem`, under `devkit`, where `pkgs` gives the packages that their values need.
 
@@ -48,5 +48,5 @@ devkit's [`flake-checks.yml`](https://github.com/sic-lang/devkit/blob/main/.gith
 It runs every `check-*` app and builds every `test-*` check of the repository's flake, one job each.
 Its job `checks` passes only when all of them pass.
 
-The `github-actions` module generates the repository's workflow that calls it from the job `flake`, as the `devkit-github-actions` skill shows.
+The `github-actions` module generates the repository's workflow that calls it from the job `flake`, as the `devkit:github-actions` skill shows.
 A [ruleset](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets) therefore requires only the check `flake / checks`.

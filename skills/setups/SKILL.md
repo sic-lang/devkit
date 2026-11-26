@@ -1,5 +1,5 @@
 ---
-name: devkit-setups
+name: setups
 description: Implement a repository-specific setup, such as one that writes recommended files into the repository, with devkit's `setups` module. Use this when a repository needs a setup that none of devkit's modules provides.
 ---
 
@@ -37,7 +37,7 @@ config.devkit.mkSetup {
 }
 ```
 
-The `command` can also be built with the `commands` module, as described in the `devkit-commands` skill.
+The `command` can also be built with the `commands` module, as described in the `devkit:commands` skill.
 
 ## Run a setup
 

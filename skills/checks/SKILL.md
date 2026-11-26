@@ -1,5 +1,5 @@
 ---
-name: devkit-checks
+name: checks
 description: Implement a repository-specific check with devkit's `checks` module. Use this when a repository needs a check that none of devkit's modules provides.
 ---
 
@@ -24,7 +24,7 @@ devkit.checks.lychee = {
 
 The development shell includes every check's `packages`.
 
-The `command` can also be built with the `commands` module, as described in the `devkit-commands` skill:
+The `command` can also be built with the `commands` module, as described in the `devkit:commands` skill:
 
 ```nix
 devkit.checks.example.command = config.devkit.mkCommand {

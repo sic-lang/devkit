@@ -1,5 +1,5 @@
 ---
-name: devkit-files
+name: files
 description: Generate a repository-specific file, such as a tool's configuration, from a template with devkit's `files` module. Use this when a repository needs a generated file that no devkit module provides.
 ---
 

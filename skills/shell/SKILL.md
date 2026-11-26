@@ -1,5 +1,5 @@
 ---
-name: devkit-shell
+name: shell
 description: Check a repository's shell scripts with ShellCheck and shfmt, using devkit's `shell` module. Use this when setting up the shell checks.
 ---
 
@@ -11,7 +11,7 @@ Its `shfmt` check runs [shfmt](https://github.com/mvdan/sh) on them, and shows h
 
 ## Set it up
 
-1. Import `inputs.devkit.flakeModules.shell`, as the `devkit` skill shows.
+1. Import `inputs.devkit.flakeModules.shell`, as the `devkit:adopt` skill shows.
 2. Run `nix run .#check-shellcheck` and `nix run .#check-shfmt`.
 
 Only a repository with shell scripts imports the module.
