@@ -84,12 +84,33 @@ in
             files = generated;
           };
         };
-        checks.files.command = cfg.mkCommand {
-          name = "check-files";
-          template = ./check.sh.in;
-          packages = [ pkgs.diffutils ];
-          replacements = import ../setups/targets.nix lib generated;
-        };
+        checks.files.command =
+          let
+            inherit (import ../setups/targets.nix lib generated) targets sources;
+          in
+          cfg.mkCommand {
+            name = "check-files";
+            packages = [ pkgs.diffutils ];
+            text = ''
+              targets=(${targets})
+              sources=(${sources})
+              status=0
+              for i in "''${!targets[@]}"; do
+                target=''${targets[$i]}
+                if [ ! -e "$target" ]; then
+                  echo "$target is missing: run setup-files to write it" >&2
+                  status=1
+                elif ! cmp -s "''${sources[$i]}" "$target"; then
+                  diff -u "$target" "''${sources[$i]}" || true
+                  echo "$target differs from the generated one above: change its source, or its" \
+                    "template or replacements, in devkit.files, then run setup-files --force to" \
+                    "rewrite it" >&2
+                  status=1
+                fi
+              done
+              exit "$status"
+            '';
+          };
       };
     }
   );

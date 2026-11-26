@@ -14,21 +14,30 @@ in
         if lib.isString check.command then
           cfg.mkCommand {
             name = "check-${name}";
-            template = pkgs.replaceVars ./check.sh.in { inherit (check) command; };
+            text = check.command;
             inherit (check) packages;
           }
         else
           check.command
       ) cfg.checks;
+      programs = map lib.getExe (lib.catAttrs "run" (lib.attrValues checkCommands));
       checkAll = cfg.mkCommand {
         name = "check";
-        template = ./all.sh.in;
-        replacements = {
-          names = lib.escapeShellArgs (lib.attrNames checkCommands);
-          programs = lib.escapeShellArgs (
-            map (command: lib.getExe command.run) (lib.attrValues checkCommands)
-          );
-        };
+        text = ''
+          names=(${lib.escapeShellArgs (lib.attrNames checkCommands)})
+          programs=(${lib.escapeShellArgs programs})
+          status=0
+          for i in "''${!names[@]}"; do
+            if output=$("''${programs[$i]}" 2>&1); then
+              echo "ok    ''${names[$i]}"
+            else
+              echo "FAIL  ''${names[$i]}"
+              echo "$output"
+              status=1
+            fi
+          done
+          exit "$status"
+        '';
       };
     in
     {

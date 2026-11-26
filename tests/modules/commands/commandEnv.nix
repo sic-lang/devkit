@@ -7,7 +7,7 @@
   ...
 }:
 let
-  example.EXAMPLE = "it's set";
+  example.EXAMPLE = "a value";
   print = ''echo "EXAMPLE=''${EXAMPLE-unset}"'';
   inherit
     (consumer [
@@ -32,7 +32,7 @@ in
   with-package = repository {
     name = "with-package";
     command = apps.check-with-hello.program;
-    output = [ "EXAMPLE=it's set" ];
+    output = [ "EXAMPLE=a value" ];
   };
   without-package = repository {
     name = "without-package";

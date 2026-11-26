@@ -8,18 +8,36 @@ in
     { lib, pkgs, ... }:
     let
       tracked = import ../checks/tracked-files.nix pkgs;
+      application = import ../commands/shell-application.nix pkgs;
       # The one selection of the files that the check checks and the formatter formats.
-      nixFiles = pkgs.writeShellApplication {
+      # It lists the Nix files that Git tracks as regular files under the given paths, or in the
+      # whole repository without paths, relative to the current directory and each followed by a
+      # NUL character.
+      # The paths are names, not patterns, and each must name a file or a directory that Git
+      # tracks.
+      # grep fails when it selects no file, which is no error here.
+      # -a keeps a name that is not valid in the locale, which grep would otherwise take for
+      # binary data and leave out.
+      nixFiles = application {
         name = "nix-files";
         runtimeInputs = [
           pkgs.gnugrep
           tracked.trackedFiles
         ];
-        text = builtins.readFile ./nix-files.sh;
+        text = ''
+          options=()
+          if [ "$#" -eq 0 ]; then
+            set -- :/
+          else
+            export GIT_LITERAL_PATHSPECS=1
+            options=(--error-unmatch)
+          fi
+          tracked-files "''${options[@]}" -- "$@" | { grep -a -z '\.nix$' || [ "$?" -eq 1 ]; }
+        '';
       };
       # nixfmt with devkit's line length and indentation, for the check, the formatter and the
       # development shell.
-      nixfmt = pkgs.writeShellApplication {
+      nixfmt = application {
         name = "nixfmt";
         text = ''
           exec ${lib.getExe pkgs.nixfmt} \
@@ -35,10 +53,14 @@ in
       ];
     in
     {
-      formatter = pkgs.writeShellApplication {
+      # Formats the Nix files that Git tracks, under the given paths or in the whole repository.
+      # Paths can select no Nix file, so nixfmt only runs on a file.
+      formatter = application {
         name = "format-nix";
         runtimeInputs = packages;
-        text = builtins.readFile ./format.sh;
+        text = ''
+          nix-files "$@" | xargs -0 --no-run-if-empty nixfmt --
+        '';
       };
       devkit.checks.nixfmt = {
         packages = packages ++ [ tracked.onFiles ];
