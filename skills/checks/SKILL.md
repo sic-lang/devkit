@@ -29,8 +29,10 @@ The `command` can also be built with the `commands` module, as described in the 
 ```nix
 devkit.checks.example.command = config.devkit.mkCommand {
   name = "check-example";
-  template = ./check-example.sh.in;
   packages = [ pkgs.jq ];
+  text = ''
+    jq -e '.version' package.json >/dev/null
+  '';
 };
 ```
 

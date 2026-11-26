@@ -20,7 +20,7 @@ let
     repository (
       {
         inherit name;
-        command = check { template = generated; };
+        command = check { source = generated; };
       }
       // arguments
     );
@@ -38,21 +38,5 @@ lib.mapAttrs case {
       "+The generated text."
       "example/file.txt differs from the generated one above"
     ];
-  };
-  # A source is copied as it is, even with what reads as a placeholder.
-  verbatim =
-    let
-      source = pkgs.writeText "file.txt" "The @verbatim@ text.\n";
-    in
-    {
-      command = check { inherit source; };
-      files."example/file.txt" = source;
-    };
-  replaced = {
-    command = check {
-      template = pkgs.writeText "file.txt.in" "The @adjective@ text.\n";
-      replacements.adjective = "generated";
-    };
-    files."example/file.txt" = generated;
   };
 }

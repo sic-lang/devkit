@@ -1,5 +1,12 @@
 {
   imports = [ ../files ];
 
-  perSystem.devkit.files.".envrc".template = ./envrc.in;
+  perSystem =
+    { pkgs, ... }:
+    {
+      devkit.files.".envrc".source = pkgs.writeText "envrc" ''
+        # shellcheck shell=bash
+        use flake
+      '';
+    };
 }

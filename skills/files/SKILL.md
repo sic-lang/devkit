@@ -11,7 +11,7 @@ The repository commits them, so that editors, GitHub and fresh clones all see th
 - `nix run .#setup-files` writes them.
   It keeps any existing file that differs from the generated one, unless given `--force`.
 - `nix run .#check-files` fails if a file is missing or differs from the generated one, and shows the difference.
-  To change a generated file, change its source, or its template or replacements, in `devkit.files`, then run `nix run .#setup-files -- --force`.
+  To change a generated file, change its source in `devkit.files`, then run `nix run .#setup-files -- --force`.
 - Neither touches a file that is no longer generated: delete it by hand.
 
 ## Generate a configuration
@@ -33,22 +33,8 @@ perSystem =
   };
 ```
 
-## Generate a file from a template
-
-`devkit.files.<path>` can instead generate `<path>` from a `template`, a file from the flake or the Nix store.
-Each `@name@` placeholder in the template is replaced with its value from `replacements`:
-
-```nix
-devkit.files."example.toml" = {
-  template = ./example.toml.in;
-  replacements.lineLength = toString inputs.devkit.lib.lineLength;
-};
-```
-
-The build fails if a replacement matches no placeholder, or if a placeholder is left unreplaced.
-
 ## Share a value
 
 A value that generated files share is a constant of devkit's library.
-A repository reads it as `inputs.devkit.lib.<name>` and puts it in the value of a configuration, or passes it to a template as a replacement, as in the example above.
+A repository reads it as `inputs.devkit.lib.<name>` and puts it in the value of a configuration.
 The value then has one source, and no repository can change it.

@@ -6,7 +6,6 @@
 }:
 let
   inherit (consumer [ flakeModules.commits ]) apps;
-  hook = ../../../src/modules/commits/commit-msg;
 in
 {
   writes = repository {
@@ -15,7 +14,6 @@ in
     output = [ "created" ];
     after = ''
       [ -x .git/hooks/commit-msg ]
-      cmp .git/hooks/commit-msg ${hook}
     '';
   };
   # Git then runs the hook from core.hooksPath, so that the hook rejects this commit.
@@ -26,7 +24,6 @@ in
     output = [ "created" ];
     after = ''
       [ ! -e .git/hooks/commit-msg ]
-      cmp hooks/commit-msg ${hook}
       patchShebangs --build hooks/commit-msg
       git config user.name "A U Thor"
       git config user.email author@example.com

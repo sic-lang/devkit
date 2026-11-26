@@ -12,7 +12,7 @@ in
       options.devkit = {
         commands = mkOption {
           description = ''
-            The commands, each run by its `<name>` app and linted by its `lint-<name>` flake check.
+            The commands, each run by its `<name>` app.
           '';
           default = { };
           type = types.attrsOf (import ./command.nix lib);
@@ -27,12 +27,10 @@ in
         };
         mkCommand = mkOption {
           description = ''
-            Builds the `name` command from the Bash template `template`, prefixed with the header
-            from `header.sh.in`. The header sets the Bash options, exports the variables from
-            `commandEnv`, puts the programs of `packages` on `PATH` and changes to the repository's
-            root. Each `@name@` placeholder is replaced with its value from `replacements`. Returns
-            `run`, the script for `nix run`; `lint`, its ShellCheck and shfmt lint for
-            `nix flake check`; and `packages`.
+            Builds the `name` command, which runs the Bash code `text` from the repository's root,
+            with nixpkgs' `writeShellApplication`: the programs of `packages` on `PATH`, the
+            variables from `commandEnv`, and the build fails if ShellCheck or shfmt rejects the
+            script. Returns `run`, the script for `nix run`, and `packages`.
           '';
           type = types.functionTo types.raw;
           readOnly = true;
@@ -60,50 +58,24 @@ in
         devkit.mkCommand =
           {
             name,
-            template,
-            replacements ? { },
+            text,
             packages ? [ ],
-          }:
-          let
-            export = name: value: "export ${name}=${lib.escapeShellArg value}";
-            run = pkgs.replaceVarsWith {
-              inherit name;
-              src = pkgs.concatText "${name}.sh.in" [
-                ./header.sh.in
-                template
-              ];
-              dir = "bin";
-              isExecutable = true;
-              # coreutils avoids an empty first PATH entry, which means the current directory.
-              replacements = {
-                bash = pkgs.runtimeShell;
-                path = lib.makeBinPath (
-                  [
-                    pkgs.coreutils
-                    pkgs.git
-                  ]
-                  ++ packages
-                );
-                env = lib.concatLines (
-                  lib.mapAttrsToList export (
-                    cfg.commandEnv {
-                      inherit
-                        name
-                        template
-                        replacements
-                        packages
-                        ;
-                    }
-                  )
-                );
-              }
-              // replacements;
-              meta.mainProgram = name;
-            };
-          in
+          }@args:
           {
-            inherit run packages;
-            lint = import ./lint.nix pkgs name (lib.getExe run);
+            inherit packages;
+            run = import ./shell-application.nix pkgs {
+              inherit name;
+              runtimeInputs = [
+                pkgs.coreutils
+                pkgs.git
+              ]
+              ++ packages;
+              runtimeEnv = cfg.commandEnv (args // { inherit packages; });
+              text = ''
+                cd "$(git rev-parse --show-toplevel)"
+              ''
+              + text;
+            };
           };
 
         apps = lib.mapAttrs (name: command: {
@@ -111,10 +83,6 @@ in
           program = lib.getExe command.command.run;
           meta = { inherit (command) description; };
         }) cfg.commands;
-
-        checks = lib.mapAttrs' (
-          name: command: lib.nameValuePair "lint-${name}" command.command.lint
-        ) cfg.commands;
 
         devShells.default = pkgs.mkShellNoCC {
           packages = lib.unique cfg.shell.packages;
