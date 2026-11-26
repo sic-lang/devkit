@@ -1,0 +1,13 @@
+{
+  "name": "sic-lang",
+  "description": "Plugins for the repositories of the Sic programming language",
+  "owner": {
+    "name": "The Sic Contributors"
+  },
+  "plugins": [
+    {
+      "name": "devkit",
+      "source": "./"
+    }
+  ]
+}
