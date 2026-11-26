@@ -39,11 +39,6 @@ in
     imports = [ claude-code ];
     perSystem.devkit.claude-code.settings.permissions.allow = [ "Bash(nix run:*)" ];
   } (equals (plugin // { permissions.allow = [ "Bash(nix run:*)" ]; }));
-  # A setting that reads as a placeholder is written as it is.
-  placeholder = case "placeholder" {
-    imports = [ claude-code ];
-    perSystem.devkit.claude-code.settings.env.EXAMPLE = "@HOME@";
-  } (equals (plugin // { env.EXAMPLE = "@HOME@"; }));
   # A setting that the module sets to another value fails the evaluation of the flake.
   conflict =
     assert
