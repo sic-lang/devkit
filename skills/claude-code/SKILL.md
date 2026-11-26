@@ -35,7 +35,7 @@ This command installs it:
 claude plugin install devkit@sic-lang --scope project
 ```
 
-Claude Code reads a marketplace pinned to a commit from version 2.1.324 on.
+Claude Code reads a marketplace [pinned to a commit](https://code.claude.com/docs/en/plugins/marketplace-reference#fields-by-type) from version 2.1.324 on.
 
 ## Update devkit
 
@@ -48,6 +48,9 @@ Each contributor then updates the plugin in each clone, and restarts the session
 ```shell
 claude plugin update devkit@sic-lang --scope project
 ```
+
+Claude Code [registers one marketplace per name](https://code.claude.com/docs/en/plugins/marketplace-reference#marketplace-file) for each user, not for each clone.
+A session in another repository that locks another commit of devkit fetches the marketplace at that commit, so run the update only after a session in this clone has fetched it again.
 
 A version of devkit that no commit holds, such as a clone with uncommitted changes given to [`--override-input`](https://nix.dev/manual/nix/latest/command-ref/new-cli/nix3-run.html#opt-override-input), has no commit to pin.
 With such a version, the module does not generate the settings, so the setups and checks leave the committed ones as they are, and Nix prints a warning.

@@ -3,7 +3,7 @@ name: adopt
 description: Add devkit to a sic-lang repository's flake. Use this when a repository needs something from devkit.
 ---
 
-# devkit
+# adopt
 
 devkit is a flake whose [flake-parts](https://flake.parts) modules give a repository checks, setups and generated files.
 Its library, `lib`, holds the values that devkit shares between repositories.
