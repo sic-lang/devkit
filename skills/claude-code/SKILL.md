@@ -27,7 +27,9 @@ These steps set up the module in a repository:
 2. Run `nix run .#setup-files`, which writes `.claude/settings.json`, and commit the file.
 3. Run `nix run .#check-files`.
 
-Each contributor then [installs the plugin](https://code.claude.com/docs/en/plugins/loading#enabled-in-project-settings-but-not-installed) in each clone of the repository, after trusting the repository in Claude Code:
+Each contributor then [installs the plugin](https://code.claude.com/docs/en/plugins/loading#enabled-in-project-settings-but-not-installed) in each clone of the repository.
+Claude Code fetches the marketplace once a session has started in the trusted clone, so the plugin installs only after that first session.
+This command installs it:
 
 ```shell
 claude plugin install devkit@sic-lang --scope project
@@ -39,7 +41,13 @@ Claude Code reads a marketplace pinned to a commit from version 2.1.324 on.
 
 After an update of devkit in `flake.lock`, `check-files` fails until `nix run .#setup-files -- --force` rewrites the settings with the new commit.
 Commit the settings with `flake.lock`.
-Claude Code then [fetches the marketplace again](https://code.claude.com/docs/en/plugins/loading#plugins-and-marketplaces-that-arent-on-disk-at-session-start) from the new commit.
+
+At the next session, Claude Code [fetches the marketplace again](https://code.claude.com/docs/en/plugins/loading#plugins-and-marketplaces-that-arent-on-disk-at-session-start) from the new commit, but keeps the installed plugin at its version.
+Each contributor then updates the plugin in each clone, and restarts the session:
+
+```shell
+claude plugin update devkit@sic-lang --scope project
+```
 
 A version of devkit that no commit holds, such as a clone with uncommitted changes given to [`--override-input`](https://nix.dev/manual/nix/latest/command-ref/new-cli/nix3-run.html#opt-override-input), has no commit to pin.
 With such a version, the module does not generate the settings, so the setups and checks leave the committed ones as they are, and Nix prints a warning.
