@@ -16,22 +16,19 @@ The repository commits them, so that editors, GitHub and fresh clones all see th
 
 ## Generate a configuration
 
-A configuration file is built from a Nix value, so that an option of its type can merge the values of several modules.
-`devkit.formats` gives the formats of devkit, which work like those of nixpkgs' [`pkgs.formats`](https://nixos.org/manual/nixos/unstable/#sec-settings-nix-representable): `json` and `yaml`, whose `generate` indents as devkit's library says.
+A configuration file is built from a Nix value with a format of nixpkgs' [`pkgs.formats`](https://nixos.org/manual/nixos/unstable/#sec-settings-nix-representable), so that an option of the format's type can merge the values of several modules.
 `devkit.files.<path>.source` takes the built file, which devkit copies as it is.
 This example writes a JSON file:
 
 ```nix
 perSystem =
-  { config, ... }:
+  { pkgs, ... }:
   {
-    devkit.files."example.json".source = config.devkit.formats.json.generate "example.json" {
-      a = 1;
-    };
+    devkit.files."example.json".source = (pkgs.formats.json { }).generate "example.json" { a = 1; };
   };
 ```
 
-A format that devkit does not give comes from `pkgs.formats` itself, as the `editorconfig` module does for INI.
+YAML is the exception: nixpkgs' format writes YAML that devkit's `yaml` check refuses, so `devkit.formats.yaml` gives the same `type` and `generate` with a YAML that the check accepts.
 
 ## Generate a file from a template
 

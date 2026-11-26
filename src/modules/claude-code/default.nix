@@ -8,10 +8,10 @@ in
   imports = [ ../files ];
 
   options.perSystem = flake-parts-lib.mkPerSystemOption (
-    { config, ... }:
+    { config, pkgs, ... }:
     let
       inherit (config.devkit.claude-code) settings;
-      inherit (config.devkit.formats) json;
+      json = pkgs.formats.json { };
       pinned = devkit ? rev;
     in
     {

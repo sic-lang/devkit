@@ -7,6 +7,7 @@
   ...
 }:
 let
+  inherit (import ../../../src/lib.nix) indentSize;
   revision = "0123456789abcdef0123456789abcdef01234567";
   inherit (modules { rev = revision; }) claude-code;
   # The settings that enable devkit's plugin at the commit `revision`.
@@ -44,4 +45,9 @@ in
     imports = [ claude-code ];
     perSystem.devkit.claude-code.settings.env.EXAMPLE = "@HOME@";
   } (equals (plugin // { env.EXAMPLE = "@HOME@"; }));
+  # nixpkgs' JSON format indents with jq's default, which no option changes, so the case fails if
+  # devkit's library ever gives another indentation.
+  indentation =
+    case "indentation" claude-code
+      "sed -n 2p .claude/settings.json | grep -q '^${lib.strings.replicate indentSize " "}\"'";
 }
