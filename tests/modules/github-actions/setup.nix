@@ -8,17 +8,25 @@
 let
   revision = "0123456789abcdef0123456789abcdef01234567";
   inherit (consumer [ (modules { rev = revision; }).github-actions ]) apps;
-  template = ../../../src/modules/github-actions/checks.yml.in;
-  reference = "sic-lang/devkit/.github/workflows/flake-checks.yml@${revision}";
+  workflow = pkgs.writeText "checks.yml" ''
+    jobs:
+      flake:
+        uses: sic-lang/devkit/.github/workflows/flake-checks.yml@${revision}
+    name: Checks
+    on:
+      merge_group: null
+      pull_request: null
+      push:
+        branches:
+          - main
+  '';
 in
 {
   writes = repository {
     name = "writes";
     command = apps.setup-files.program;
     output = [ "created .github/workflows/checks.yml" ];
-    after = ''
-      sed 's|@flakeChecksWorkflow@|${reference}|' ${template} | cmp - .github/workflows/checks.yml
-    '';
+    after = "cmp ${workflow} .github/workflows/checks.yml";
   };
   # The option defaults to null at a version of devkit that no commit holds.
   # Setting it here tests the same setup without the warning of that default.

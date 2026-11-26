@@ -17,6 +17,16 @@ The module is set up in three steps:
 2. Run `nix run .#setup-files`, which writes `.github/workflows/checks.yml`, and commit the file.
 3. Run `nix run .#check-actionlint` and `nix run .#check-files`.
 
+## Add to the workflow
+
+The option `devkit.github-actions.settings` holds the repository's additions to [the workflow](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax) `.github/workflows/checks.yml`, which the module writes together with its own settings.
+A setting that the module also sets to a different value fails the evaluation of the flake.
+This example also runs the checks every week:
+
+```nix
+perSystem.devkit.github-actions.settings.on.schedule = [ { cron = "0 6 * * 1"; } ];
+```
+
 ## Update devkit
 
 After an update of devkit in `flake.lock`, `check-files` fails until `nix run .#setup-files -- --force` rewrites the workflow with the new commit.
