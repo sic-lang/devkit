@@ -14,14 +14,24 @@ The repository commits them, so that editors, GitHub and fresh clones all see th
   To change a generated file, change its source, or its template or replacements, in `devkit.files`, then run `nix run .#setup-files -- --force`.
 - Neither touches a file that is no longer generated: delete it by hand.
 
-## Generate a file
+## Generate a configuration
 
-`devkit.files.<path>` generates `<path>` from a `source`, a file from the flake or the Nix store that devkit copies as it is.
-This example copies a file that Nix builds:
+A configuration file is built from a Nix value, so that an option of its type can merge the values of several modules.
+`devkit.formats` gives the formats of devkit, which work like those of nixpkgs' [`pkgs.formats`](https://nixos.org/manual/nixos/unstable/#sec-settings-nix-representable): `json` and `yaml`, whose `generate` indents as devkit's library says.
+`devkit.files.<path>.source` takes the built file, which devkit copies as it is.
+This example writes a JSON file:
 
 ```nix
-devkit.files."example.json".source = pkgs.writeText "example.json" (builtins.toJSON { a = 1; });
+perSystem =
+  { config, ... }:
+  {
+    devkit.files."example.json".source = config.devkit.formats.json.generate "example.json" {
+      a = 1;
+    };
+  };
 ```
+
+A format that devkit does not give comes from `pkgs.formats` itself, as the `editorconfig` module does for INI.
 
 ## Generate a file from a template
 
@@ -40,5 +50,5 @@ The build fails if a replacement matches no placeholder, or if a placeholder is 
 ## Share a value
 
 A value that generated files share is a constant of devkit's library.
-A repository reads it as `inputs.devkit.lib.<name>` and passes it to its templates as a replacement, as in the example above.
+A repository reads it as `inputs.devkit.lib.<name>` and puts it in the value of a configuration, or passes it to a template as a replacement, as in the example above.
 The value then has one source, and no repository can change it.
