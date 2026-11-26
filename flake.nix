@@ -61,9 +61,14 @@
         flake.lib = import ./src/lib.nix;
         flake.flakeModules = flakeModules;
         perSystem =
-          { pkgs, system, ... }:
+          {
+            config,
+            pkgs,
+            system,
+            ...
+          }:
           let
-            json = pkgs.formats.json { };
+            inherit (config.devkit.formats) json;
           in
           {
             # A commit cannot hold its own hash, so devkit calls the workflow of its own commit.
