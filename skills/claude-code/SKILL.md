@@ -35,6 +35,9 @@ This command installs it:
 claude plugin install devkit@sic-lang --scope project
 ```
 
+The install rewrites `.claude/settings.json` with its own order of keys, so `check-files` fails until `nix run .#setup-files -- --force` writes the generated settings back.
+The plugin stays installed.
+
 Claude Code reads a marketplace [pinned to a commit](https://code.claude.com/docs/en/plugins/marketplace-reference#fields-by-type) from version 2.1.324 on.
 
 ## Update devkit
