@@ -1,18 +1,19 @@
 {
   consumer,
   flakeModules,
+  pkgs,
   repository,
   ...
 }:
 let
   inherit (consumer [ flakeModules.envrc ]) apps;
-  template = ../../../src/modules/envrc/envrc.in;
+  envrc = pkgs.writeText "envrc" "# shellcheck shell=bash\nuse flake\n";
 in
 {
   writes = repository {
     name = "writes";
     command = apps.setup-files.program;
     output = [ "created .envrc" ];
-    after = "cmp ${template} .envrc";
+    after = "cmp ${envrc} .envrc";
   };
 }

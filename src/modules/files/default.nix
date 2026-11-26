@@ -23,33 +23,12 @@ in
         '';
         default = { };
         type = types.attrsOf (
-          types.submodule (
-            { config, ... }:
-            {
-              options = {
-                source = mkOption {
-                  description = ''
-                    The file, from the flake or the Nix store, which devkit copies as it is. It
-                    defaults to the file built from `template`.
-                  '';
-                  type = types.path;
-                };
-                template = mkOption {
-                  description = "The file's template, from the flake or the Nix store.";
-                  type = types.nullOr types.path;
-                  default = null;
-                };
-                replacements = mkOption {
-                  description = "The value of each `@name@` placeholder of the template.";
-                  type = types.attrsOf types.str;
-                  default = { };
-                };
-              };
-              config.source = lib.mkIf (config.template != null) (
-                pkgs.replaceVars config.template config.replacements
-              );
-            }
-          )
+          types.submodule {
+            options.source = mkOption {
+              description = "The file, from the flake or the Nix store, that devkit copies.";
+              type = types.path;
+            };
+          }
         );
       };
 
@@ -102,9 +81,8 @@ in
                   status=1
                 elif ! cmp -s "''${sources[$i]}" "$target"; then
                   diff -u "$target" "''${sources[$i]}" || true
-                  echo "$target differs from the generated one above: change its source, or its" \
-                    "template or replacements, in devkit.files, then run setup-files --force to" \
-                    "rewrite it" >&2
+                  echo "$target differs from the generated one above: change its source in" \
+                    "devkit.files, then run setup-files --force to rewrite it" >&2
                   status=1
                 fi
               done
