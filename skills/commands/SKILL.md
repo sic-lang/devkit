@@ -24,7 +24,8 @@ config.devkit.mkCommand {
 ```
 
 - The script runs from the repository's root, with the programs of `packages` on `PATH`, the variables from `devkit.commandEnv`, and the Bash options `errexit`, `nounset` and `pipefail`.
-- A Nix value goes into the code by interpolation, quoted with `lib.escapeShellArg` (`lib.escapeShellArgs` for a list); a Bash expansion that starts with `${` is written `''${` in the Nix string.
+- A Nix value goes into the code by interpolation; a value that may hold a space or a character special to Bash is quoted with `lib.escapeShellArg` (`lib.escapeShellArgs` for a list).
+  A Bash expansion that starts with `${` is written `''${` in the Nix string.
 - The build fails if Bash or ShellCheck rejects the script, or if shfmt would format it differently.
 
 `devkit.commands.<name>` exposes its `command` as the `<name>` app, with a `description`.
@@ -34,7 +35,7 @@ The app passes its arguments to the script as `"$@"`.
 
 `devkit.commandEnv` sets environment variables for every command in the repository, including those that devkit's modules build themselves.
 Set it to a function that receives the arguments given to `mkCommand`, with their defaults, and returns the variables to export.
-`writeShellApplication` writes a value that holds a quote, or that reads as a command, in a way that ShellCheck rejects, so such a value fails the build.
+`writeShellApplication` writes a value that holds a quote or a `$`, or that reads as a command such as `set`, in a way that ShellCheck rejects, so such a value fails the build.
 For example, every command that runs Lean gets `LEAN_GITHASH`:
 
 ```nix
