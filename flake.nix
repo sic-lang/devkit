@@ -26,16 +26,19 @@
           lib.mapAttrs (name: _: ./src/modules + "/${name}") (
             lib.filterAttrs (_: type: type == "directory") (builtins.readDir ./src/modules)
           )
-          // {
-            # importApply gives the module a file but no key, so the key of its path makes a flake
-            # that imports it twice get it once, as for the other modules, which are paths.
-            github-actions = {
-              key = toString ./src/modules/github-actions;
-              imports = [
-                (flake-parts-lib.importApply ./src/modules/github-actions { inherit devkit; })
-              ];
-            };
-          };
+          # The modules that take devkit's flake, to pin its commit.
+          // lib.genAttrs [ "claude-code" "github-actions" ] (
+            name:
+            let
+              path = ./src/modules + "/${name}";
+            in
+            {
+              # importApply gives the module a file but no key, so the key of its path makes a flake
+              # that imports it twice get it once, as for the other modules, which are paths.
+              key = toString path;
+              imports = [ (flake-parts-lib.importApply path { inherit devkit; }) ];
+            }
+          );
         flakeModules = modules self;
       in
       {
