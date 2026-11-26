@@ -6,8 +6,8 @@
   ...
 }:
 let
-  # yq receives indentSize, from devkit's library, which equals its default, so the case reads it
-  # from the command that builds the file rather than from the file's indentation.
+  # yq receives indentSize, from devkit's library, which equals its default, so each case reads it
+  # from the command that builds a file rather than from the file's indentation.
   case =
     format:
     let
@@ -34,4 +34,4 @@ let
       arguments = [ files.${path}.source.buildCommand ];
     };
 in
-lib.genAttrs [ "yaml" ] case
+lib.genAttrs [ "json" "yaml" ] case

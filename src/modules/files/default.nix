@@ -34,9 +34,9 @@ in
 
       options.devkit.formats = mkOption {
         description = ''
-          The formats of the generated files that nixpkgs' `pkgs.formats` cannot write as devkit's
-          checks require. Like those of `pkgs.formats`, each gives the `type` of its values, for an
-          option that merges them, and `generate`, which writes a value to a file.
+          The formats of the generated files, JSON and YAML, like those of nixpkgs' `pkgs.formats`:
+          each gives the `type` of its values, for an option that merges them, and `generate`,
+          which writes a value to a file with the indentation of devkit's library.
         '';
         type = types.attrsOf types.raw;
         readOnly = true;
@@ -44,17 +44,24 @@ in
 
       config.devkit = {
         # The YAML format of nixpkgs does not indent the sequences of a mapping, and wraps a long
-        # value after a trailing space, which yamllint refuses, so devkit writes YAML with yq.
-        formats.yaml = {
-          inherit (pkgs.formats.yaml_1_2 { }) type;
-          generate =
-            name: value:
-            pkgs.runCommand name {
-              nativeBuildInputs = [ pkgs.yq-go ];
-              value = builtins.toJSON value;
-              passAsFile = [ "value" ];
-            } ''yq -p json -o yaml -P --indent ${indent} "$valuePath" >"$out"'';
-        };
+        # value after a trailing space, which yamllint refuses, so devkit writes YAML with yq, and
+        # JSON too, so that one tool writes both with devkit's indentation.
+        formats =
+          lib.mapAttrs
+            (output: format: {
+              inherit (format) type;
+              generate =
+                name: value:
+                pkgs.runCommand name {
+                  nativeBuildInputs = [ pkgs.yq-go ];
+                  value = builtins.toJSON value;
+                  passAsFile = [ "value" ];
+                } ''yq -p json -o ${output} -P --indent ${indent} "$valuePath" >"$out"'';
+            })
+            {
+              json = pkgs.formats.json { };
+              yaml = pkgs.formats.yaml_1_2 { };
+            };
         setups.files = {
           description = "Write the files that devkit generates";
           command = cfg.mkSetup {
