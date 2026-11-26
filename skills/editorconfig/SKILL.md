@@ -16,6 +16,17 @@ It generates the [EditorConfig](https://editorconfig.org) file, `.editorconfig`,
 
 ## The configuration
 
-`.editorconfig` holds the rules, and the reason for each exception.
+`.editorconfig` holds the rules, and the module's [source](https://github.com/sic-lang/devkit/blob/main/src/modules/editorconfig/default.nix) gives the reason for each exception.
 It sets no maximum line length for YAML files, because the `yaml` module checks it.
 So a repository with YAML files also uses the `yaml` module, as the `devkit:yaml` skill shows.
+
+## Add the repository's settings
+
+The option `devkit.editorconfig.settings` holds the repository's own settings, which the module writes together with its own.
+Its values are those of nixpkgs' [`iniWithGlobalSection`](https://nixos.org/manual/nixos/unstable/#sec-settings-nix-representable) format, and a setting that the module also sets to a different value fails the evaluation of the flake.
+EditorConfig applies the last section that matches a file, and the module writes the sections in the order of their names, so a section that overrides another one needs a name that sorts after it.
+This example indents a file with 4 spaces:
+
+```nix
+perSystem.devkit.editorconfig.settings.sections."lake-manifest.json".indent_size = 4;
+```
