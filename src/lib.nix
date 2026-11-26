@@ -9,4 +9,7 @@
   # The license of every repository's own files, so that their code can move between repositories
   # without a change of license.
   license = "Apache-2.0 WITH LLVM-exception";
+  # The holder of the copyright of every repository's own files.
+  # The contributors keep their copyright, so no single person or company holds it.
+  copyrightHolder = "The Sic Contributors";
 }
