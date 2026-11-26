@@ -42,7 +42,7 @@ in
               };
               enabledPlugins."devkit@sic-lang" = true;
             };
-            files.".claude/settings.json".template = pkgs.runCommand "settings.json" {
+            files.".claude/settings.json".source = pkgs.runCommand "settings.json" {
               nativeBuildInputs = [ pkgs.jq ];
               value = builtins.toJSON settings;
               passAsFile = [ "value" ];

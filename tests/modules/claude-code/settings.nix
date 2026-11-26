@@ -39,6 +39,11 @@ in
     imports = [ claude-code ];
     perSystem.devkit.claude-code.settings.permissions.allow = [ "Bash(nix run:*)" ];
   } (equals (plugin // { permissions.allow = [ "Bash(nix run:*)" ]; }));
+  # A setting that reads as a placeholder is written as it is.
+  placeholder = case "placeholder" {
+    imports = [ claude-code ];
+    perSystem.devkit.claude-code.settings.env.EXAMPLE = "@HOME@";
+  } (equals (plugin // { env.EXAMPLE = "@HOME@"; }));
   # jq indents with indentSize spaces, from devkit's library.
   two-spaces = case "two-spaces" claude-code ''
     sed -n 2p .claude/settings.json | grep -q '^  "'
