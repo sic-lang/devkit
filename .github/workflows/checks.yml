@@ -3,8 +3,8 @@ jobs:
     uses: ./.github/workflows/flake-checks.yml
 name: Checks
 on:
-  merge_group: null
-  pull_request: null
+  merge_group: {}
+  pull_request: {}
   push:
     branches:
       - main
