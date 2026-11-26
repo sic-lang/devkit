@@ -16,7 +16,7 @@ It generates the [EditorConfig](https://editorconfig.org) file, `.editorconfig`,
 
 ## The configuration
 
-`.editorconfig` holds the rules, and the module's [source](https://github.com/sic-lang/devkit/blob/main/src/modules/editorconfig/default.nix) gives the reason for each exception.
+`.editorconfig` holds the rules, and the module's [source](https://github.com/sic-lang/devkit/blob/main/sources/modules/editorconfig/default.nix) gives the reason for each exception.
 It sets no maximum line length for YAML files, because the `yaml` module checks it.
 So a repository with YAML files also uses the `yaml` module, as the `devkit:yaml` skill shows.
 

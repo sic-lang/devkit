@@ -75,7 +75,7 @@ let
 in
 assert lib.assertMsg (
   orphans == ""
-) "tests/modules has directories with no module in src/modules: ${orphans}";
+) "tests/modules has directories with no module in sources/modules: ${orphans}";
 # One check per module, which builds all its cases: the CI runs a job per test-<module> check, and
 # each job sets up a machine and installs Nix, which a check per case would repeat for every case.
 lib.mapAttrs' (
