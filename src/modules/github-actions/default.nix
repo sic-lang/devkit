@@ -47,9 +47,10 @@ in
       config.devkit = {
         github-actions.settings = lib.mkIf (flakeChecksWorkflow != null) {
           name = "Checks";
+          # A trigger without settings is an empty mapping, to which a repository can add some.
           on = {
-            merge_group = null;
-            pull_request = null;
+            merge_group = { };
+            pull_request = { };
             push.branches = [ "main" ];
           };
           jobs.flake.uses = flakeChecksWorkflow;

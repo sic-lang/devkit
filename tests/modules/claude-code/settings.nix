@@ -44,4 +44,14 @@ in
     imports = [ claude-code ];
     perSystem.devkit.claude-code.settings.env.EXAMPLE = "@HOME@";
   } (equals (plugin // { env.EXAMPLE = "@HOME@"; }));
+  # A setting that the module sets to another value fails the evaluation of the flake.
+  conflict =
+    assert
+      !(builtins.tryEval
+        (consumer [
+          claude-code
+          { perSystem.devkit.claude-code.settings.enabledPlugins."devkit@sic-lang" = false; }
+        ]).apps.setup-files.program
+      ).success;
+    pkgs.emptyFile;
 }
