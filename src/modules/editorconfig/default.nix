@@ -9,7 +9,7 @@ in
     { config, pkgs, ... }:
     let
       inherit (config.devkit.editorconfig) settings;
-      # Spaces around "=", as in the examples of EditorConfig.
+      # Spaces around "=", so that each key stands apart from its value.
       ini = pkgs.formats.iniWithGlobalSection {
         mkKeyValue = lib.generators.mkKeyValueDefault { } " = ";
       };

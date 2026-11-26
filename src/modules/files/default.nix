@@ -64,9 +64,9 @@ in
       };
 
       config.devkit = {
-        # The YAML format of nixpkgs does not indent the sequences of a mapping, and wraps a long
-        # value after a trailing space, which yamllint refuses, so devkit writes YAML with yq, and
-        # JSON too, so that one tool writes both with devkit's indentation.
+        # The YAML format of nixpkgs does not indent the sequences of a mapping, which yamllint
+        # requires, and has no option to, so devkit writes YAML with yq, and JSON too, so that one
+        # tool writes both with devkit's indentation.
         formats =
           lib.mapAttrs
             (output: format: {
