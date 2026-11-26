@@ -3,6 +3,7 @@
 { flake-parts-lib, lib, ... }:
 let
   inherit (lib) mkOption;
+  inherit (import ../../lib.nix) marketplace plugin repository;
 in
 {
   imports = [ ../files ];
@@ -35,12 +36,12 @@ in
           ) pinned)
           {
             claude-code.settings = {
-              extraKnownMarketplaces.sic-lang.source = {
+              extraKnownMarketplaces.${marketplace}.source = {
                 source = "github";
-                repo = "sic-lang/devkit";
+                repo = repository;
                 ref = devkit.rev;
               };
-              enabledPlugins."devkit@sic-lang" = true;
+              enabledPlugins."${plugin}@${marketplace}" = true;
             };
             files.".claude/settings.json".source = json.generate "settings.json" settings;
           };

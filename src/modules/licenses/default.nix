@@ -13,6 +13,7 @@
     }:
     let
       spdx = "${pkgs.spdx-license-list-data.text}/text";
+      inherit (import ../../lib.nix) copyrightHolder license;
       # The jq module reuse, for the reports of reuse lint and the annotations of REUSE.toml.
       jq = pkgs.writeTextDir "reuse.jq" ''
         def everything:
@@ -86,7 +87,8 @@
           ];
           text = common + ''
 
-            license="${(import ../../lib.nix).license}"
+            license="${license}"
+            holder="${copyrightHolder}"
 
             for i in "''${!licenses[@]}"; do
               if ! cmp -s "''${licenses[$i]}" "''${texts[$i]}"; then
@@ -111,14 +113,15 @@
                 'because REUSE applies the last annotation that matches a file' >&2
               status=1
             else
-              if ! reuse_jq -e '
+              # jq reads the holder from the environment, so that its filter stays a literal string.
+              if ! holder="$holder" reuse_jq -e '
                 include "reuse";
                 everything
                 | .[0]."SPDX-FileCopyrightText"
-                | type == "string" and test("^[0-9]{4} The Sic Contributors$")
+                | type == "string" and test("^[0-9]{4} ") and .[5:] == env.holder
               ' <<<"$toml" >/dev/null; then
                 echo 'In REUSE.toml, the SPDX-FileCopyrightText of the "**" annotation must be' \
-                  '"<year> The Sic Contributors"' >&2
+                  "\"<year> $holder\"" >&2
                 status=1
               fi
               identifier=$(

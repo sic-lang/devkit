@@ -9,4 +9,12 @@
   # The license of every repository's own files, so that their code can move between repositories
   # without a change of license.
   license = "Apache-2.0 WITH LLVM-exception";
+  # The holder of the copyright of every repository's own files.
+  # The contributors keep their copyright, so no single person or company holds it.
+  copyrightHolder = "The Sic Contributors";
+  # devkit's repository on GitHub, as its owner and name.
+  repository = "sic-lang/devkit";
+  # The Claude Code marketplace that devkit's repository holds, and devkit's plugin in it.
+  marketplace = "sic-lang";
+  plugin = "devkit";
 }

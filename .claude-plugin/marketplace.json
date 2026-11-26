@@ -1,6 +1,6 @@
 {
-  "name": "sic-lang",
   "description": "Plugins for the repositories of the Sic programming language",
+  "name": "sic-lang",
   "owner": {
     "name": "The Sic Contributors"
   },
