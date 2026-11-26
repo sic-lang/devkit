@@ -3,20 +3,16 @@
 { flake-parts-lib, lib, ... }:
 let
   inherit (lib) mkOption;
-  inherit (import ../../lib.nix)
-    indentSize
-    marketplace
-    plugin
-    repository
-    ;
+  inherit (import ../../lib.nix) marketplace plugin repository;
 in
 {
   imports = [ ../files ];
 
   options.perSystem = flake-parts-lib.mkPerSystemOption (
-    { config, pkgs, ... }:
+    { config, ... }:
     let
       inherit (config.devkit.claude-code) settings;
+      inherit (config.devkit.formats) json;
       pinned = devkit ? rev;
     in
     {
@@ -26,7 +22,7 @@ in
           The module adds the settings that enable devkit's plugin at the commit of devkit that the
           flake locks.
         '';
-        type = (pkgs.formats.json { }).type;
+        type = json.type;
         default = { };
       };
 
@@ -47,11 +43,7 @@ in
               };
               enabledPlugins."${plugin}@${marketplace}" = true;
             };
-            files.".claude/settings.json".source = pkgs.runCommand "settings.json" {
-              nativeBuildInputs = [ pkgs.jq ];
-              value = builtins.toJSON settings;
-              passAsFile = [ "value" ];
-            } ''jq --indent ${toString indentSize} . "$valuePath" >"$out"'';
+            files.".claude/settings.json".source = json.generate "settings.json" settings;
           };
     }
   );

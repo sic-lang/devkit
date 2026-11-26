@@ -1,12 +1,10 @@
-name: Checks
-
-on:
-  merge_group:
-  pull_request:
-  push:
-    branches:
-      - main
-
 jobs:
   flake:
     uses: ./.github/workflows/flake-checks.yml
+name: Checks
+on:
+  merge_group: {}
+  pull_request: {}
+  push:
+    branches:
+      - main

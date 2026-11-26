@@ -44,11 +44,14 @@ in
     imports = [ claude-code ];
     perSystem.devkit.claude-code.settings.env.EXAMPLE = "@HOME@";
   } (equals (plugin // { env.EXAMPLE = "@HOME@"; }));
-  # jq receives indentSize, from devkit's library, which equals jq's default, so the case reads it
-  # from the command that builds the settings rather than from their indentation.
-  indent = repository {
-    name = "indent";
-    command = "grep -qF -- '--indent 2' <<<";
-    arguments = [ (consumer [ claude-code ]).files.".claude/settings.json".source.buildCommand ];
-  };
+  # A setting that the module sets to another value fails the evaluation of the flake.
+  conflict =
+    assert
+      !(builtins.tryEval
+        (consumer [
+          claude-code
+          { perSystem.devkit.claude-code.settings.enabledPlugins."devkit@sic-lang" = false; }
+        ]).apps.setup-files.program
+      ).success;
+    pkgs.emptyFile;
 }

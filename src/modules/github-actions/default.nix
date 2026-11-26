@@ -14,9 +14,19 @@ in
   options.perSystem = flake-parts-lib.mkPerSystemOption (
     { config, pkgs, ... }:
     let
-      inherit (config.devkit.github-actions) flakeChecksWorkflow;
+      inherit (config.devkit.github-actions) flakeChecksWorkflow settings;
+      inherit (config.devkit.formats) yaml;
     in
     {
+      options.devkit.github-actions.settings = mkOption {
+        description = ''
+          The workflow `.github/workflows/checks.yml`, which the module writes with devkit's own
+          settings when it generates the workflow.
+        '';
+        type = yaml.type;
+        default = { };
+      };
+
       options.devkit.github-actions.flakeChecksWorkflow = mkOption {
         description = ''
           The reference to devkit's reusable workflow `flake-checks.yml` that the generated
@@ -36,9 +46,18 @@ in
       };
 
       config.devkit = {
+        github-actions.settings = lib.mkIf (flakeChecksWorkflow != null) {
+          name = "Checks";
+          # A trigger without settings is an empty mapping, to which a repository can add some.
+          on = {
+            merge_group = { };
+            pull_request = { };
+            push.branches = [ "main" ];
+          };
+          jobs.flake.uses = flakeChecksWorkflow;
+        };
         files.".github/workflows/checks.yml" = lib.mkIf (flakeChecksWorkflow != null) {
-          template = ./checks.yml.in;
-          replacements = { inherit flakeChecksWorkflow; };
+          source = yaml.generate "checks.yml" settings;
         };
         # Without files, actionlint also checks the workflows that Git does not track.
         checks.actionlint = (import ../checks/tracked-files.nix pkgs).check {

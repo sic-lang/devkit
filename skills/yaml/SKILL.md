@@ -16,4 +16,14 @@ It generates yamllint's configuration, `.yamllint.yaml`, with the `files` module
 
 ## The configuration
 
-`.yamllint.yaml` holds the rules: yamllint's default, with the reason for each change.
+`.yamllint.yaml` holds the rules: yamllint's default, with the changes whose reasons the module's [source](https://github.com/sic-lang/devkit/blob/main/src/modules/yaml/default.nix) gives.
+
+## Add the repository's settings
+
+The option `devkit.yaml.settings` holds the repository's own [yamllint configuration](https://yamllint.readthedocs.io/en/stable/configuration.html), which the module writes together with its own.
+A setting that the module also sets to a different value fails the evaluation of the flake.
+This example ignores a directory:
+
+```nix
+perSystem.devkit.yaml.settings.ignore = "vendor/";
+```

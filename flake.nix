@@ -40,6 +40,7 @@
             }
           );
         flakeModules = modules self;
+        devkitLib = import ./src/lib.nix;
       in
       {
         imports = lib.attrVals [
@@ -58,13 +59,41 @@
           "aarch64-linux"
           "x86_64-linux"
         ];
-        flake.lib = import ./src/lib.nix;
+        flake.lib = devkitLib;
         flake.flakeModules = flakeModules;
         perSystem =
-          { pkgs, system, ... }:
+          {
+            config,
+            pkgs,
+            system,
+            ...
+          }:
+          let
+            inherit (config.devkit.formats) json;
+          in
           {
             # A commit cannot hold its own hash, so devkit calls the workflow of its own commit.
             devkit.github-actions.flakeChecksWorkflow = "./.github/workflows/flake-checks.yml";
+            devkit.files = {
+              ".claude-plugin/marketplace.json".source = json.generate "marketplace.json" {
+                name = devkitLib.marketplace;
+                description = "Plugins for the repositories of the Sic programming language";
+                owner.name = devkitLib.copyrightHolder;
+                plugins = [
+                  {
+                    name = devkitLib.plugin;
+                    source = "./";
+                  }
+                ];
+              };
+              ".claude-plugin/plugin.json".source = json.generate "plugin.json" {
+                name = devkitLib.plugin;
+                description = "Skills to adopt devkit in a repository and to use its modules";
+                author.name = devkitLib.copyrightHolder;
+                repository = "https://github.com/${devkitLib.repository}";
+                inherit (devkitLib) license;
+              };
+            };
             checks = import ./tests {
               inherit
                 inputs
