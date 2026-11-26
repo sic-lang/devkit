@@ -43,7 +43,7 @@
           ];
           replacements = {
             inherit jq spdx;
-            inherit (import ../../lib.nix) license;
+            inherit (import ../../lib.nix) copyrightHolder license;
           };
         };
       };
