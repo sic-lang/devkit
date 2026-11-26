@@ -12,4 +12,9 @@
   # The holder of the copyright of every repository's own files.
   # The contributors keep their copyright, so no single person or company holds it.
   copyrightHolder = "The Sic Contributors";
+  # devkit's repository on GitHub, as its owner and name.
+  repository = "sic-lang/devkit";
+  # The Claude Code marketplace that devkit's repository holds, and devkit's plugin in it.
+  marketplace = "sic-lang";
+  plugin = "devkit";
 }
